@@ -1,8 +1,12 @@
 @import "tailwindcss";
+
+@theme {
+  --color-salmon: #FF8270;
+}
+
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark, elderguard;
 }
-
 
 @plugin "daisyui/theme" {
   name: "elderguard";

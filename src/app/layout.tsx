@@ -12,7 +12,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt" data-theme="elderguard">
-      <body>
+      <body className="h-screen bg-gradient-to-br from-primary">
         {children}
       </body>
     </html>
