@@ -22,7 +22,7 @@ const Label: React.FC<ILabelProps> = ({
 }) => {
   return (
     <label 
-      className={className ? `${className} cursor-pointer label px-0`  : 'flex flex-col items-start justify-start font-bold text-sm text-black'}
+      className={className ? `${className} cursor-pointer label px-0 text-black`  : 'flex flex-col items-start justify-start font-bold text-sm text-black'}
       {...rest}
     >
       <span className={`${hasError ? 'text-error' : 'text-normal'} flex gap-2 content-center items-center`}>

@@ -1,9 +1,8 @@
-import type { Metadata } from "next";
+'use client'
 import "./globals.css";
+import Loader from "@/components/Loader";
+import { AppProvider } from "@/contexts/_index";
 
-export const metadata: Metadata = {
-  title: "ElderGuard",
-};
 
 export default function RootLayout({
   children,
@@ -13,7 +12,10 @@ export default function RootLayout({
   return (
     <html lang="pt" data-theme="elderguard">
       <body className="h-screen bg-gradient-to-br from-primary">
-        {children}
+        <AppProvider>
+          <Loader />
+          {children}
+        </AppProvider>
       </body>
     </html>
   );

@@ -1,11 +1,14 @@
 'use client'
+import { faPersonCane, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRouter } from "next/navigation";
+
 import Button from "@/components/Button";
 import DataTableComponent from "@/components/DataTable";
 import Input from "@/components/Input";
-import { faPersonCane, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Patients() {
+  const router = useRouter();
   return (
     <div className=" py-8 px-4 h-screen w-screen">
       <div className="mb-2 flex items-center justify-between">
@@ -13,7 +16,10 @@ export default function Patients() {
           <FontAwesomeIcon icon={faPersonCane} className="text-2xl" />
           Pacientes
         </h1>
-        <Button className="btn btn-circle btn-success btn-lg" >
+        <Button 
+        className="btn btn-circle btn-success btn-lg"
+        onClick={() => router.push('/pacientes/criar')}
+        >
           <FontAwesomeIcon icon={faPlus}/>
         </Button>
       </div>
@@ -40,12 +46,12 @@ export default function Patients() {
         },
         {
           name: 'Data de Nascimento',
-          selector: (row: { birthDate: any }) => row.birthDate,
+          selector: (row: { dateOfBirth: any }) => row.dateOfBirth,
           sortable: true,
         },
         {
           name: 'Gênero',
-          selector: (row: { gender: any }) => row.gender,
+          selector: (row: { sex: any }) => row.sex,
           sortable: true,
         }
       ]}
@@ -54,32 +60,32 @@ export default function Patients() {
         {
           name: "João da Silva",
           cpf: "123.456.789-00",
-          birthDate: "1945-03-12",
-          gender: "Masculino"
+          dateOfBirth: "1945-03-12",
+          sex: "Masculino"
         },
         {
           name: "Maria Oliveira",
           cpf: "987.654.321-00",
-          birthDate: "1938-07-25",
-          gender: "Feminino"
+          dateOfBirth: "1938-07-25",
+          sex: "Feminino"
         },
         {
           name: "Antônio Souza",
           cpf: "456.123.789-00",
-          birthDate: "1942-11-05",
-          gender: "Masculino"
+          dateOfBirth: "1942-11-05",
+          sex: "Masculino"
         },
         {
           name: "Francisca Almeida",
           cpf: "789.321.456-00",
-          birthDate: "1935-06-18",
-          gender: "Feminino"
+          dateOfBirth: "1935-06-18",
+          sex: "Feminino"
         },
         {
           name: "Carlos Mendes",
           cpf: "321.987.654-00",
-          birthDate: "1948-02-09",
-          gender: "Masculino"
+          dateOfBirth: "1948-02-09",
+          sex: "Masculino"
         }
       ]}
       />

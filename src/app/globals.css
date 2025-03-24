@@ -42,3 +42,32 @@
   --depth: 1;
   --noise: 1;
 }
+
+div.p-datepicker.p-component {
+  background-color: white;
+  padding: 16px;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+td[data-pc-section="day"]{
+  padding: 2px;
+  border-radius: 0.25rem;
+}
+
+td[data-pc-section="day"]:hover{
+  background-color: #62B6CB;
+  color: white;
+}
+
+.p-datepicker-other-month {
+  color: #bcb9b9;
+  cursor: not-allowed;
+}
+
+.p-datepicker-other-month:hover {
+  background-color: transparent !important; 
+  color: #bcb9b9 !important;
+}
+
+
