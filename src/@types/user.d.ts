@@ -4,7 +4,7 @@ interface Elderly {
   name: string;
   dateOfBirth: Date;
   phone: string;
-  contacts: ElderlyContact[];
+  contacts: Contact[];
   address: Address;
   addressId: string;
   sex: string;
@@ -12,13 +12,9 @@ interface Elderly {
   height: number;
   imc: number;
   user: User;
-  userId: string;
-  created: Date;
-  updated: Date;
 }
 
 interface Address {
-  id: string;
   street: string;
   number: string;
   complement: string;
@@ -26,30 +22,14 @@ interface Address {
   city: string;
   state: string;
   zipCode: string;
-  Elderly: Elderly[];
-  Contact: Contact[];
-  created: Date;
-  updated: Date;
 }
 
 interface Contact {
-  id: string;
   name: string;
   phone: string;
   email: string;
   cpf: string;
   address: Address;
-  addressId: string;
-  elderly: ElderlyContact[];
-  created: Date;
-  updated: Date;
-}
-
-interface ElderlyContact {
-  elderlyId: string;
-  contactId: string;
-  elderly: Elderly;
-  contact: Contact;
 }
 
 interface Professional {
@@ -70,7 +50,6 @@ enum UserType {
 }
 
 interface User {
-  id: string;
   login: string;
   password: string;
   userType: UserType;

@@ -25,7 +25,7 @@ const Loader: React.FC = () => {
   return (
     <div
       id="loader"
-      className="fixed top-0 left-0 z-50 flex flex-col items-center justify-center w-full h-screen bg-gray-600 bg-opacity-50 backdrop-blur-sm select-none"
+      className="fixed top-0 left-0 z-50 flex flex-col items-center justify-center w-full h-screen bg-gray-600/50  backdrop-blur-sm select-none"
       style={style}
     >
       <span className="loading loading-spinner text-accent loading-lg"></span>
