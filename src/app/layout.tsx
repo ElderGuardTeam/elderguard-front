@@ -12,7 +12,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt" data-theme="elderguard">
-      <body className="mi-h-screen bg-gradient-to-br from-primary">
+      <body className="mi-h-screen bg-gradient-to-br from-primary font-nunito">
         <AppProvider>
           <Loader />
           {children}

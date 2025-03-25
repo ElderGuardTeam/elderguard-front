@@ -1,7 +1,9 @@
 @import "tailwindcss";
+@import "@fontsource/Nunito/index.css";
 
 @theme {
   --color-salmon: #FF8270;
+  --font-nunito:  Nunito, sans-serif;
 }
 
 @plugin "daisyui" {
