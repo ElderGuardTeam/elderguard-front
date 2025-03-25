@@ -11,7 +11,6 @@ interface Elderly {
   weight: number;
   height: number;
   imc: number;
-  user: User;
 }
 
 interface Address {
@@ -33,13 +32,10 @@ interface Contact {
 }
 
 interface Professional {
-  id: string;
   cpf: string;
   name: string;
   phone: string;
   email: string;
-  user: User;
-  userId: string;
   created: Date;
   updated: Date;
 }

@@ -4,24 +4,8 @@ import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faArrowRightFromBracket, 
-  faBan, 
-  faBoxArchive, 
-  faCalendar, 
-  faChartLine, 
-  faClipboardCheck, 
-  faComments, 
-  faCrosshairs, 
-  faFileLines, 
-  faLaptopCode, 
-  faLink, 
-  faMagnifyingGlassLocation, 
-  faMoon, 
   faPersonCane, 
-  faPlus, 
-  faSliders, 
-  faSun, 
-  faTruckFast,
-  faUser,
+  faUserNurse,
   faWrench
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -52,7 +36,13 @@ const Sidebar: React.FC = () => {
               <FontAwesomeIcon icon={faPersonCane} className='text-xl' />
               <span>Pacientes</span>
             </Link>
-          </LiMenu>          
+          </LiMenu>  
+          <LiMenu>
+            <Link className="flex items-center gap-3" href="/profissionais">
+              <FontAwesomeIcon icon={faUserNurse} className='text-lg' />
+              <span>Profissionais</span>
+            </Link>
+          </LiMenu>        
         </UlMenu>
         <div className='sticky bottom-0 bg-accent'>
         <div className='divider divider-secondary'></div>

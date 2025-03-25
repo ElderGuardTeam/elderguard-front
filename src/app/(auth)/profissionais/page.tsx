@@ -1,5 +1,5 @@
 'use client'
-import { faPersonCane, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faUserNurse } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -15,14 +15,15 @@ import MaskedInput from "@/components/MaskedInput";
 import DatePickerFormGroup from "@/components/DatePickerFormGroup";
 import SelectFormGroup from "@/components/SelectFormGroup";
 
-export default function Patients() {
+export default function Professionals() {
   const patientData: any = [
-    { name: "João da Silva", cpf: "123.456.789-00", dateOfBirth: "1945-03-12", sex: "Masculino" },
-    { name: "Maria Oliveira", cpf: "987.654.321-00", dateOfBirth: "1938-07-25", sex: "Feminino" },
-    { name: "Antônio Souza", cpf: "456.123.789-00", dateOfBirth: "1942-11-05", sex: "Masculino" },
-    { name: "Francisca Almeida", cpf: "789.321.456-00", dateOfBirth: "1935-06-18", sex: "Feminino" },
-    { name: "Carlos Mendes", cpf: "321.987.654-00", dateOfBirth: "1948-02-09", sex: "Masculino" }
+    { name: "João da Silva", cpf: "123.456.789-00", email: "joao.silva@email.com" },
+    { name: "Maria Oliveira", cpf: "987.654.321-00", email: "maria.oliveira@email.com" },
+    { name: "Antônio Souza", cpf: "456.123.789-00", email: "antonio.souza@email.com" },
+    { name: "Francisca Almeida", cpf: "789.321.456-00", email: "francisca.almeida@email.com" },
+    { name: "Carlos Mendes", cpf: "321.987.654-00", email: "carlos.mendes@email.com" }
   ];
+  
 
   const router = useRouter();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -68,8 +69,8 @@ export default function Patients() {
     <div className=" py-8 px-4 h-screen w-screen">
       <div className="mb-2 flex items-center justify-between">
         <h1 className="text-xl text-white flex gap-2 items-center">
-          <FontAwesomeIcon icon={faPersonCane} className="text-2xl" />
-          Pacientes
+          <FontAwesomeIcon icon={faUserNurse} className="text-xl" />
+          Profissionais
         </h1>
         <Button 
         className="btn btn-circle btn-success btn-lg"
@@ -102,15 +103,10 @@ export default function Patients() {
           sortable: true,
         },
         {
-          name: 'Data de Nascimento',
-          selector: (row: { dateOfBirth: any }) => row.dateOfBirth,
+          name: 'Email',
+          selector: (row: { email: any }) => row.email,
           sortable: true,
         },
-        {
-          name: 'Gênero',
-          selector: (row: { sex: any }) => row.sex,
-          sortable: true,
-        }
       ]}
 
       data={filteredData}
@@ -132,21 +128,9 @@ export default function Patients() {
             name={`cpf`}
           />
         </Label>
-        <DatePickerFormGroup
-        control={control}
-        labelText="Data de Nascimento"
-        name="dateOfBirth"
-        />  
-        <SelectFormGroup
-        labelText="Gênero"
-        options={[
-          {id: 'M', name: 'Masculino'},
-          {id: 'F', name: 'Feminino'},
-          {id: 'O', name: 'Outro'}
-        ]}
-        placeholder="Selecione..."
-        register={register('sexo')}
-        />  
+        <FormGroup
+        labelText="Email"
+        />
       </FilterDrawer>
     </div>
   );
