@@ -74,7 +74,7 @@ export default function Professionals() {
         </h1>
         <Button 
         className="btn btn-circle btn-success btn-lg"
-        onClick={() => router.push('/pacientes/criar')}
+        onClick={() => router.push('/profissionais/criar')}
         >
           <FontAwesomeIcon icon={faPlus}/>
         </Button>

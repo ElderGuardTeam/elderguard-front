@@ -8,7 +8,7 @@ import MaskedInput from "@/components/MaskedInput"
 import SelectFormGroup from "@/components/SelectFormGroup"
 import { useLoader } from "@/contexts/loaderContext"
 import toastError from "@/utils/toast/toastError"
-import { faPlus } from "@fortawesome/free-solid-svg-icons"
+import { faChevronLeft, faPlus } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
@@ -91,7 +91,12 @@ export default function CreatePatient() {
   return (
     <div className="p-8 w-full">
       <form className="bg-white rounded p-4">
-        <h1>Cadastrar Paciente</h1>
+      <h1 className="flex gap-2 items-center">
+          <div className="h-8 w-8 flex items-center justify-center hover:border-salmon hover:border rounded-full" onClick={() => router.back()}>
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </div>
+          Cadastrar Paciente
+        </h1>
         <fieldset className="border border-base-300 rounded p-2 grid grid-cols-2 gap-4 my-4 text-xs">
           <legend>Dados pessoais</legend>
           <FormGroup
@@ -128,13 +133,7 @@ export default function CreatePatient() {
           ]}
           placeholder="Selecione"
           register={register('elderly.sex')}
-          />
-          <FormGroup
-          labelText="Senha"
-          isRequired
-          isPassword
-          register={register('password')}
-          />   
+          /> 
         </fieldset>
         <fieldset className="border border-base-300 rounded p-2 grid grid-cols-2 gap-4 my-4 text-xs">
           <legend>Endereço</legend>
