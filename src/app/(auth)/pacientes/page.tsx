@@ -7,13 +7,7 @@ import { useEffect, useState } from "react";
 import Button from "@/components/Button";
 import DataTableComponent from "@/components/DataTable";
 import Input from "@/components/Input";
-import FilterDrawer from "@/components/FilterDrawer";
 import { useForm } from "react-hook-form";
-import FormGroup from "@/components/FormGroup";
-import Label from "@/components/Label";
-import MaskedInput from "@/components/MaskedInput";
-import DatePickerFormGroup from "@/components/DatePickerFormGroup";
-import SelectFormGroup from "@/components/SelectFormGroup";
 
 export default function Patients() {
   const patientData: any = [
@@ -25,22 +19,9 @@ export default function Patients() {
   ];
 
   const router = useRouter();
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState(patientData);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
-
-  const {
-    handleSubmit,
-    register,
-    control,
-    setValue,
-    reset
-    } = useForm()
-
-    const handleReset = () => {
-      reset()
-    }
 
     const removeAccents = (str: string) => {
       return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -85,8 +66,8 @@ export default function Patients() {
         value={searchTerm}
         onChange={(e) => setSearchTerm((e.target as HTMLInputElement).value)}
         />
-        <Button className=" bg-salmon border-none" onClick={() => setIsFilterOpen(true)}>
-          Filtros
+        <Button className=" bg-salmon border-none">
+          Filtrar
         </Button>
       </div>
       <DataTableComponent
@@ -115,39 +96,6 @@ export default function Patients() {
 
       data={filteredData}
       />
-      <FilterDrawer
-      visibleRight={isFilterOpen}
-      setVisibleRight={setIsFilterOpen}
-      handleSubmit={handleSubmit}
-      handleData={(data) => console.log(data)}
-      handleReset={handleReset}
-      >
-        <FormGroup
-        labelText="Nome"
-        />
-        <Label labelText="CPF" className="flex flex-col items-start justify-start font-bold text-sm">
-          <MaskedInput
-            control={control}
-            mask="999.999.999-99"
-            name={`cpf`}
-          />
-        </Label>
-        <DatePickerFormGroup
-        control={control}
-        labelText="Data de Nascimento"
-        name="dateOfBirth"
-        />  
-        <SelectFormGroup
-        labelText="Gênero"
-        options={[
-          {id: 'M', name: 'Masculino'},
-          {id: 'F', name: 'Feminino'},
-          {id: 'O', name: 'Outro'}
-        ]}
-        placeholder="Selecione..."
-        register={register('sexo')}
-        />  
-      </FilterDrawer>
     </div>
   );
 }

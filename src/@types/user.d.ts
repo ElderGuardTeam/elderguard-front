@@ -6,7 +6,6 @@ interface Elderly {
   phone: string;
   contacts: Contact[];
   address: Address;
-  addressId: string;
   sex: string;
   weight: number;
   height: number;

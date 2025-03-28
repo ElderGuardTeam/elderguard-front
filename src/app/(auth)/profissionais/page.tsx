@@ -12,8 +12,6 @@ import { useForm } from "react-hook-form";
 import FormGroup from "@/components/FormGroup";
 import Label from "@/components/Label";
 import MaskedInput from "@/components/MaskedInput";
-import DatePickerFormGroup from "@/components/DatePickerFormGroup";
-import SelectFormGroup from "@/components/SelectFormGroup";
 
 export default function Professionals() {
   const patientData: any = [
@@ -86,8 +84,8 @@ export default function Professionals() {
         value={searchTerm}
         onChange={(e) => setSearchTerm((e.target as HTMLInputElement).value)}
         />
-        <Button className=" bg-salmon border-none" onClick={() => setIsFilterOpen(true)}>
-          Filtros
+        <Button className=" bg-salmon border-none">
+          Filtrar
         </Button>
       </div>
       <DataTableComponent
@@ -111,27 +109,6 @@ export default function Professionals() {
 
       data={filteredData}
       />
-      <FilterDrawer
-      visibleRight={isFilterOpen}
-      setVisibleRight={setIsFilterOpen}
-      handleSubmit={handleSubmit}
-      handleData={(data) => console.log(data)}
-      handleReset={handleReset}
-      >
-        <FormGroup
-        labelText="Nome"
-        />
-        <Label labelText="CPF" className="flex flex-col items-start justify-start font-bold text-sm">
-          <MaskedInput
-            control={control}
-            mask="999.999.999-99"
-            name={`cpf`}
-          />
-        </Label>
-        <FormGroup
-        labelText="Email"
-        />
-      </FilterDrawer>
     </div>
   );
 }

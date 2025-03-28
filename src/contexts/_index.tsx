@@ -1,4 +1,5 @@
 import { LoaderProvider } from "./loaderContext"
+import { UsersProvider } from "./usersContext"
 
 
 export const AppProvider = ({ 
@@ -9,7 +10,9 @@ export const AppProvider = ({
   return (
     <>
       <LoaderProvider>
-        {children}
+        <UsersProvider>
+          {children}
+        </UsersProvider>
       </LoaderProvider>
     </>
   )
