@@ -7,44 +7,26 @@ import { useEffect, useState } from "react";
 import Button from "@/components/Button";
 import DataTableComponent from "@/components/DataTable";
 import Input from "@/components/Input";
-import { useForm } from "react-hook-form";
+import { useUsers } from "@/contexts/usersContext";
+import { formatCPF } from "@/utils/formatters/formatCPF";
+import { formatDate } from "@/utils/formatters/formateDate";
 
 export default function Patients() {
-  const patientData: any = [
-    { name: "João da Silva", cpf: "123.456.789-00", dateOfBirth: "1945-03-12", sex: "Masculino" },
-    { name: "Maria Oliveira", cpf: "987.654.321-00", dateOfBirth: "1938-07-25", sex: "Feminino" },
-    { name: "Antônio Souza", cpf: "456.123.789-00", dateOfBirth: "1942-11-05", sex: "Masculino" },
-    { name: "Francisca Almeida", cpf: "789.321.456-00", dateOfBirth: "1935-06-18", sex: "Feminino" },
-    { name: "Carlos Mendes", cpf: "321.987.654-00", dateOfBirth: "1948-02-09", sex: "Masculino" }
-  ];
+  const {
+    elderly,
+    fetchElderly
+  } = useUsers()
+  useEffect(() => {
+    fetchElderly()
+  }, [])
 
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredData, setFilteredData] = useState(patientData);
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
     const removeAccents = (str: string) => {
       return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     };
   
-    useEffect(() => {
-      if (timeoutId) clearTimeout(timeoutId);
-  
-      const newTimeoutId = setTimeout(() => {
-        if (searchTerm) {
-          const normalizedSearch = removeAccents(searchTerm.toLowerCase());
-          const filtered = patientData.filter((patient: any) =>
-            removeAccents(patient.name.toLowerCase()).includes(normalizedSearch)
-          );
-          setFilteredData(filtered);
-        } else {
-          setFilteredData(patientData);
-        }
-      }, 1000);
-  
-      setTimeoutId(newTimeoutId);
-    }, [searchTerm]);
-    
   return (
     <div className=" py-8 px-4 h-screen w-screen">
       <div className="mb-2 flex items-center justify-between">
@@ -81,20 +63,22 @@ export default function Patients() {
           name: 'CPF',
           selector: (row: { cpf: any }) => row.cpf,
           sortable: true,
+          cell: (row: { cpf: any }) => formatCPF(row.cpf)
         },
         {
           name: 'Data de Nascimento',
           selector: (row: { dateOfBirth: any }) => row.dateOfBirth,
           sortable: true,
+          cell: (row: { dateOfBirth: any }) => formatDate(row.dateOfBirth)
         },
         {
           name: 'Gênero',
           selector: (row: { sex: any }) => row.sex,
           sortable: true,
+          cell: (row: { sex: any }) => row.sex === 'M' ? 'Masculino' : 'Feminino'
         }
       ]}
-
-      data={filteredData}
+      data={elderly}
       />
     </div>
   );
