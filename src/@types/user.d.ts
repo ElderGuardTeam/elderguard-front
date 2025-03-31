@@ -1,5 +1,17 @@
 interface Elderly {
-  id: string;
+  cpf: string;
+  name: string;
+  dateOfBirth: Date;
+  phone: string;
+  contacts: Contact[];
+  address: Address;
+  sex: string;
+  weight: string;
+  height: string;
+  imc: string;
+}
+
+interface ElderlyInfo {
   cpf: string;
   name: string;
   dateOfBirth: Date;
@@ -44,12 +56,3 @@ enum UserType {
   ADMIN = "ADMIN",
 }
 
-interface User {
-  login: string;
-  password: string;
-  userType: UserType;
-  created: Date;
-  updated: Date;
-  elderly?: Elderly;
-  professional?: Professional;
-}

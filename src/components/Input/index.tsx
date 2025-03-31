@@ -30,7 +30,7 @@ const Input: React.FC<InputProps> = ({
 
   return (
     <div className='flex relative items-center w-full text-black'>
-      <input {...rest} type={!showPassword ? type : 'password'}  {...register} placeholder={placeholder} className={`input  bg-white  border p-2 rounded-md w-full cursor-pointer ${
+      <input step="0.01" {...rest} type={!showPassword ? type : 'password'}  {...register} placeholder={placeholder} className={`input  bg-white  border p-2 rounded-md w-full cursor-pointer ${
         hasError ?
             'border-error'
           :

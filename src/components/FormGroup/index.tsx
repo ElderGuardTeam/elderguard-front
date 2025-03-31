@@ -22,7 +22,7 @@ export interface IFormGroupProps {
 
 const FormGroup: React.FC<IFormGroupProps> = ({ type='text', inputClass='', labelText, error='', isRequired=false, register, isPassword=false, className='', isDisabled=false, tooltipText='', tooltipContent='', onBlur, readonly=false }) => {
   return (
-    <Label tooltipText={ tooltipText } tooltipContent={ tooltipContent } required={ isRequired } className={`flex flex-col items-start justify-start font-bold text-sm ${ className }`} hasError={ Boolean(error) } labelText={ labelText }>
+    <Label tooltipText={ tooltipText } type={type} tooltipContent={ tooltipContent } required={ isRequired } className={`flex flex-col items-start justify-start font-bold text-sm ${ className }`} hasError={ Boolean(error) } labelText={ labelText }>
       <Input disabled={ isDisabled } type={ type } register={ register } hasError={ Boolean(error) } isPassword={ isPassword } className={ inputClass } onBlur={onBlur} readOnly={readonly} />
       { error && 
         <FormError>

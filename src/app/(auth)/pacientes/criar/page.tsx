@@ -13,9 +13,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod";
+import CreateElderlySchema from "@/utils/schema/createElderlySchema"
+import FormError from "@/components/FormError"
+import { useUsers } from "@/contexts/usersContext"
 
 export default function CreatePatient() {
   const {setLoading} = useLoader()
+
+  const {
+    createElderly
+  } = useUsers();
 
   const router = useRouter();
 
@@ -26,15 +34,17 @@ export default function CreatePatient() {
     control, 
     setValue,
     watch
-  } = useForm<User>()
+  } = useForm<Elderly>({
+    resolver: zodResolver(CreateElderlySchema)
+  })
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "elderly.contacts" 
+    name: "contacts" 
   });
 
-  const weight = watch('elderly.weight');
-  const height = watch('elderly.height');
+  const weight = watch('weight');
+  const height = watch('height');
 
   useEffect(() => {
     handleIMC();
@@ -69,11 +79,11 @@ export default function CreatePatient() {
           toastError('CEP não encontrado', 5000);
           return;
         }
-        setValue(`${path}.zipCode` as unknown as keyof User, data.cep);
-        setValue(`${path}.street` as unknown as keyof User, data.logradouro);
-        setValue(`${path}.neighborhood` as unknown as keyof User, data.bairro);
-        setValue(`${path}.city` as unknown as keyof User, data.localidade);
-        setValue(`${path}.state` as unknown as keyof User, data.uf);
+        setValue(`${path}.zipCode` as unknown as keyof Elderly, data.cep);
+        setValue(`${path}.street` as unknown as keyof Elderly, data.logradouro);
+        setValue(`${path}.neighborhood` as unknown as keyof Elderly, data.bairro);
+        setValue(`${path}.city` as unknown as keyof Elderly, data.localidade);
+        setValue(`${path}.state` as unknown as keyof Elderly, data.uf);
       })
       .catch(() => toastError('CEP não encontrado', 5000))
       .finally(() => setLoading(false));
@@ -81,16 +91,25 @@ export default function CreatePatient() {
 
   const handleIMC = () => {
     if (!weight || !height) return;
-    const imc = weight / (height * height);
-    setValue('elderly.imc', imc);
+    const imc = Number(weight)/ (Number(height) * Number(height));
+    setValue('imc', imc.toString());
   }
   const handleRemoveContact = (index: number) => {
     remove(index);
   };
 
+  const onSubmit = async (data: Elderly) => {
+    createElderly({
+      ...data,
+      weight: Number(data.weight),
+      height: Number(data.height),
+      imc: Number(data.imc),
+    });
+  }
+
   return (
     <div className="p-8 w-full">
-      <form className="bg-white rounded p-4">
+      <form className="bg-white rounded p-4" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="flex gap-2 items-center">
           <div className="h-8 w-8 flex items-center justify-center hover:border-salmon hover:border rounded-full" onClick={() => router.back()}>
             <FontAwesomeIcon icon={faChevronLeft} />
@@ -102,6 +121,8 @@ export default function CreatePatient() {
           <FormGroup
           labelText="Nome"
           isRequired
+          register={register('name')}
+          error={errors.name?.message}
           />
           <Label labelText="CPF" required className="flex flex-col items-start justify-start font-bold text-sm">
             <MaskedInput
@@ -109,12 +130,18 @@ export default function CreatePatient() {
             mask="999.999.999-99"
             name="cpf"
             />
+            {
+              errors.cpf && (
+                <FormError>{errors.cpf.message}</FormError>
+              )
+            }
           </Label>
           <DatePickerFormGroup
           control={control}
           labelText="Data de Nascimento"
           name="dateOfBirth"
           isRequired
+          error={errors.dateOfBirth?.message}
           />    
           <Label labelText="Telefone" required className="flex flex-col items-start justify-start font-bold text-sm">
             <MaskedInput
@@ -122,6 +149,11 @@ export default function CreatePatient() {
             mask="(99) 99999-9999"
             name="phone"
             /> 
+            {
+              errors.phone && (
+                <FormError>{errors.phone.message}</FormError>
+              )
+            }
           </Label>
           <SelectFormGroup
           labelText="Sexo"
@@ -132,7 +164,8 @@ export default function CreatePatient() {
             {id: 'O', name: 'Outro'}
           ]}
           placeholder="Selecione"
-          register={register('elderly.sex')}
+          register={register('sex')}
+          error={errors.sex?.message}
           /> 
         </fieldset>
         <fieldset className="border border-base-300 rounded p-2 grid grid-cols-2 gap-4 my-4 text-xs">
@@ -140,53 +173,58 @@ export default function CreatePatient() {
           <Label labelText='CEP' required className="flex flex-col items-start justify-start font-bold text-sm">
             <MaskedInput
             control={control}
-            name="elderly.address.zipCode"
+            name="address.zipCode"
             mask={'99999-999'}
             className="input-bordered"
-            onBlur={(e) => autoCompleteAddress(e.target.value, 'elderly.address')}
+            onBlur={(e) => autoCompleteAddress(e.target.value, 'address')}
             />
+            {
+              errors.address?.zipCode && (
+                <FormError>{errors.address.zipCode.message}</FormError>
+              )
+            }
           </Label>
           <FormGroup
           labelText="Rua"
           isRequired
           inputClass="input-bordered"
-          register={register('elderly.address.street')}
-          error={errors.elderly?.address?.street?.message}
+          register={register('address.street')}
+          error={errors.address?.street?.message}
           />
           <FormGroup
           labelText="Número"
           isRequired
           inputClass="input-bordered"
-          register={register('elderly.address.number')}
-          error={errors.elderly?.address?.number?.message}
+          register={register('address.number')}
+          error={errors.address?.number?.message}
           />
           <FormGroup
           labelText="Complemento"
           inputClass="input-bordered"
-          register={register('elderly.address.complement')}
-          error={errors.elderly?.address?.complement?.message}
+          register={register('address.complement')}
+          error={errors.address?.complement?.message}
           isRequired
           />
           <FormGroup
           labelText="Bairro"
           isRequired
           inputClass="input-bordered"
-          register={register('elderly.address.neighborhood')}
-          error={errors.elderly?.address?.neighborhood?.message}
+          register={register('address.neighborhood')}
+          error={errors.address?.neighborhood?.message}
           />
           <FormGroup
           labelText="Cidade"
           isRequired
           inputClass="input-bordered"
-          register={register('elderly.address.city')}
-          error={errors.elderly?.address?.city?.message}
+          register={register('address.city')}
+          error={errors.address?.city?.message}
           />
           <FormGroup
           labelText="Estado"
           isRequired
           inputClass="input-bordered"
-          register={register('elderly.address.state')}
-          error={errors.elderly?.address?.state?.message}
+          register={register('address.state')}
+          error={errors.address?.state?.message}
           />
         </fieldset>
         <fieldset className="border border-base-300 rounded p-2 grid grid-cols-3 gap-4 my-4 text-xs">
@@ -194,18 +232,24 @@ export default function CreatePatient() {
           <FormGroup
           labelText="Peso"
           isRequired
-          register={register('elderly.weight')}
+          register={register('weight')}
+          error={errors.weight?.message}
+          type="number"
           />
           <FormGroup
           labelText="Altura"
           isRequired
-          register={register('elderly.height')}
+          register={register('height')}
+          error={errors.height?.message}
+          type="number"
           />
           <FormGroup
           labelText="IMC"
           isRequired
-          register={register('elderly.imc')}
+          register={register('imc')}
           isDisabled
+          error={errors.imc?.message}
+          type="number"
           />
         </fieldset>
         <fieldset className="border border-base-300 rounded p-2 gap-4 my-4 text-xs">
@@ -219,79 +263,79 @@ export default function CreatePatient() {
               <FormGroup
                 labelText="Nome"
                 isRequired
-                register={register(`elderly.contacts.${index}.name`)}
-                error={errors?.elderly?.contacts?.[index]?.name?.message}
+                register={register(`contacts.${index}.name`)}
+                error={errors?.contacts?.[index]?.name?.message}
               />
               <Label labelText="Telefone" required className="flex flex-col items-start justify-start font-bold text-sm">
                 <MaskedInput
                   control={control}
                   mask="(99) 99999-9999"
-                  name={`elderly.contacts.${index}.phone`}
+                  name={`contacts.${index}.phone`}
                 />
               </Label>
               <FormGroup
                 labelText="E-mail"
                 isRequired
-                register={register(`elderly.contacts.${index}.email`)}
-                error={errors?.elderly?.contacts?.[index]?.email?.message}
+                register={register(`contacts.${index}.email`)}
+                error={errors?.contacts?.[index]?.email?.message}
               />
               <Label labelText="CPF" required className="flex flex-col items-start justify-start font-bold text-sm">
                 <MaskedInput
                   control={control}
                   mask="999.999.999-99"
-                  name={`elderly.contacts.${index}.cpf`}
+                  name={`contacts.${index}.cpf`}
                 />
               </Label>
               <Label labelText='CEP' required className="flex flex-col items-start justify-start font-bold text-sm">
                 <MaskedInput
                 control={control}
-                name="elderly.contacts.${index}.address.zipCode"
+                name="contacts.${index}.address.zipCode"
                 mask={'99999-999'}
                 className="input-bordered"
-                onBlur={(e) => autoCompleteAddress(e.target.value, `elderly.contacts.${index}.address`)}
+                onBlur={(e) => autoCompleteAddress(e.target.value, `contacts.${index}.address`)}
                 />
               </Label>
               <FormGroup
                 labelText="Rua"
                 isRequired
                 inputClass="input-bordered"
-                register={register(`elderly.contacts.${index}.address.street`)}
-                error={errors?.elderly?.contacts?.[index]?.address?.street?.message}
+                register={register(`contacts.${index}.address.street`)}
+                error={errors?.contacts?.[index]?.address?.street?.message}
               />
               <FormGroup
                 labelText="Número"
                 isRequired
                 inputClass="input-bordered"
-                register={register(`elderly.contacts.${index}.address.number`)}
-                error={errors?.elderly?.contacts?.[index]?.address?.number?.message}
+                register={register(`contacts.${index}.address.number`)}
+                error={errors?.contacts?.[index]?.address?.number?.message}
               />
               <FormGroup
                 labelText="Complemento"
                 inputClass="input-bordered"
-                register={register(`elderly.contacts.${index}.address.complement`)}
-                error={errors?.elderly?.contacts?.[index]?.address?.complement?.message}
+                register={register(`contacts.${index}.address.complement`)}
+                error={errors?.contacts?.[index]?.address?.complement?.message}
                 isRequired
               />
               <FormGroup
                 labelText="Bairro"
                 isRequired
                 inputClass="input-bordered"
-                register={register(`elderly.contacts.${index}.address.neighborhood`)}
-                error={errors?.elderly?.contacts?.[index]?.address?.neighborhood?.message}
+                register={register(`contacts.${index}.address.neighborhood`)}
+                error={errors?.contacts?.[index]?.address?.neighborhood?.message}
               />
               <FormGroup
                 labelText="Cidade"
                 isRequired
                 inputClass="input-bordered"
-                register={register(`elderly.contacts.${index}.address.city`)}
-                error={errors?.elderly?.contacts?.[index]?.address?.city?.message}
+                register={register(`contacts.${index}.address.city`)}
+                error={errors?.contacts?.[index]?.address?.city?.message}
               />
               <FormGroup
                 labelText="Estado"
                 isRequired
                 inputClass="input-bordered"
-                register={register(`elderly.contacts.${index}.address.state`)}
-                error={errors?.elderly?.contacts?.[index]?.address?.state?.message}
+                register={register(`contacts.${index}.address.state`)}
+                error={errors?.contacts?.[index]?.address?.state?.message}
               />
               <Button type="button" onClick={() => handleRemoveContact(index)} className="btn-error text-white">
                 Remover

@@ -9,6 +9,7 @@ const toastSuccess = (message: string, autoclose: any) => {
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
+    theme: 'colored',
   })
 }
 
