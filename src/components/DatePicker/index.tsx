@@ -37,8 +37,8 @@ const DatePicker: React.FC<IDatePickerProps> = ({
           field.onChange(e.value)
         }} 
         showIcon
-        yearNavigator
-        yearRange="1920:2025"
+        // yearNavigator
+        // yearRange="1920:2025"
         showTime={hasTimePicker}
         locale='pt-br'
         invalid={fieldState.error?.message ? true : false}

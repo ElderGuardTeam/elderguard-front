@@ -10,6 +10,7 @@ type UsersContextType = {
   fetchElderly: () => Promise<void>
 	createElderly: (elderly: ElderlyCreate) => Promise<void>
 	getElderlyById: (id: string) => Promise<void>
+	editElderly: (elderly: ElderlyCreate, id: string) => Promise<void>
 	elderly: Elderly[]
 	elderlyInfo: ElderlyInfo
 }
@@ -57,6 +58,18 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 			setLoading(false);
 		})
 	}
+	const editElderly = async (elderly: ElderlyCreate, id: string) => {
+		setLoading(true);
+		await api.patch(`elderly/${id}`, elderly).then(() => {
+			fetchElderly();
+			toastSuccess("Idoso editado com sucesso", 5000);
+			router.push("/pacientes");
+		}).catch((error) => {
+			toastError("Ocorreu um erro ao editar o idoso", 5000);
+		}).finally(() => {
+			setLoading(false);
+		})
+	}
 
 	return (
 		<UsersContext.Provider value={{ 
@@ -64,7 +77,8 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 			elderly,
 			createElderly,
 			getElderlyById,
-			elderlyInfo
+			elderlyInfo,
+			editElderly
 		}}>
 			{children}
 		</UsersContext.Provider>

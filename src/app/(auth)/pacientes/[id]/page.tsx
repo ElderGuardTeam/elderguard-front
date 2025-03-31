@@ -10,7 +10,7 @@ import CreateElderlyForm from "@/components/Forms/CreateElderly"
 export default function EditPatient({params}: {params: {id: string}}) {
 
   const {
-    createElderly,
+    editElderly,
     getElderlyById,
     elderlyInfo
   } = useUsers();
@@ -88,12 +88,12 @@ export default function EditPatient({params}: {params: {id: string}}) {
   };
 
   const onSubmit = async (data: Elderly) => {
-    createElderly({
+    editElderly({
       ...data,
       weight: Number(data.weight),
       height: Number(data.height),
       imc: Number(data.imc),
-    });
+    }, params.id);
   }
   console.log(errors);
 
