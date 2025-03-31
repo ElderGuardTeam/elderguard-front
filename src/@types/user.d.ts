@@ -1,4 +1,5 @@
 interface Elderly {
+  id?: string;
   cpf: string;
   name: string;
   dateOfBirth: Date;
@@ -11,12 +12,29 @@ interface Elderly {
   imc: string;
 }
 
-interface ElderlyInfo {
+interface ElderlyCreate {
+  id?: string;
   cpf: string;
   name: string;
   dateOfBirth: Date;
   phone: string;
   contacts: Contact[];
+  address: Address;
+  sex: string;
+  weight: number;
+  height: number;
+  imc: number;
+}
+
+interface ElderlyInfo {
+  id?: string;
+  cpf: string;
+  name: string;
+  dateOfBirth: Date;
+  phone: string;
+  contacts: Array<{
+    contact: Contact;
+  }>;
   address: Address;
   sex: string;
   weight: number;

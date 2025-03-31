@@ -8,8 +8,10 @@ import { useRouter } from "next/navigation";
 
 type UsersContextType = {
   fetchElderly: () => Promise<void>
-	createElderly: (elderly: ElderlyInfo) => Promise<void>
+	createElderly: (elderly: ElderlyCreate) => Promise<void>
+	getElderlyById: (id: string) => Promise<void>
 	elderly: Elderly[]
+	elderlyInfo: ElderlyInfo
 }
 
 const UsersContext = createContext({} as UsersContextType);
@@ -23,6 +25,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 	} = useLoader()
 
 	const [elderly, setElderly] = useState<Elderly[]>([]);
+	const [elderlyInfo, setElderlyInfo] = useState<ElderlyInfo>({} as ElderlyInfo);
 
 	const fetchElderly = async () => {
 		setLoading(true);
@@ -33,7 +36,16 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 		})
 	}
 
-	const createElderly = async (elderly: ElderlyInfo) => {
+	const getElderlyById = async (id : string) => {
+		setLoading(true);
+		await api.get(`elderly/${id}`).then((response) => {
+			setElderlyInfo(response.data);
+		}).finally(() => {
+			setLoading(false);
+		})
+	}
+
+	const createElderly = async (elderly: ElderlyCreate) => {
 		setLoading(true);
 		await api.post("/elderly", elderly).then(() => {
 			fetchElderly();
@@ -50,8 +62,10 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 		<UsersContext.Provider value={{ 
 			fetchElderly,
 			elderly,
-			createElderly
-		 }}>
+			createElderly,
+			getElderlyById,
+			elderlyInfo
+		}}>
 			{children}
 		</UsersContext.Provider>
 	);

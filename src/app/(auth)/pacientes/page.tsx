@@ -79,6 +79,7 @@ export default function Patients() {
         }
       ]}
       data={elderly}
+      onRowClicked={(row: Elderly) => router.push(`/pacientes/${row.id}`)}
       />
     </div>
   );
