@@ -61,12 +61,11 @@ interface Contact {
 }
 
 interface Professional {
+  id?: string
   cpf: string;
   name: string;
   phone: string;
   email: string;
-  created: Date;
-  updated: Date;
 }
 
 enum UserType {

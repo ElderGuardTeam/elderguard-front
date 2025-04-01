@@ -69,8 +69,8 @@ export default function Professionals() {
           sortable: true,
         },
       ]}
-
       data={professional}
+      onRowClicked={(row:Professional) => router.push(`/profissionais/${row.id}`)}
       />
     </div>
   );

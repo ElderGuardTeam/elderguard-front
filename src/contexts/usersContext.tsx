@@ -13,9 +13,11 @@ type UsersContextType = {
 	editElderly: (elderly: ElderlyCreate, id: string) => Promise<void>
 	fetchProfessional: () => Promise<void>
 	createProfessional: (professional: Professional) => Promise<void>
+	getProfessionalById: (id: string) => Promise<void>
 	elderly: Elderly[]
 	elderlyInfo: ElderlyInfo
 	professional: Professional[]
+	professionalInfo: Professional
 }
 
 const UsersContext = createContext({} as UsersContextType);
@@ -31,6 +33,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 	const [elderly, setElderly] = useState<Elderly[]>([]);
 	const [elderlyInfo, setElderlyInfo] = useState<ElderlyInfo>({} as ElderlyInfo);
 	const [professional, setProfessional] = useState<Professional[]>([]);
+	const [professionalInfo, setProfessionalInfo] = useState<Professional>({} as Professional);
 
 	const fetchElderly = async () => {
 		setLoading(true);
@@ -98,6 +101,15 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 		})
 	}
 
+	const getProfessionalById = async (id : string) => {
+		setLoading(true);
+		await api.get(`professional/${id}`).then((response) => {
+			setProfessionalInfo(response.data);
+		}).finally(() => {
+			setLoading(false);
+		})
+	}
+
 	return (
 		<UsersContext.Provider value={{ 
 			fetchElderly,
@@ -108,7 +120,9 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 			editElderly,
 			fetchProfessional,
 			professional,
-			createProfessional
+			createProfessional,
+			getProfessionalById,
+			professionalInfo
 		}}>
 			{children}
 		</UsersContext.Provider>
