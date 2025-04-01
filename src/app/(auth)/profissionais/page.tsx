@@ -7,61 +7,23 @@ import { useEffect, useState } from "react";
 import Button from "@/components/Button";
 import DataTableComponent from "@/components/DataTable";
 import Input from "@/components/Input";
-import FilterDrawer from "@/components/FilterDrawer";
-import { useForm } from "react-hook-form";
-import FormGroup from "@/components/FormGroup";
-import Label from "@/components/Label";
-import MaskedInput from "@/components/MaskedInput";
+import { useUsers } from "@/contexts/usersContext";
+import { formatCPF } from "@/utils/formatters/formatCPF";
 
 export default function Professionals() {
-  const patientData: any = [
-    { name: "João da Silva", cpf: "123.456.789-00", email: "joao.silva@email.com" },
-    { name: "Maria Oliveira", cpf: "987.654.321-00", email: "maria.oliveira@email.com" },
-    { name: "Antônio Souza", cpf: "456.123.789-00", email: "antonio.souza@email.com" },
-    { name: "Francisca Almeida", cpf: "789.321.456-00", email: "francisca.almeida@email.com" },
-    { name: "Carlos Mendes", cpf: "321.987.654-00", email: "carlos.mendes@email.com" }
-  ];
-  
+  const {
+    fetchProfessional,
+    professional
+  } = useUsers()
+
+  useEffect(() => {
+    fetchProfessional()
+  }, [])
 
   const router = useRouter();
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredData, setFilteredData] = useState(patientData);
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
-  const {
-    handleSubmit,
-    register,
-    control,
-    setValue,
-    reset
-    } = useForm()
 
-    const handleReset = () => {
-      reset()
-    }
-
-    const removeAccents = (str: string) => {
-      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    };
-  
-    useEffect(() => {
-      if (timeoutId) clearTimeout(timeoutId);
-  
-      const newTimeoutId = setTimeout(() => {
-        if (searchTerm) {
-          const normalizedSearch = removeAccents(searchTerm.toLowerCase());
-          const filtered = patientData.filter((patient: any) =>
-            removeAccents(patient.name.toLowerCase()).includes(normalizedSearch)
-          );
-          setFilteredData(filtered);
-        } else {
-          setFilteredData(patientData);
-        }
-      }, 1000);
-  
-      setTimeoutId(newTimeoutId);
-    }, [searchTerm]);
     
   return (
     <div className=" py-8 px-4 h-screen w-screen">
@@ -99,6 +61,7 @@ export default function Professionals() {
           name: 'CPF',
           selector: (row: { cpf: any }) => row.cpf,
           sortable: true,
+          cell: (row: { cpf: any }) => formatCPF(row.cpf)
         },
         {
           name: 'Email',
@@ -107,7 +70,7 @@ export default function Professionals() {
         },
       ]}
 
-      data={filteredData}
+      data={professional}
       />
     </div>
   );

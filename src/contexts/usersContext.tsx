@@ -11,8 +11,11 @@ type UsersContextType = {
 	createElderly: (elderly: ElderlyCreate) => Promise<void>
 	getElderlyById: (id: string) => Promise<void>
 	editElderly: (elderly: ElderlyCreate, id: string) => Promise<void>
+	fetchProfessional: () => Promise<void>
+	createProfessional: (professional: Professional) => Promise<void>
 	elderly: Elderly[]
 	elderlyInfo: ElderlyInfo
+	professional: Professional[]
 }
 
 const UsersContext = createContext({} as UsersContextType);
@@ -27,6 +30,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 	const [elderly, setElderly] = useState<Elderly[]>([]);
 	const [elderlyInfo, setElderlyInfo] = useState<ElderlyInfo>({} as ElderlyInfo);
+	const [professional, setProfessional] = useState<Professional[]>([]);
 
 	const fetchElderly = async () => {
 		setLoading(true);
@@ -58,6 +62,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 			setLoading(false);
 		})
 	}
+
 	const editElderly = async (elderly: ElderlyCreate, id: string) => {
 		setLoading(true);
 		await api.patch(`elderly/${id}`, elderly).then(() => {
@@ -71,6 +76,28 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 		})
 	}
 
+	const fetchProfessional = async () => {
+		setLoading(true);
+		await api.get("/professional").then((response) => {
+			setProfessional(response.data);
+		}).finally(() => {
+			setLoading(false);
+		})
+	}
+
+	const createProfessional = async (professional: Professional) => {
+		setLoading(true);
+		await api.post("/professional", professional).then(() => {
+			fetchElderly();
+			toastSuccess("Profissional cadastrado com sucesso", 5000);
+			router.push("/profissionais");
+		}).catch((error) => {
+			toastError("Ocorreu um erro ao cadastrar o Profissional", 5000);
+		}).finally(() => {
+			setLoading(false);
+		})
+	}
+
 	return (
 		<UsersContext.Provider value={{ 
 			fetchElderly,
@@ -78,7 +105,10 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 			createElderly,
 			getElderlyById,
 			elderlyInfo,
-			editElderly
+			editElderly,
+			fetchProfessional,
+			professional,
+			createProfessional
 		}}>
 			{children}
 		</UsersContext.Provider>

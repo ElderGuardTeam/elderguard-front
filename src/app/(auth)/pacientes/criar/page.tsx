@@ -60,13 +60,17 @@ export default function CreatePatient() {
   const handleIMC = () => {
     if (!weight || !height) return;
     const imc = Number(weight)/ (Number(height) * Number(height));
-    setValue('imc', imc.toString());
+    setValue('imc', imc.toFixed(2).toString());
   }
   const handleRemoveContact = (index: number) => {
     remove(index);
   };
 
   const onSubmit = async (data: Elderly) => {
+    if (!data.contacts.length) {
+      toastError('Adicione pelo menos um contato', 5000);
+      return;
+    }
     createElderly({
       ...data,
       weight: Number(data.weight),
@@ -74,7 +78,6 @@ export default function CreatePatient() {
       imc: Number(data.imc),
     });
   }
-  console.log(errors);
 
   return (
     <div className="p-8 w-full">
