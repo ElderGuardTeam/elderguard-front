@@ -95,7 +95,6 @@ export default function EditPatient({params}: {params: {id: string}}) {
       imc: Number(data.imc),
     }, params.id);
   }
-  console.log(errors);
 
   return (
     <div className="p-8 w-full">

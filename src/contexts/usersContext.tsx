@@ -14,6 +14,7 @@ type UsersContextType = {
 	fetchProfessional: () => Promise<void>
 	createProfessional: (professional: Professional) => Promise<void>
 	getProfessionalById: (id: string) => Promise<void>
+	editProfessional: (professional: Professional, id: string) => Promise<void>
 	elderly: Elderly[]
 	elderlyInfo: ElderlyInfo
 	professional: Professional[]
@@ -110,6 +111,19 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 		})
 	}
 
+	const editProfessional = async (professional: Professional, id: string) => {
+		setLoading(true);
+		await api.patch(`professional/${id}`, professional).then(() => {
+			fetchElderly();
+			toastSuccess("Profissional editado com sucesso", 5000);
+			router.push("/profissionais");
+		}).catch((error) => {
+			toastError("Ocorreu um erro ao editar o professional", 5000);
+		}).finally(() => {
+			setLoading(false);
+		})
+	}
+
 	return (
 		<UsersContext.Provider value={{ 
 			fetchElderly,
@@ -122,7 +136,8 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 			professional,
 			createProfessional,
 			getProfessionalById,
-			professionalInfo
+			professionalInfo,
+			editProfessional
 		}}>
 			{children}
 		</UsersContext.Provider>
