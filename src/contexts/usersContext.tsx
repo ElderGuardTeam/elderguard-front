@@ -15,6 +15,8 @@ type UsersContextType = {
 	createProfessional: (professional: Professional) => Promise<void>
 	getProfessionalById: (id: string) => Promise<void>
 	editProfessional: (professional: Professional, id: string) => Promise<void>
+	searchProfessional: (searchTerm: string) => Promise<void>
+	searchElderly: (searchTerm: string) => Promise<void>
 	elderly: Elderly[]
 	elderlyInfo: ElderlyInfo
 	professional: Professional[]
@@ -124,6 +126,24 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 		})
 	}
 
+	const searchProfessional = async (searchTerm: string) => {
+		setLoading(true);
+		await api.get(`professional?search=${searchTerm}`).then((response) => {
+			setProfessional(response.data);
+		}).finally(() => {
+			setLoading(false);
+		})
+	}
+
+	const searchElderly = async (searchTerm: string) => {
+		setLoading(true);
+		await api.get(`elderly?search=${searchTerm}`).then((response) => {
+			setElderly(response.data);
+		}).finally(() => {
+			setLoading(false);
+		})
+	}
+
 	return (
 		<UsersContext.Provider value={{ 
 			fetchElderly,
@@ -137,7 +157,9 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 			createProfessional,
 			getProfessionalById,
 			professionalInfo,
-			editProfessional
+			editProfessional,
+			searchProfessional,
+			searchElderly
 		}}>
 			{children}
 		</UsersContext.Provider>

@@ -14,8 +14,10 @@ import { formatDate } from "@/utils/formatters/formateDate";
 export default function Patients() {
   const {
     elderly,
-    fetchElderly
+    fetchElderly,
+    searchElderly
   } = useUsers()
+
   useEffect(() => {
     fetchElderly()
   }, [])
@@ -23,10 +25,9 @@ export default function Patients() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
 
-    const removeAccents = (str: string) => {
-      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    };
-  
+  const handleSearch = () => {
+    searchElderly(searchTerm)
+  }
   return (
     <div className=" py-8 px-4 h-screen w-screen">
       <div className="mb-2 flex items-center justify-between">
@@ -44,12 +45,12 @@ export default function Patients() {
       <div className="flex items-baseline gap-2 mb-6">
         <Input
         className="mt-4"
-        placeholder="🔍 Pesquisar..."
+        placeholder="🔍 Pesquisar por nome ou CPF..."
         value={searchTerm}
         onChange={(e) => setSearchTerm((e.target as HTMLInputElement).value)}
         />
-        <Button className=" bg-salmon border-none">
-          Filtrar
+        <Button className=" bg-salmon border-none" onClick={handleSearch}>
+          Pesquisar
         </Button>
       </div>
       <DataTableComponent

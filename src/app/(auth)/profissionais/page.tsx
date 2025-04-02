@@ -13,7 +13,8 @@ import { formatCPF } from "@/utils/formatters/formatCPF";
 export default function Professionals() {
   const {
     fetchProfessional,
-    professional
+    professional,
+    searchProfessional
   } = useUsers()
 
   useEffect(() => {
@@ -22,6 +23,10 @@ export default function Professionals() {
 
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = () => {
+    searchProfessional(searchTerm)
+  }
 
 
     
@@ -42,12 +47,12 @@ export default function Professionals() {
       <div className="flex items-baseline gap-2 mb-6">
         <Input
         className="mt-4"
-        placeholder="🔍 Pesquisar..."
+        placeholder="🔍 Pesquisar por nome ou CPF..."
         value={searchTerm}
         onChange={(e) => setSearchTerm((e.target as HTMLInputElement).value)}
         />
-        <Button className=" bg-salmon border-none">
-          Filtrar
+        <Button className=" bg-salmon border-none" type="button" onClick={handleSearch}>
+          Pesquisar
         </Button>
       </div>
       <DataTableComponent
