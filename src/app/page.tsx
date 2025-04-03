@@ -11,11 +11,15 @@ import Label from "@/components/Label";
 import Checkbox from "@/components/Checkbox";
 import Modal from "@/components/Modal";
 import Image from "next/image";
+import { useAuth } from "@/contexts/authContext";
 
 
 export default function Home() {
   const [showModal, setShowModal] = useState(false)
 
+  const {
+    signIn
+  } = useAuth()
 
   const { handleSubmit, setValue, register, formState: { errors } } = useForm()
 
@@ -30,11 +34,14 @@ export default function Home() {
     }
   }, []);
 
-  const handleLoginForm = async ({username, password, rememberMe}: any) => {
+  const handleLoginForm = async ({login, password, rememberMe}: any) => {
     if (rememberMe) {
-      localStorage.setItem('@OrbitFlowLoginRemember:Username', username);
+      localStorage.setItem('@ElderguardLoginRemember:Login', login);
     }
-    console.log(username, password, rememberMe)
+    signIn({
+      login,
+      password
+    })
   }
 
 
@@ -53,7 +60,7 @@ export default function Home() {
               <FormGroup 
               labelText="Usuário"
               inputClass="input input-bordered"
-              register={register('username')}
+              register={register('login')}
               />
               <FormGroup 
               labelText="Senha"
