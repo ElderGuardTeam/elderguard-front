@@ -5,6 +5,7 @@ import { useLoader } from "./loaderContext";
 import toastSuccess from "@/utils/toast/toastSuccess";
 import toastError from "@/utils/toast/toastError";
 import { useRouter } from "next/navigation";
+import { parseCookies } from "nookies";
 
 type UsersContextType = {
   fetchElderly: () => Promise<void>
@@ -38,9 +39,18 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 	const [professional, setProfessional] = useState<Professional[]>([]);
 	const [professionalInfo, setProfessionalInfo] = useState<Professional>({} as Professional);
 
+	const { 'elderguard.token': token } = parseCookies()
+
+  const headerConfig = {
+    headers:{
+      Authorization: 'Bearer ' + token,
+    },
+    }
+
+
 	const fetchElderly = async () => {
 		setLoading(true);
-		await api.get("/elderly").then((response) => {
+		await api.get("/elderly", headerConfig).then((response) => {
 			setElderly(response.data);
 		}).finally(() => {
 			setLoading(false);
@@ -49,7 +59,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 	const getElderlyById = async (id : string) => {
 		setLoading(true);
-		await api.get(`elderly/${id}`).then((response) => {
+		await api.get(`elderly/${id}`, headerConfig).then((response) => {
 			setElderlyInfo(response.data);
 		}).finally(() => {
 			setLoading(false);
@@ -58,7 +68,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 	const createElderly = async (elderly: ElderlyCreate) => {
 		setLoading(true);
-		await api.post("/elderly", elderly).then(() => {
+		await api.post("/elderly", elderly, headerConfig).then(() => {
 			fetchElderly();
 			toastSuccess("Idoso cadastrado com sucesso", 5000);
 			router.push("/pacientes");
@@ -71,7 +81,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 	const editElderly = async (elderly: ElderlyCreate, id: string) => {
 		setLoading(true);
-		await api.patch(`elderly/${id}`, elderly).then(() => {
+		await api.patch(`elderly/${id}`, elderly, headerConfig).then(() => {
 			fetchElderly();
 			toastSuccess("Idoso editado com sucesso", 5000);
 			router.push("/pacientes");
@@ -84,7 +94,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 	const fetchProfessional = async () => {
 		setLoading(true);
-		await api.get("/professional").then((response) => {
+		await api.get("/professional", headerConfig).then((response) => {
 			setProfessional(response.data);
 		}).finally(() => {
 			setLoading(false);
@@ -93,7 +103,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 	const createProfessional = async (professional: Professional) => {
 		setLoading(true);
-		await api.post("/professional", professional).then(() => {
+		await api.post("/professional", professional, headerConfig).then(() => {
 			fetchElderly();
 			toastSuccess("Profissional cadastrado com sucesso", 5000);
 			router.push("/profissionais");
@@ -106,7 +116,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 	const getProfessionalById = async (id : string) => {
 		setLoading(true);
-		await api.get(`professional/${id}`).then((response) => {
+		await api.get(`professional/${id}`, headerConfig).then((response) => {
 			setProfessionalInfo(response.data);
 		}).finally(() => {
 			setLoading(false);
@@ -115,7 +125,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 	const editProfessional = async (professional: Professional, id: string) => {
 		setLoading(true);
-		await api.patch(`professional/${id}`, professional).then(() => {
+		await api.patch(`professional/${id}`, professional, headerConfig).then(() => {
 			fetchElderly();
 			toastSuccess("Profissional editado com sucesso", 5000);
 			router.push("/profissionais");
@@ -128,7 +138,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 	const searchProfessional = async (searchTerm: string) => {
 		setLoading(true);
-		await api.get(`professional?search=${searchTerm}`).then((response) => {
+		await api.get(`professional?search=${searchTerm}`, headerConfig).then((response) => {
 			setProfessional(response.data);
 		}).finally(() => {
 			setLoading(false);
@@ -137,7 +147,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 	const searchElderly = async (searchTerm: string) => {
 		setLoading(true);
-		await api.get(`elderly?search=${searchTerm}`).then((response) => {
+		await api.get(`elderly?search=${searchTerm}`, headerConfig).then((response) => {
 			setElderly(response.data);
 		}).finally(() => {
 			setLoading(false);
