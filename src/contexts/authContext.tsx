@@ -97,9 +97,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .post('auth/reset-password', {
         newPassword: data.newPassword,
         token: data.token
-      }, headerConfig )
+      } )
       .then((res) => {
         toastSuccess(res.data.message, 5000)
+        router.push('/')
       })
       .catch((err) => {
         toastError(err.response.data.message, false)
