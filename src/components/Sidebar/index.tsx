@@ -14,8 +14,13 @@ import UlMenu from '../UlMenu'
 import LiMenu from '../LiMenu'
 import Link from 'next/link'
 import Avatar from '../Avatar'
+import { useAuth } from '@/contexts/authContext'
 
 const Sidebar: React.FC = () => {
+  const {
+    signOut,
+    user,
+  } = useAuth()
 
   return (
     <Aside 
@@ -62,6 +67,7 @@ const Sidebar: React.FC = () => {
                 </Link>
                 <div 
                 className='btn btn-sm btn-circle text-white shadow-none bg-transparent border-transparent hover:border-white hover:bg-transparent'
+                onClick={signOut}
                 >
                   <FontAwesomeIcon icon={faArrowRightFromBracket} />
                 </div>

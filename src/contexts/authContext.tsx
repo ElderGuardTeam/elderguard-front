@@ -13,7 +13,7 @@ type AuthContextType = {
   user: any
   signIn: (data: Login) => Promise<void>
   signOut: () => void
-  forgotPassword: (data: { Username: string }) => Promise<void>
+  forgotPassword: (data: { login: string }) => Promise<void>
   resetPassword: (data: any) => Promise<void>
 }
 
@@ -75,11 +75,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push('/')
   }
 
-  async function forgotPassword({ Username }: { Username: string }) {
+  async function forgotPassword({ login }: { login: string }) {
     setLoading(true)
     await api
-      .post('/users/reset-pass', {
-        Username,
+      .post('auth/forgot-password', {
+        login,
       })
       .then((res) => {
         toastSuccess(res.data.message, false)
@@ -91,14 +91,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
   }
 
-  async function resetPassword({ idUser, newPass, oldPass }: any) {
+  async function resetPassword(data: ResetPassword) {
     setLoading(true)
     await api
-      .post('/login/change-pass', {
-        idUser,
-        newPass,
-        oldPass,
-      },headerConfig )
+      .post('auth/reset-password', {
+        newPassword: data.newPassword,
+        token: data.token
+      }, headerConfig )
       .then((res) => {
         toastSuccess(res.data.message, 5000)
       })

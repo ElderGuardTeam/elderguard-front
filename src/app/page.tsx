@@ -18,7 +18,8 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false)
 
   const {
-    signIn
+    signIn,
+    forgotPassword,
   } = useAuth()
 
   const { handleSubmit, setValue, register, formState: { errors } } = useForm()
@@ -44,9 +45,13 @@ export default function Home() {
     })
   }
 
-
   const handleModal = () => {
     setShowModal(!showModal)
+  }
+
+  const handleForgotPasswordForm = async ({login}: any) => {
+    await forgotPassword({login})
+    setShowModal(false)
   }
 
 
@@ -77,13 +82,13 @@ export default function Home() {
               </label>
             </form>
               <Modal isOpen={showModal} onClose={handleModal}>
-                <form className="flex flex-col gap-4">
+                <form className="flex flex-col gap-4" onSubmit={handleForgotPassword(handleForgotPasswordForm)}>
                   <h2 className="text-xl font-semibold">Recuperar Senha</h2>
-                  <p>Insira o nome de usuário para receber um e-mail com a nova senha</p>
+                  <p>Insira o seu usuário para receber um e-mail com a nova senha</p>
                   <FormGroup 
                   labelText="Usuário"
                   inputClass="input input-bordered"
-                  register={registerForgotPassword('Username')}
+                  register={registerForgotPassword('login')}
                   />
                   <div className="flex items-center gap-2 text-sm text-warning">
                     <FontAwesomeIcon icon={faTriangleExclamation}/>
