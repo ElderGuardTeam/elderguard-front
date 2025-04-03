@@ -10,6 +10,7 @@ interface Elderly {
   weight: string;
   height: string;
   imc: string;
+  email: string;
 }
 
 interface ElderlyCreate {
@@ -45,7 +46,7 @@ interface ElderlyInfo {
 interface Address {
   street: string;
   number: string;
-  complement: string;
+  complement?: string;
   neighborhood: string;
   city: string;
   state: string;

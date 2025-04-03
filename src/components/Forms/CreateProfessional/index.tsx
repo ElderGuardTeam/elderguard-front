@@ -2,9 +2,11 @@ import Button from "@/components/Button";
 import FormGroup from "@/components/FormGroup"
 import Label from "@/components/Label";
 import MaskedInput from "@/components/MaskedInput";
+import Modal from "@/components/Modal";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from "react-hook-form";
 
 interface ICreateProfessionalFormProps {
@@ -15,6 +17,7 @@ interface ICreateProfessionalFormProps {
   control: any;
   isEditing?: boolean;
   professionalName?: string;
+  deleteProfessional?: () => Promise<void>;
 }
 
 const CreateProfessional: React.FC<ICreateProfessionalFormProps> = ({
@@ -24,9 +27,11 @@ const CreateProfessional: React.FC<ICreateProfessionalFormProps> = ({
   errors,
   control,
   isEditing,
-  professionalName
+  professionalName,
+  deleteProfessional
 }) => {
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <form className="bg-white rounded p-4" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="flex gap-2 items-center">
@@ -73,14 +78,42 @@ const CreateProfessional: React.FC<ICreateProfessionalFormProps> = ({
           }
         </Label>
       </fieldset>
-      <div>
-        <Button type="submit" className="btn-success text-white">
-          Salvar
-        </Button>
-        <Button type="button" className="btn-link " onClick={() => router.push('/profissionais')}>
-          Cancelar
-        </Button>
+      <div className="flex item-center justify-between">
+        <div>
+          <Button type="submit" className="btn-success text-white">
+            Salvar
+          </Button>
+          <Button type="button" className="btn-link " onClick={() => router.push('/profissionais')}>
+            Cancelar
+          </Button>
+        </div>
+        {
+          isEditing && (
+            <Button type="button" className="btn-error text-white" onClick={() => setIsOpen(true)}>
+              Excluir
+            </Button>
+          )
+        }
+        
       </div>
+      <Modal 
+      isOpen={isOpen}
+      onClose={() => setIsOpen(false)}
+      className="w-1/4 "
+      >
+        <div className="flex flex-col items-center justify-center">
+          <h1 className="text-lg font-bold">Deseja realmente excluir?</h1>
+          <p className="text-xs text-center">Essa ação não pode ser desfeita</p>
+          <div className="flex gap-2 mt-4">
+            <Button type="button" className="btn-error text-white" onClick={deleteProfessional}>
+              Sim
+            </Button>
+            <Button type="button" className="btn-link " onClick={() => setIsOpen(false)}>
+              Não
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </form>
   )
 }

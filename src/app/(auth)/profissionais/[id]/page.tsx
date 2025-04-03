@@ -12,7 +12,8 @@ export default function CreatePatient({params}: {params: {id: string}}) {
   const {
     getProfessionalById,
     professionalInfo,
-    editProfessional
+    editProfessional,
+    deleteProfessional
   } = useUsers()
 
   useEffect(() => {
@@ -39,6 +40,10 @@ export default function CreatePatient({params}: {params: {id: string}}) {
   const handleEditProfessional = async (data: Professional) => {
     editProfessional(data, professionalInfo.id ? professionalInfo.id : '')
   }
+
+  const handleDeleteProfessional = async () => {
+    deleteProfessional(professionalInfo.id ? professionalInfo.id : '')
+  }
   return (
     <div className="p-8 w-full">
       <CreateProfessional 
@@ -48,6 +53,8 @@ export default function CreatePatient({params}: {params: {id: string}}) {
       onSubmit={handleEditProfessional}
       register={register}
       professionalName={professionalInfo.name}
+      isEditing
+      deleteProfessional={handleDeleteProfessional}
       />
     </div>
   )

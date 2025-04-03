@@ -30,6 +30,7 @@
     "react-toastify": "^11.0.5",
     "sass": "^1.86.0",
     "scss": "^0.2.4",
+    "validations-br": "^1.4.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {

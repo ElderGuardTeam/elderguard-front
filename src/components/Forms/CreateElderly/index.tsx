@@ -102,7 +102,13 @@ const CreateElderlyForm: React.FC<ICreateElderlyFormProps> = ({
           name="dateOfBirth"
           isRequired
           error={errors.dateOfBirth?.message}
-          />    
+          /> 
+          <FormGroup
+          labelText="E-mail"
+          isRequired
+          register={register('email')}
+          error={errors.email?.message}
+          />   
           <Label labelText="Telefone" required className="flex flex-col items-start justify-start font-bold text-sm">
             <MaskedInput
             control={control}
@@ -163,7 +169,6 @@ const CreateElderlyForm: React.FC<ICreateElderlyFormProps> = ({
           inputClass="input-bordered"
           register={register('address.complement')}
           error={errors.address?.complement?.message}
-          isRequired
           />
           <FormGroup
           labelText="Bairro"
@@ -274,7 +279,6 @@ const CreateElderlyForm: React.FC<ICreateElderlyFormProps> = ({
                 inputClass="input-bordered"
                 register={register(`contacts.${index}.address.complement`)}
                 error={errors?.contacts?.[index]?.address?.complement?.message}
-                isRequired
               />
               <FormGroup
                 labelText="Bairro"

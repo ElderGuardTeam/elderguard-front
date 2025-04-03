@@ -13,6 +13,9 @@ const CreateElderlySchema = z.object({
   phone: z.string({
     required_error: "Telefone é obrigatório",
   }),
+  email: z.string({
+    required_error: "Email é obrigatório",
+  }),
   sex: z.string({
     required_error: "Sexo é obrigatório",
   }),
@@ -32,9 +35,7 @@ const CreateElderlySchema = z.object({
     number: z.string({
       required_error: "Número é obrigatório",
     }),
-    complement: z.string({
-      required_error: "Complemento é obrigatório",
-    }),
+    complement: z.string().optional(),
     neighborhood: z.string({
       required_error: "Bairro é obrigatório",
     }),
@@ -69,9 +70,7 @@ const CreateElderlySchema = z.object({
         number: z.string({
           required_error: "Número é obrigatório",
         }),
-        complement: z.string({
-          required_error: "Complemento é obrigatório",
-        }),
+        complement: z.string().optional(),
         neighborhood: z.string({
           required_error: "Bairro é obrigatório",
         }),

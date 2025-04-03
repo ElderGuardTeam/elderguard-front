@@ -3,8 +3,10 @@
 import CreateProfessional from "@/components/Forms/CreateProfessional"
 import { useUsers } from "@/contexts/usersContext"
 import CreateProfessionalSchema from "@/utils/schema/createProfessionalSchema"
+import toastError from "@/utils/toast/toastError"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { validateCPF } from 'validations-br'
 
 export default function CreatePatient() {
   const {
@@ -21,6 +23,10 @@ export default function CreatePatient() {
   })
 
   const handleCreateProfissional = async (data: Professional) => {
+    if (!validateCPF(data.cpf)) {
+      toastError('CPF inválido',5000)
+      return
+    }
     await createProfessional(data)
   }
 

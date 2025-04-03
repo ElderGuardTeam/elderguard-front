@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import CreateElderlySchema from "@/utils/schema/createElderlySchema"
 import { useUsers } from "@/contexts/usersContext"
 import CreateElderlyForm from "@/components/Forms/CreateElderly"
+import { validateCPF } from 'validations-br'
 
 export default function CreatePatient() {
 
@@ -69,6 +70,14 @@ export default function CreatePatient() {
   const onSubmit = async (data: Elderly) => {
     if (!data.contacts.length) {
       toastError('Adicione pelo menos um contato', 5000);
+      return;
+    }
+    if (!validateCPF(data.cpf)) {
+      toastError('CPF do paciente inválido', 5000);
+      return;
+    } 
+    if (!data.contacts.every(contact => validateCPF(contact.cpf))) {
+      toastError('CPF de um ou mais contatos inválido', 5000);
       return;
     }
     createElderly({

@@ -18,6 +18,7 @@ type UsersContextType = {
 	editProfessional: (professional: Professional, id: string) => Promise<void>
 	searchProfessional: (searchTerm: string) => Promise<void>
 	searchElderly: (searchTerm: string) => Promise<void>
+	deleteProfessional: (id: string) => Promise<void>
 	elderly: Elderly[]
 	elderlyInfo: ElderlyInfo
 	professional: Professional[]
@@ -154,6 +155,19 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 		})
 	}
 
+	const deleteProfessional = async (id: string) => {
+		setLoading(true);
+		await api.delete(`professional/${id}`, headerConfig).then(() => {
+			fetchProfessional();
+			toastSuccess("Profissional excluído com sucesso", 5000);
+			router.push("/profissionais");
+		}).catch((error) => {
+			toastError("Ocorreu um erro ao excluir o profissional", 5000);
+		}).finally(() => {
+			setLoading(false);
+		})
+	}
+
 	return (
 		<UsersContext.Provider value={{ 
 			fetchElderly,
@@ -169,7 +183,8 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 			professionalInfo,
 			editProfessional,
 			searchProfessional,
-			searchElderly
+			searchElderly,
+			deleteProfessional,
 		}}>
 			{children}
 		</UsersContext.Provider>
