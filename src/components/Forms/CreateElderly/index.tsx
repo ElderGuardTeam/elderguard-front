@@ -8,6 +8,7 @@ import MaskedInput from "@/components/MaskedInput";
 import Modal from "@/components/Modal";
 import SelectFormGroup from "@/components/SelectFormGroup";
 import { useLoader } from "@/contexts/loaderContext";
+import { educationLevel } from "@/utils/mocks/elderlyInfo";
 import toastError from "@/utils/toast/toastError";
 import { faChevronLeft, faPlus } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -196,29 +197,45 @@ const CreateElderlyForm: React.FC<ICreateElderlyFormProps> = ({
           error={errors.address?.state?.message}
           />
         </fieldset>
-        <fieldset className="border border-base-300 rounded p-2 grid grid-cols-3 gap-4 my-4 text-xs">
-          <legend>IMC</legend>
-          <FormGroup
-          labelText="Peso"
+        <fieldset className="border border-base-300 rounded p-2 grid grid-cols-2 gap-4  my-4 text-xs">
+          <legend>Informações adicionais</legend>
+          <div className="grid grid-cols-3 gap-4 col-span-2">
+            <FormGroup
+            labelText="Peso"
+            isRequired
+            register={register('weight')}
+            error={errors.weight?.message}
+            type="number"
+            />
+            <FormGroup
+            labelText="Altura"
+            isRequired
+            register={register('height')}
+            error={errors.height?.message}
+            type="number"
+            />
+            <FormGroup
+            labelText="IMC"
+            isRequired
+            register={register('imc')}
+            isDisabled
+            error={errors.imc?.message}
+            type="number"
+            />
+          </div>
+          <SelectFormGroup
+          labelText="Educação"
           isRequired
-          register={register('weight')}
-          error={errors.weight?.message}
-          type="number"
+          options={educationLevel}
+          placeholder="Selecione"
+          register={register('education')}
           />
-          <FormGroup
-          labelText="Altura"
+          <SelectFormGroup
+          labelText="Situação socioeconômica"
           isRequired
-          register={register('height')}
-          error={errors.height?.message}
-          type="number"
-          />
-          <FormGroup
-          labelText="IMC"
-          isRequired
-          register={register('imc')}
-          isDisabled
-          error={errors.imc?.message}
-          type="number"
+          options={educationLevel}
+          placeholder="Selecione"
+          register={register('socioeconomic')}
           />
         </fieldset>
         <fieldset className="border border-base-300 rounded p-2 gap-4 my-4 text-xs">

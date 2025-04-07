@@ -10,7 +10,7 @@ import toastSuccess from '@/utils/toast/toastSuccess'
 
 
 type AuthContextType = {
-  user: any
+  user: User | null
   signIn: (data: Login) => Promise<void>
   signOut: () => void
   forgotPassword: (data: { login: string }) => Promise<void>

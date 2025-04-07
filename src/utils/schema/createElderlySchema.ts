@@ -28,6 +28,12 @@ const CreateElderlySchema = z.object({
   imc: z.string({
     required_error: "IMC é obrigatório",
   }),
+  education: z.string({
+    required_error: "Educação é obrigatória",
+  }),
+  socioeconomic: z.string({
+    required_error: "Situação socioeconômica é obrigatória",
+  }),
   address: z.object({
     street: z.string({
       required_error: "Rua é obrigatória",
