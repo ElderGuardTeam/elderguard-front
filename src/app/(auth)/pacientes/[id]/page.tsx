@@ -12,7 +12,8 @@ export default function EditPatient({params}: {params: {id: string}}) {
   const {
     editElderly,
     getElderlyById,
-    elderlyInfo
+    elderlyInfo,
+    deleteElderly
   } = useUsers();
 
   const {
@@ -46,6 +47,7 @@ export default function EditPatient({params}: {params: {id: string}}) {
       setValue("phone", elderlyInfo.phone);
       setValue("dateOfBirth", new Date(elderlyInfo.dateOfBirth));
       setValue("sex", elderlyInfo.sex);
+      setValue("email", elderlyInfo.email);
   
       if (elderlyInfo.contacts && elderlyInfo.contacts.length > 0) {
         remove();
@@ -96,6 +98,10 @@ export default function EditPatient({params}: {params: {id: string}}) {
     }, params.id);
   }
 
+  const handleDelete = async () => {
+    deleteElderly(params.id);
+  }
+
   return (
     <div className="p-8 w-full">
       <CreateElderlyForm
@@ -110,6 +116,7 @@ export default function EditPatient({params}: {params: {id: string}}) {
       setValue={setValue}
       isEditing
       elderlyName={elderlyInfo?.name}
+      deleteElderly={handleDelete}
       />
     </div>
   )

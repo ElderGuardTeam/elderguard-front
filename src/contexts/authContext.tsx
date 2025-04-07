@@ -15,12 +15,15 @@ type AuthContextType = {
   signOut: () => void
   forgotPassword: (data: { login: string }) => Promise<void>
   resetPassword: (data: any) => Promise<void>
+  changePassword: (data: ChangePassword) => Promise<void>
+  userId: string | null
 }
 
 export const AuthContext = createContext({} as AuthContextType)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any>(null)
+  const [userId, setUserId] = useState<string | null>(null)
   const router = useRouter()
   const {setLoading} = useLoader()
 
@@ -48,6 +51,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         password,
       })
       .then((res) => { 
+      if(res.data.message === 'ALTER_PASSWORD_REQUIRED') {
+        setUserId(res.data.userId)
+        router.push('/pacientes')
+        return
+      } else {
+        setUserId(null)
+      }
       const { 'elderguard.token': token } = parseCookies()
       if (token) {
         destroyCookie({}, 'elderguard.token')
@@ -109,6 +119,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
   }
 
+  async function changePassword(data: ChangePassword) {
+    setLoading(true)
+    await api
+      .patch('auth/change-password', {
+        newPassword: data.newPassword,
+        userId: data.userId
+      })
+      .then((res) => {
+        toastSuccess(res.data.message, 5000)
+        router.push('/')
+      })
+      .catch((err) => {
+        toastError(err.response.data.message, false)
+      }).finally(() => {
+        setLoading(false)
+      })
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -116,7 +144,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signIn,
         signOut,
         forgotPassword,
-        resetPassword
+        resetPassword,
+        userId,
+        changePassword,
       }}
     >
       {children}

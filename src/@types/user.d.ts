@@ -17,6 +17,7 @@ interface ElderlyCreate {
   id?: string;
   cpf: string;
   name: string;
+  email: string;
   dateOfBirth: Date;
   phone: string;
   contacts: Contact[];
@@ -31,6 +32,7 @@ interface ElderlyInfo {
   id?: string;
   cpf: string;
   name: string;
+  email: string;
   dateOfBirth: Date;
   phone: string;
   contacts: Array<{
