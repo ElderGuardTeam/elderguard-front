@@ -76,3 +76,11 @@ enum UserType {
   ADMIN = "ADMIN",
 }
 
+interface User {
+  sub: string
+  login: string
+  userType: string
+  name: string
+  iat: number
+  exp: number
+}

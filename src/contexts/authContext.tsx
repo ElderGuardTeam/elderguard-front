@@ -22,7 +22,7 @@ type AuthContextType = {
 export const AuthContext = createContext({} as AuthContextType)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<User | null>({} as User)
   const [userId, setUserId] = useState<string | null>(null)
   const router = useRouter()
   const {setLoading} = useLoader()
@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { 'elderguard.token': token } = parseCookies()
     if (token) {
       const decodedToken = jwt.decode(token)
-      setUser(decodedToken)
+      setUser(decodedToken as User)
     }
   }, [])
 
@@ -63,7 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         destroyCookie({}, 'elderguard.token')
       }
       const decodedToken = jwt.decode(res.data.access_token)
-      setUser(decodedToken)
+      setUser(decodedToken as User)
       setCookie(undefined, 'elderguard.token', res.data.access_token, {
         maxAge: 60 * 60 * 8, // 8 hours
         httpOnly: false,

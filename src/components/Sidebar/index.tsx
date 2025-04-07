@@ -41,13 +41,18 @@ const Sidebar: React.FC = () => {
               <FontAwesomeIcon icon={faPersonCane} className='text-xl' />
               <span>Pacientes</span>
             </Link>
-          </LiMenu>  
-          <LiMenu>
-            <Link className="flex items-center gap-3" href="/profissionais">
-              <FontAwesomeIcon icon={faUserNurse} className='text-lg' />
-              <span>Profissionais</span>
-            </Link>
-          </LiMenu>        
+          </LiMenu> 
+          {
+            user?.userType === 'ADMIN' && (
+              <LiMenu>
+                <Link className="flex items-center gap-3" href="/profissionais">
+                  <FontAwesomeIcon icon={faUserNurse} className='text-lg' />
+                  <span>Profissionais</span>
+                </Link>
+              </LiMenu>  
+            )
+          } 
+                
         </UlMenu>
         <div className='sticky bottom-0 bg-accent'>
         <div className='divider divider-secondary'></div>
