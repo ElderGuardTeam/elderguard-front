@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faArrowRightFromBracket, 
   faPersonCane, 
+  faQuestion, 
   faUserNurse,
   faWrench
 } from '@fortawesome/free-solid-svg-icons'
@@ -52,7 +53,12 @@ const Sidebar: React.FC = () => {
               </LiMenu>  
             )
           } 
-                
+          <LiMenu>
+            <Link className="flex items-center gap-3" href="/questoes">
+              <FontAwesomeIcon icon={faQuestion} className='text-lg' />
+              <span>Questões</span>
+            </Link>
+          </LiMenu>    
         </UlMenu>
         <div className='sticky bottom-0 bg-accent'>
         <div className='divider divider-secondary'></div>
