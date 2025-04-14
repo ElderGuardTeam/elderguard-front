@@ -8,7 +8,7 @@ import MaskedInput from "@/components/MaskedInput";
 import Modal from "@/components/Modal";
 import SelectFormGroup from "@/components/SelectFormGroup";
 import { useLoader } from "@/contexts/loaderContext";
-import { educationLevel } from "@/utils/mocks/elderlyInfo";
+import { educationLevel, socioeconomicStatus } from "@/utils/mocks/elderlyInfo";
 import toastError from "@/utils/toast/toastError";
 import { faChevronLeft, faPlus } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -233,9 +233,9 @@ const CreateElderlyForm: React.FC<ICreateElderlyFormProps> = ({
           <SelectFormGroup
           labelText="Situação socioeconômica"
           isRequired
-          options={educationLevel}
+          options={socioeconomicStatus}
           placeholder="Selecione"
-          register={register('socioeconomic')}
+          register={register('socialeconomic')}
           />
         </fieldset>
         <fieldset className="border border-base-300 rounded p-2 gap-4 my-4 text-xs">

@@ -1,28 +1,31 @@
 'use client'
-import Avatar from "@/components/Avatar"
 import Button from "@/components/Button"
 import FormError from "@/components/FormError"
 import FormGroup from "@/components/FormGroup"
 import Label from "@/components/Label"
 import MaskedInput from "@/components/MaskedInput"
 import SelectFormGroup from "@/components/SelectFormGroup"
-import { useAuth } from "@/contexts/authContext"
-import { usePathname, useRouter } from "next/navigation"
-import { parseCookies } from "nookies"
+import { useUsers } from "@/contexts/usersContext"
+import toastSuccess from "@/utils/toast/toastSuccess"
 import { useForm } from "react-hook-form"
+import { ToastContainer } from "react-toastify"
 
 export default function ValidateID() {
+  const {
+    validadeIdentity
+  } = useUsers()
   const {
     handleSubmit,
     register,
     formState: { errors },
     reset,
     control
-  } = useForm()
+  } = useForm<ValidatePatient>()
 
 
-  const handleValidateID = async (data: any) => {
-    console.log('data', data)
+  const handleValidateID = async (data: ValidatePatient) => {
+    validadeIdentity(data)
+    reset()
   }
   return(
     <div className="flex items-center justify-center h-screen w-screen">
@@ -74,6 +77,7 @@ export default function ValidateID() {
           </form>
         </div>
       </div>
+      <ToastContainer/>
     </div>
   )
 }

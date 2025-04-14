@@ -31,7 +31,7 @@ const CreateElderlySchema = z.object({
   education: z.string({
     required_error: "Educação é obrigatória",
   }),
-  socioeconomic: z.string({
+  socialeconomic: z.string({
     required_error: "Situação socioeconômica é obrigatória",
   }),
   address: z.object({

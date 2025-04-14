@@ -12,7 +12,7 @@ interface Elderly {
   imc: string;
   email: string;
   education: string;
-  socioeconomic: string;
+  socialeconomic: string;
 }
 
 interface ElderlyCreate {
@@ -29,7 +29,7 @@ interface ElderlyCreate {
   height: number;
   imc: number;
   education: string;
-  socioeconomic: string;
+  socialeconomic: string;
 }
 
 interface ElderlyInfo {
@@ -47,6 +47,8 @@ interface ElderlyInfo {
   weight: number;
   height: number;
   imc: number;
+  education: string;
+  socialeconomic: string;
 }
 
 interface Address {

@@ -48,6 +48,8 @@ export default function EditPatient({params}: {params: {id: string}}) {
       setValue("dateOfBirth", new Date(elderlyInfo.dateOfBirth));
       setValue("sex", elderlyInfo.sex);
       setValue("email", elderlyInfo.email);
+      setValue("education", elderlyInfo.education);
+      setValue("socialeconomic", elderlyInfo.socialeconomic);
   
       if (elderlyInfo.contacts && elderlyInfo.contacts.length > 0) {
         remove();
