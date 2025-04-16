@@ -13,8 +13,8 @@ import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from "react-hook-fo
 
 interface ICreateQuestionFormProps {
   handleSubmit: any;
-  onSubmit: (data: Professional) => Promise<void>;
-  register: UseFormRegister<any>
+  onSubmit: (data: Question) => Promise<void>;
+  register: UseFormRegister<Question>
   errors: any;
   control: any;
   isEditing?: boolean;
@@ -26,7 +26,7 @@ interface ICreateQuestionFormProps {
   handleRemoveOption: (index: number) => void;
 }
 
-const CreateProfessional: React.FC<ICreateQuestionFormProps> = ({
+const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
   handleSubmit,
   onSubmit,
   register,
@@ -57,8 +57,8 @@ const CreateProfessional: React.FC<ICreateQuestionFormProps> = ({
         <FormGroup
         labelText="Título"
         isRequired
-        register={register('name')}
-        error={errors.name?.message}
+        register={register('title')}
+        error={errors.title?.message}
         />
         <TextAreaFormGroup
         labelText="Descrição"
@@ -73,17 +73,17 @@ const CreateProfessional: React.FC<ICreateQuestionFormProps> = ({
         register={register('type')}
         error={errors.type?.message}
         options={[
-          { value: 'text', name: 'Texto' },
-          { value: 'select', name: 'Seleção' },
-          { value: 'boolean', name: 'Sim ou Não' },
-          { value: 'number', name: 'Número' },
-          { value: 'multiselect', name: 'Seleção múltipla' },
-          { value: 'image', name: 'Imagem' },
+          { value: 'TEXT', name: 'Texto' },
+          { value: 'SELECT', name: 'Seleção' },
+          { value: 'BOOLEAN', name: 'Sim ou Não' },
+          { value: 'NUMBER', name: 'Número' },
+          { value: 'MULTISELECT', name: 'Seleção múltipla' },
+          { value: 'IMAGE', name: 'Imagem' },
         ]}
         placeholder="Selecione"
         />
         {
-          (watchType === 'select' || watchType === 'multiselect') && (
+          (watchType === 'SELECT' || watchType === 'MULTISELECT') && (
             <div>
               {fields.map((item: any, index: number) => (
                 <fieldset key={item.id} className="border border-base-300 rounded p-2 grid grid-cols-2 gap-4 my-4 text-xs">
@@ -96,14 +96,14 @@ const CreateProfessional: React.FC<ICreateQuestionFormProps> = ({
                   <FormGroup
                   labelText="Pontuação"
                   isRequired
-                  register={register(`options.${index}.value`)}
+                  register={register(`options.${index}.score`)}
                   />
                   <Button type="button" className="btn-error text-white w-fit" onClick={() => handleRemoveOption(index)}>
                     Remover
                   </Button>
                 </fieldset>
               ))}
-              <Button type="button" className="btn-success text-white" onClick={handleAddOption}>
+              <Button type="button" className="btn-success text-white mt-2" onClick={handleAddOption}>
                 Adicionar Opção
               </Button>
             </div>
@@ -114,7 +114,7 @@ const CreateProfessional: React.FC<ICreateQuestionFormProps> = ({
             <Button type="submit" className="btn-success text-white">
               Salvar
             </Button>
-            <Button type="button" className="btn-link " onClick={() => router.push('/profissionais')}>
+            <Button type="button" className="btn-link " onClick={() => router.push('/questoes')}>
               Cancelar
             </Button>
           </div>
@@ -150,4 +150,4 @@ const CreateProfessional: React.FC<ICreateQuestionFormProps> = ({
   )
 }
 
-export default CreateProfessional;
+export default CreateQuestion;

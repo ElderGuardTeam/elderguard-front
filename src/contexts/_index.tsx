@@ -1,4 +1,5 @@
 import { AuthProvider } from "./authContext"
+import { FormsProvider } from "./formsContext"
 import { LoaderProvider } from "./loaderContext"
 import { UsersProvider } from "./usersContext"
 
@@ -13,7 +14,9 @@ export const AppProvider = ({
       <LoaderProvider>
         <AuthProvider>
           <UsersProvider>
-            {children}
+            <FormsProvider>
+              {children}
+            </FormsProvider>
           </UsersProvider>
         </AuthProvider>
       </LoaderProvider>

@@ -1,6 +1,7 @@
 'use client'
 
 import CreateQuestion from "@/components/Forms/CreateQuestion"
+import { useForms } from "@/contexts/formsContext"
 import { useUsers } from "@/contexts/usersContext"
 import CreateProfessionalSchema from "@/utils/schema/createProfessionalSchema"
 import toastError from "@/utils/toast/toastError"
@@ -10,8 +11,8 @@ import { validateCPF } from 'validations-br'
 
 export default function CreateQuestionPage() {
   const {
-    createProfessional
-  } = useUsers()
+    createQuestion
+  } = useForms()
 
   const {
     register,
@@ -19,7 +20,7 @@ export default function CreateQuestionPage() {
     formState: { errors },
     control, 
     watch
-  } = useForm()
+  } = useForm<Question>()
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -29,7 +30,7 @@ export default function CreateQuestionPage() {
   const handleAddOption = () => {
     append({ 
       description: '',
-      value: 0,
+      score: 0,
     });
   };
 
@@ -38,12 +39,8 @@ export default function CreateQuestionPage() {
   };
 
 
-  const handleCreateProfissional = async (data: Professional) => {
-    if (!validateCPF(data.cpf)) {
-      toastError('CPF inválido',5000)
-      return
-    }
-    await createProfessional(data)
+  const handleCreateQuestion = async (data: Question) => {
+    await createQuestion(data)
   }
 
 
@@ -53,7 +50,7 @@ export default function CreateQuestionPage() {
       control={control}
       errors={errors}
       handleSubmit={handleSubmit}
-      onSubmit={handleCreateProfissional}
+      onSubmit={handleCreateQuestion}
       register={register}
       watch={watch}
       fields={fields}
