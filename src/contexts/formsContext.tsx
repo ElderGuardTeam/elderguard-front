@@ -11,12 +11,18 @@ import toastSuccess from '@/utils/toast/toastSuccess'
 
 type FormsContextType = {
   createQuestion: (data: Question) => Promise<void>
+  fetchQuestions: () => Promise<void>
+  getQuestionById: (id: string) => Promise<void>
+  questions: QuestionList[]
+  questionDetails: QuestionDetails
 }
 
 export const FormsContext = createContext({} as FormsContextType)
 
 export function FormsProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
+  const [questions, setQuestions] = useState<QuestionList[]>([])
+  const [questionDetails, setQuestionDetails] = useState<QuestionDetails>({} as QuestionDetails)
 
   async function createQuestion(data: Question) {
     api.post('/question', {
@@ -33,10 +39,30 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  async function fetchQuestions() {
+    api.get('/question').then((response) => {
+      setQuestions(response.data)
+    }).catch((error) => {
+      toastError('Erro ao buscar questões', false)
+    })
+  }
+
+  async function getQuestionById(id: string) {
+    api.get(`/question/${id}`).then((response) => {
+      setQuestionDetails(response.data)
+    }).catch((error) => {
+      toastError('Erro ao buscar questão', false)
+    })
+  }
+
   return (
     <FormsContext.Provider
       value={{
-      createQuestion
+      createQuestion,
+      fetchQuestions,
+      questions,
+      getQuestionById,
+      questionDetails,
       }}
     >
       {children}

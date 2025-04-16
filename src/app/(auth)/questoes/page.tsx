@@ -9,16 +9,21 @@ import DataTableComponent from "@/components/DataTable";
 import Input from "@/components/Input";
 import { useUsers } from "@/contexts/usersContext";
 import { formatCPF } from "@/utils/formatters/formatCPF";
+import { useForms } from "@/contexts/formsContext";
+import { formatDate } from "@/utils/formatters/formateDate";
 
 export default function Professionals() {
   const {
-    fetchProfessional,
-    professional,
     searchProfessional
   } = useUsers()
 
+  const {
+    fetchQuestions,
+    questions
+  } = useForms()
+
   useEffect(() => {
-    fetchProfessional()
+    fetchQuestions()
   }, [])
 
   const router = useRouter();
@@ -58,18 +63,39 @@ export default function Professionals() {
       <DataTableComponent
       columns={[
         {
-          name: 'Nome',
-          selector: (row: { name: any }) => row.name,
+          name: 'Título',
+          selector: (row: { title: any }) => row.title,
           sortable: true,
         },
         {
           name: 'Descrição',
-          selector: (row: { cpf: any }) => row.cpf,
+          selector: (row: { description: any }) => row.description,
           sortable: true,
-          cell: (row: { cpf: any }) => formatCPF(row.cpf)
+          cell: (row: { description: any }) => (
+            <p>
+              {row.description.length > 40 ? `${row.description.substring(0, 40)}...` : row.description}
+            </p>
+          )
+        },
+        {
+          name: 'Tipo',
+          selector: (row: { type: any }) => row.type,
+          sortable: true,
+        },
+        {
+          name: 'Criado em',
+          selector: (row: { created: any }) => row.created,
+          sortable: true,
+          cell: (row: { created: any }) => formatDate(row.created),
+        },
+        {
+          name: 'Atualizado em',
+          selector: (row: { updated: any }) => row.updated,
+          sortable: true,
+          cell: (row: { updated: any }) => formatDate(row.updated),
         },
       ]}
-      data={professional}
+      data={questions}
       onRowClicked={(row:Professional) => router.push(`/questoes/${row.id}`)}
       />
     </div>

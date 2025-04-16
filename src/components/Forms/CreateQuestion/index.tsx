@@ -18,8 +18,8 @@ interface ICreateQuestionFormProps {
   errors: any;
   control: any;
   isEditing?: boolean;
-  professionalName?: string;
-  deleteProfessional?: () => Promise<void>;
+  questionTitle?: string;
+  deleteQuestion?: () => Promise<void>;
   watch: any;
   fields: any;
   handleAddOption: () => void;
@@ -33,8 +33,8 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
   errors,
   control,
   isEditing,
-  professionalName,
-  deleteProfessional,
+  questionTitle,
+  deleteQuestion,
   watch,
   fields,
   handleAddOption,
@@ -50,7 +50,7 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
           <FontAwesomeIcon icon={faChevronLeft} />
         </div>
         {
-            professionalName ? `Editar ${professionalName}` : 'Nova Questão'
+            questionTitle ? `Editar ${questionTitle}` : 'Nova Questão'
           }
       </h1>
       <div>
@@ -81,6 +81,7 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
           { value: 'IMAGE', name: 'Imagem' },
         ]}
         placeholder="Selecione"
+        isDisabled={isEditing}
         />
         {
           (watchType === 'SELECT' || watchType === 'MULTISELECT') && (
@@ -137,7 +138,7 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
           <h1 className="text-lg font-bold">Deseja realmente excluir?</h1>
           <p className="text-xs text-center">Essa ação não pode ser desfeita</p>
           <div className="flex gap-2 mt-4">
-            <Button type="button" className="btn-error text-white" onClick={deleteProfessional}>
+            <Button type="button" className="btn-error text-white" onClick={deleteQuestion}>
               Sim
             </Button>
             <Button type="button" className="btn-link " onClick={() => setIsOpen(false)}>
