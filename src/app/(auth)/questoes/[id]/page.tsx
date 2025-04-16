@@ -2,7 +2,7 @@
 
 import CreateQuestion from "@/components/Forms/CreateQuestion"
 import { useForms } from "@/contexts/formsContext"
-import CreateProfessionalSchema from "@/utils/schema/createProfessionalSchema"
+import CreateQuestionSchema from "@/utils/schema/createQuestionSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
@@ -37,7 +37,9 @@ export default function CreatePatient({params}: {params: {id: string}}) {
     control, 
     setValue,
     watch
-  } = useForm<Question>()
+  } = useForm<Question>({
+    resolver: zodResolver(CreateQuestionSchema),
+  })
 
   const { fields, append, remove } = useFieldArray({
     control,

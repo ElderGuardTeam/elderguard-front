@@ -4,6 +4,7 @@ import CreateQuestion from "@/components/Forms/CreateQuestion"
 import { useForms } from "@/contexts/formsContext"
 import { useUsers } from "@/contexts/usersContext"
 import CreateProfessionalSchema from "@/utils/schema/createProfessionalSchema"
+import CreateQuestionSchema from "@/utils/schema/createQuestionSchema"
 import toastError from "@/utils/toast/toastError"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
@@ -20,7 +21,9 @@ export default function CreateQuestionPage() {
     formState: { errors },
     control, 
     watch
-  } = useForm<Question>()
+  } = useForm<Question>({
+    resolver: zodResolver(CreateQuestionSchema),
+  })
 
   const { fields, append, remove } = useFieldArray({
     control,
