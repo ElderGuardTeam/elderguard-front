@@ -1,9 +1,7 @@
 'use client'
 
-import CreateProfessional from "@/components/Forms/CreateProfessional"
 import CreateQuestion from "@/components/Forms/CreateQuestion"
 import { useForms } from "@/contexts/formsContext"
-import { useUsers } from "@/contexts/usersContext"
 import CreateProfessionalSchema from "@/utils/schema/createProfessionalSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
@@ -11,13 +9,11 @@ import { useEffect } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 
 export default function CreatePatient({params}: {params: {id: string}}) {
-  const {
-    deleteProfessional
-  } = useUsers()
 
   const {
     getQuestionById,
-    questionDetails
+    questionDetails,
+    deleteQuestion
   } = useForms()
 
   useEffect(() => {
@@ -63,8 +59,8 @@ export default function CreatePatient({params}: {params: {id: string}}) {
     console.log(data)
   }
 
-  const handleDeleteProfessional = async () => {
-    deleteProfessional(questionDetails.id ? questionDetails.id : '')
+  const handleDeleteQuestion = async () => {
+    deleteQuestion(questionDetails.id ? questionDetails.id : '')
   }
   return (
     <div className="p-8 w-full">
@@ -76,7 +72,7 @@ export default function CreatePatient({params}: {params: {id: string}}) {
       register={register}
       questionTitle={questionDetails.title}
       isEditing
-      deleteQuestion={handleDeleteProfessional}
+      deleteQuestion={handleDeleteQuestion}
       fields={fields}
       handleAddOption={handleAddOption}
       handleRemoveOption={handleRemoveOption}

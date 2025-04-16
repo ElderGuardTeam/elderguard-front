@@ -13,6 +13,7 @@ type FormsContextType = {
   createQuestion: (data: Question) => Promise<void>
   fetchQuestions: () => Promise<void>
   getQuestionById: (id: string) => Promise<void>
+  deleteQuestion: (id: string) => Promise<void>
   questions: QuestionList[]
   questionDetails: QuestionDetails
 }
@@ -55,6 +56,16 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  async function deleteQuestion(id: string) {
+    api.delete(`/question/${id}`).then((response) => {
+      toastSuccess('Questão deletada com sucesso', 5000)
+      fetchQuestions()
+      router.push('/questoes')
+    }).catch((error) => {
+      toastError('Erro ao deletar questão', false)
+    })
+  }
+
   return (
     <FormsContext.Provider
       value={{
@@ -63,6 +74,7 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       questions,
       getQuestionById,
       questionDetails,
+      deleteQuestion,
       }}
     >
       {children}
