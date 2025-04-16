@@ -7,19 +7,15 @@ import { useEffect, useState } from "react";
 import Button from "@/components/Button";
 import DataTableComponent from "@/components/DataTable";
 import Input from "@/components/Input";
-import { useUsers } from "@/contexts/usersContext";
-import { formatCPF } from "@/utils/formatters/formatCPF";
 import { useForms } from "@/contexts/formsContext";
 import { formatDate } from "@/utils/formatters/formateDate";
 
-export default function Professionals() {
-  const {
-    searchProfessional
-  } = useUsers()
+export default function Questions() {
 
   const {
     fetchQuestions,
-    questions
+    questions,
+    searchQuestions
   } = useForms()
 
   useEffect(() => {
@@ -30,7 +26,7 @@ export default function Professionals() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = () => {
-    searchProfessional(searchTerm)
+    searchQuestions(searchTerm)
   }
 
 
