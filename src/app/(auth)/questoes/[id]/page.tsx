@@ -13,7 +13,8 @@ export default function CreatePatient({params}: {params: {id: string}}) {
   const {
     getQuestionById,
     questionDetails,
-    deleteQuestion
+    deleteQuestion,
+    editQuestion
   } = useForms()
 
   useEffect(() => {
@@ -56,7 +57,7 @@ export default function CreatePatient({params}: {params: {id: string}}) {
   
 
   const handleEditProfessional = async (data: Question) => {
-    console.log(data)
+    editQuestion(data, questionDetails.id ? questionDetails.id : '')
   }
 
   const handleDeleteQuestion = async () => {

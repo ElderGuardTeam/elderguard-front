@@ -73,7 +73,7 @@ export default function Professionals() {
           sortable: true,
           cell: (row: { description: any }) => (
             <p>
-              {row.description.length > 40 ? `${row.description.substring(0, 40)}...` : row.description}
+              {row.description.length > 39 ? `${row.description.substring(0, 39)}...` : row.description}
             </p>
           )
         },

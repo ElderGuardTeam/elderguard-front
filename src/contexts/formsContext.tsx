@@ -14,6 +14,7 @@ type FormsContextType = {
   fetchQuestions: () => Promise<void>
   getQuestionById: (id: string) => Promise<void>
   deleteQuestion: (id: string) => Promise<void>
+  editQuestion: (question: Question, id: string) => Promise<void>
   questions: QuestionList[]
   questionDetails: QuestionDetails
 }
@@ -66,6 +67,22 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  async function editQuestion(question: Question, id: string) {
+    api.patch(`/question/${id}`, {
+      ...question,
+      options: question.options?.map((option) => ({
+        description: option.description,
+        score: Number(option.score),
+      })),
+    }).then((response) => {
+      toastSuccess('Questão editada com sucesso', 5000)
+      fetchQuestions()
+      router.push('/questoes')
+    }).catch((error) => {
+      toastError('Erro ao editar questão', false)
+    })
+  }
+
   return (
     <FormsContext.Provider
       value={{
@@ -75,6 +92,7 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       getQuestionById,
       questionDetails,
       deleteQuestion,
+      editQuestion,
       }}
     >
       {children}
