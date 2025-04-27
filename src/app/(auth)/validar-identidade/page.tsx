@@ -25,7 +25,11 @@ export default function ValidateID() {
 
   const handleValidateID = async (data: ValidatePatient) => {
     validadeIdentity(data)
-    reset()
+    reset({
+      cpf: '',
+      name: '',
+      sex: ''
+    })
   }
   return(
     <div className="flex items-center justify-center h-screen w-screen">
