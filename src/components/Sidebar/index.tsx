@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faArrowRightFromBracket, 
+  faFileLines, 
   faPersonCane, 
   faQuestion, 
   faUserNurse,
@@ -57,6 +58,12 @@ const Sidebar: React.FC = () => {
             <Link className="flex items-center gap-3" href="/questoes">
               <FontAwesomeIcon icon={faQuestion} className='text-lg' />
               <span>Questões</span>
+            </Link>
+          </LiMenu> 
+          <LiMenu>
+            <Link className="flex items-center gap-3" href="/formularios">
+              <FontAwesomeIcon icon={faFileLines} className='text-lg' />
+              <span>Formulários</span>
             </Link>
           </LiMenu>    
         </UlMenu>
