@@ -47,7 +47,6 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
 
   const watchType = watch('type');
 
-  const [mathOperations, setMathOperations] = useState<{ operator: string; value: string }[]>([]);
   const [value1Type, setValue1Type] = useState('');
   const [value2Type, setValue2Type] = useState('');
   const [value1Manual, setValue1Manual] = useState('');
@@ -63,21 +62,6 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
 
   const watchRuleType = watchRule('type');
 
-  const handleAddOperation = () => {
-    setMathOperations(prev => [...prev, { operator: '+', value: '' }])
-  }
-  
-  const handleRemoveOperation = (index: number) => {
-    setMathOperations(prev => prev.filter((_, i) => i !== index))
-  }
-  
-  const handleOperationChange = (index: number, field: 'operator' | 'value', value: string) => {
-    setMathOperations(prev =>
-      prev.map((item, i) =>
-        i === index ? { ...item, [field]: value } : item
-      )
-    )
-  }
   
   return (
     <form className="bg-white rounded p-4" onSubmit={handleSubmit(onSubmit)}>
@@ -260,35 +244,6 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
                     }
                   </div>
                 </div>
-
-              {mathOperations.map((operation, index) => (
-                <div key={index} className="col-span-2 grid grid-cols-4 items-end gap-2 mt-2">
-                  <Select
-                    value={operation.operator}
-                    onChange={(e: any) => handleOperationChange(index, 'operator', e.target.value)}
-                    options={[
-                      { value: '+', name: '+' },
-                      { value: '-', name: '-' },
-                      { value: '*', name: '*' },
-                      { value: '/', name: '/' },
-                    ]}
-                  />
-                  <Input
-                    value={operation.value}
-                    onChange={(e: any) => handleOperationChange(index, 'value', e.target.value)}
-                  />
-                  <Button type="button" className="btn-error text-white" onClick={() => handleRemoveOperation(index)}>
-                    Remover
-                  </Button>
-                </div>
-              ))}
-              <Button
-                type="button"
-                className="btn-success w-fit text-white mt-2"
-                onClick={handleAddOperation}
-              >
-                <FontAwesomeIcon icon={faPlus} />
-              </Button>
               <Button
                 type="button"
                 className="btn-error w-fit text-white mt-2"
