@@ -6,44 +6,28 @@ import SelectFormGroup from "@/components/SelectFormGroup";
 import { Dispatch, SetStateAction, useState } from "react";
 import { UseFormRegister, UseFormReset, UseFormSetValue } from "react-hook-form";
 
-interface ICreateRuleFormProps {
-  register: UseFormRegister<Question>
+interface ICreateRuleSectionFormProps {
+  register: UseFormRegister<Form>
   errors: any;
   watch: any;
-  setHasRule: Dispatch<SetStateAction<boolean>>
-  reset: UseFormReset<Question>
+  index: number
+  handleRemoveRule: (sectionId: number) => void
 }
 
-const CreateRule: React.FC<ICreateRuleFormProps> = ({
+const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
   register,
   errors,
   watch,
-  setHasRule,
-  reset
+  index,
+  handleRemoveRule
 }) => {
 
   const [value1Type, setValue1Type] = useState('');
   const [value2Type, setValue2Type] = useState('');
 
-  const watchRuleType = watch('rule.type');
+  const watchRuleType = watch(`seccion.${index}.rule.type`);
 
-  const handleRemoveRule = () => {
-    setHasRule(false)
-    reset({
-      rule: {
-        condition: null,
-        maxScore: null,
-        operation: null,
-        type: null,
-        value1: null,
-        value1Type: null,
-        value2: null,
-        value2Type: null,
-        valueIf: null,
-        valueThen: null
-      }
-    })
-  }
+
 
   
   return (
@@ -56,7 +40,7 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
         {value: 'MathOperation', name: 'Operação matemática'},
         {value: 'MaxScore', name: 'Pontuação máxima'},
       ]}
-      register={register('rule.type')}
+      register={register(`seccion.${index}.rule.type`)}
       placeholder="Selecione"
       className="col-span-2"
       />
@@ -65,7 +49,7 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
           <FormGroup
           labelText="Pontuação máxima"
           isRequired
-          register={register('rule.maxScore')}
+          register={register(`seccion.${index}.rule.maxScore`)}
           error={errors.maxScore?.message}
           className="col-span-2"
           />
@@ -81,10 +65,10 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
               {value: '<', name: 'Menor que'},
               {value: '=', name: 'Igual a'},
             ]}
-            register={register('rule.condition')}
+            register={register(`seccion.${index}.rule.condition`)}
             />
             <Input
-            register={register('rule.value1')}
+            register={register(`seccion.${index}.rule.value1`)}
             />
             <span>então</span>
             <Select
@@ -94,10 +78,10 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
               {value: '*', name: 'multiplicar por'},
               {value: '/', name: 'subtrair por'},
             ]}
-            register={register('rule.operation')}
+            register={register(`seccion.${index}.rule.operation`)}
             />
             <Input
-            register={register('rule.value2')}
+            register={register(`seccion.${index}.rule.value2`)}
             />
           </div>
         )
@@ -113,7 +97,7 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
                   { value: 'score', name: 'Pontuação' },
                   { value: 'value', name: 'Inserir valor' },
                 ]}
-                register={register('rule.value1Type',{
+                register={register(`seccion.${index}.rule.value1Type`,{
                   onChange: (e) => setValue1Type(e.target.value)
                 })}
                 placeholder="Selecione"
@@ -123,7 +107,7 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
                   value1Type === 'value' && (
                     <Input
                       placeholder="Digite o valor"
-                      register={register('rule.value1')}
+                      register={register(`seccion.${index}.rule.value1`)}
                       className="w-1/2"
                     />
                   )
@@ -136,7 +120,7 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
                   { value: '*', name: '*' },
                   { value: '/', name: '/' },
                 ]}
-                register={register('rule.operation')}
+                register={register(`seccion.${index}.rule.operation`)}
               />
 
               <div className={`${ value2Type === 'value' && 'flex items-end gap-1'}`}>
@@ -146,7 +130,7 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
                   { value: 'score', name: 'Pontuação' },
                   { value: 'value', name: 'Inserir valor' },
                 ]}
-                register={register('rule.value2Type',{
+                register={register(`seccion.${index}.rule.value2Type`,{
                   onChange: (e) => setValue2Type(e.target.value)
                 })}
                 placeholder="Selecione"
@@ -156,7 +140,7 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
                   value2Type === 'value' && (
                     <Input
                       placeholder="Digite o valor"
-                      register={register('rule.value2')}
+                      register={register(`seccion.${index}.rule.value2`)}
                       className="w-1/2"
                     />
                   )
@@ -169,7 +153,7 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
       <Button
         type="button"
         className="btn-error w-fit text-white mt-2"
-        onClick={handleRemoveRule}
+        onClick={() => handleRemoveRule(index)}
       >
         Remover Regra
       </Button>
@@ -177,4 +161,4 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
   )
 }
 
-export default CreateRule;
+export default CreateRuleSection;

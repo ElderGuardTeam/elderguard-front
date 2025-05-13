@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { UseFormRegister, useForm } from "react-hook-form";
 import CreateRule from "../CreateRule";
+import CreateRuleSection from "../CreateRuleSection";
 
 interface ICreateFormProps {
   handleSubmit: any;
@@ -28,6 +29,7 @@ interface ICreateFormProps {
   isEditing?: boolean;
   formTitle?: string;
   deleteQuestion?: () => Promise<void>;
+  watch: any
 }
 
 const CreateForm: React.FC<ICreateFormProps> = ({
@@ -39,6 +41,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
   isEditing,
   formTitle,
   deleteQuestion,
+  watch
 }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -67,19 +70,10 @@ const CreateForm: React.FC<ICreateFormProps> = ({
 
 
 
-  const handleAddQuestion = async (id: string) => {
-    await getQuestionById(id)
-    setQuestionsList((prevState) => {
-      const questionExists = prevState.some((question) => question.id === questionDetails.id);
-      if (!questionExists) {
-        return [...prevState, questionDetails];
-      }
-      return prevState;
-    });
-  }
 
   const handleAddSection = () => {
-    setFormSections(prev => [...prev, { questions: [], title: '', rule:{}, id: Date.now() }]);
+    const index = formSections.length
+    setFormSections(prev => [...prev, { questions: [], title: '', rule:{}, id: index + 1 }]);
   };
 
   const handleDeleteSection = (sectionId: number) => {
@@ -127,6 +121,16 @@ const CreateForm: React.FC<ICreateFormProps> = ({
       prev.map(section =>
         section.id === sectionId
           ? { ...section, rule: emptyRule }
+          : section
+      )
+    );
+  };
+
+  const handleRemoveRule = (sectionId: number) => {
+    setFormSections(prev =>
+      prev.map(section =>
+        section.id === sectionId
+          ? { ...section, rule: undefined }
           : section
       )
     );
@@ -202,7 +206,13 @@ const CreateForm: React.FC<ICreateFormProps> = ({
           <br/>
           {
             section?.rule?.id && (
-              <p>regra</p>
+              <CreateRuleSection
+              errors={errors}
+              index={section.id}
+              register={register}
+              watch={watch}  
+              handleRemoveRule={handleRemoveRule}
+              />
             )
           }
           <Button
