@@ -11,7 +11,8 @@ import { faChevronLeft, faPlus } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FieldErrors, UseFormHandleSubmit, UseFormRegister, useForm } from "react-hook-form";
+import { FieldErrors, UseFormHandleSubmit, UseFormRegister, UseFormReset, UseFormSetValue, useForm } from "react-hook-form";
+import CreateRule from "../CreateRule";
 
 interface ICreateQuestionFormProps {
   handleSubmit: any;
@@ -26,6 +27,7 @@ interface ICreateQuestionFormProps {
   fields: any;
   handleAddOption: () => void;
   handleRemoveOption: (index: number) => void;
+  reset: UseFormReset<Question>
 }
 
 const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
@@ -40,27 +42,16 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
   watch,
   fields,
   handleAddOption,
-  handleRemoveOption
+  handleRemoveOption,
+  reset
 }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [hasRule, setHasRule] = useState(false)
 
   const watchType = watch('type');
 
-  const [value1Type, setValue1Type] = useState('');
-  const [value2Type, setValue2Type] = useState('');
-  const [value1Manual, setValue1Manual] = useState('');
-  const [value2Manual, setValue2Manual] = useState('');
 
-
-
-  const {
-    control: controlRule,
-    register: registerRule,
-    watch: watchRule,
-  } = useForm()
-
-  const watchRuleType = watchRule('type');
 
   
   return (
@@ -130,130 +121,19 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
             </div>
           )
         }
-        <Button type="button" className="btn-success text-white mt-2">
+        <Button type="button" className="btn-success text-white mt-2" onClick={() => setHasRule(true)}>
           Adicionar Regra
         </Button>
-        <fieldset className="border border-base-300 rounded p-2 grid grid-cols-2 gap-4 my-4 text-xs">
-          <legend>Regra</legend>
-          <SelectFormGroup
-          labelText="Tipo"
-          options={[
-            {value: 'Conditional', name: 'Condicional'},
-            {value: 'MathOperation', name: 'Operação matemática'},
-            {value: 'MaxScore', name: 'Pontuação máxima'},
-          ]}
-          register={registerRule('type')}
-          placeholder="Selecione"
-          className="col-span-2"
-          />
-          {
-            watchRuleType === 'MaxScore' && (
-              <FormGroup
-              labelText="Pontuação máxima"
-              isRequired
-              register={registerRule('maxScore')}
-              error={errors.maxScore?.message}
-              className="col-span-2"
-              />
-            )
-          }
-          {
-            watchRuleType === 'Conditional' && (
-              <div className="col-span-2 grid grid-cols-6 items-center text-sm gap-2 text-center">
-                <span>Se a pontuação for </span>
-                <Select
-                options={[
-                  {value: '>', name: 'Maior que'},
-                  {value: '<', name: 'Menor que'},
-                  {value: '=', name: 'Igual a'},
-                ]}
-                />
-                <Input/>
-                <span>então</span>
-                <Select
-                options={[
-                  {value: '+', name: 'somar'},
-                  {value: '-', name: 'subtrair'},
-                  {value: '*', name: 'multiplicar por'},
-                  {value: '/', name: 'subtrair por'},
-                ]}
-                />
-                <Input/>
-              </div>
-            )
-          }
-          {
-            watchRuleType === 'MathOperation' && (
-            <>
-              <div className="col-span-2 grid grid-cols-3 items-end gap-2">
-                  <div className={`${ value1Type === 'value' && 'flex items-end gap-1'}`}>
-                    <SelectFormGroup
-                    labelText="Valor 1"
-                    options={[
-                      { value: 'score', name: 'Pontuação' },
-                      { value: 'value', name: 'Inserir valor' },
-                    ]}
-                    register={registerRule('value1',{
-                      onChange: (e) => setValue1Type(e.target.value)
-                    })}
-                    placeholder="Selecione"
-                    className={`${ value1Type === 'value' && 'w-1/2'}`}
-                    />
-                    {
-                      value1Type === 'value' && (
-                        <Input
-                          placeholder="Digite o valor"
-                          value={value1Manual}
-                          onChange={(e: any) => setValue1Manual(e.target.value)}
-                          className="w-1/2"
-                        />
-                      )
-                    }
-                  </div>
-                  <Select
-                    options={[
-                      { value: '+', name: '+' },
-                      { value: '-', name: '-' },
-                      { value: '*', name: '*' },
-                      { value: '/', name: '/' },
-                    ]}
-                  />
-
-                  <div className={`${ value2Type === 'value' && 'flex items-end gap-1'}`}>
-                  <SelectFormGroup
-                    labelText="Valor 2"
-                    options={[
-                      { value: 'score', name: 'Pontuação' },
-                      { value: 'value', name: 'Inserir valor' },
-                    ]}
-                    register={registerRule('value2',{
-                      onChange: (e) => setValue2Type(e.target.value)
-                    })}
-                    placeholder="Selecione"
-                    className={`${ value2Type === 'value' && 'w-1/2'}`}
-                    />
-                    {
-                      value2Type === 'value' && (
-                        <Input
-                          placeholder="Digite o valor"
-                          value={value2Manual}
-                          onChange={(e: any) => setValue2Manual(e.target.value)}
-                          className="w-1/2"
-                        />
-                      )
-                    }
-                  </div>
-                </div>
-              <Button
-                type="button"
-                className="btn-error w-fit text-white mt-2"
-              >
-                Remover Regra
-              </Button>
-            </>
-            )
-            }
-        </fieldset>
+        {
+          hasRule && (
+          <CreateRule
+          errors={errors}
+          register={register}
+          watch={watch}
+          setHasRule={setHasRule}
+          reset={reset}
+          />)
+        }
         <div className="flex item-center justify-between mt-4">
           <div>
             <Button type="submit" className="btn-success text-white">

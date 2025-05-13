@@ -20,7 +20,8 @@ export default function CreateQuestionPage() {
     handleSubmit,
     formState: { errors },
     control, 
-    watch
+    watch,
+    reset
   } = useForm<Question>({
     resolver: zodResolver(CreateQuestionSchema),
   })
@@ -59,6 +60,7 @@ export default function CreateQuestionPage() {
       fields={fields}
       handleAddOption={handleAddOption}
       handleRemoveOption={handleRemoveOption}
+      reset={reset}
       />
     </div>
   )
