@@ -32,6 +32,7 @@ interface QuestionDetails {
 }
 
 interface Rule {
+  id?: string
   type?: string | null
   maxScore?: number | null
   operation?: string | null

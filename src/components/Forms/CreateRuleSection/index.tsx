@@ -1,0 +1,180 @@
+import Button from "@/components/Button";
+import FormGroup from "@/components/FormGroup"
+import Input from "@/components/Input";
+import Select from "@/components/Select";
+import SelectFormGroup from "@/components/SelectFormGroup";
+import { Dispatch, SetStateAction, useState } from "react";
+import { UseFormRegister, UseFormReset, UseFormSetValue } from "react-hook-form";
+
+interface ICreateRuleFormProps {
+  register: UseFormRegister<Question>
+  errors: any;
+  watch: any;
+  setHasRule: Dispatch<SetStateAction<boolean>>
+  reset: UseFormReset<Question>
+}
+
+const CreateRule: React.FC<ICreateRuleFormProps> = ({
+  register,
+  errors,
+  watch,
+  setHasRule,
+  reset
+}) => {
+
+  const [value1Type, setValue1Type] = useState('');
+  const [value2Type, setValue2Type] = useState('');
+
+  const watchRuleType = watch('rule.type');
+
+  const handleRemoveRule = () => {
+    setHasRule(false)
+    reset({
+      rule: {
+        condition: null,
+        maxScore: null,
+        operation: null,
+        type: null,
+        value1: null,
+        value1Type: null,
+        value2: null,
+        value2Type: null,
+        valueIf: null,
+        valueThen: null
+      }
+    })
+  }
+
+  
+  return (
+    <fieldset className="border border-base-300 rounded p-2 grid grid-cols-2 gap-4 my-4 text-xs">
+      <legend>Regra</legend>
+      <SelectFormGroup
+      labelText="Tipo"
+      options={[
+        {value: 'Conditional', name: 'Condicional'},
+        {value: 'MathOperation', name: 'Operação matemática'},
+        {value: 'MaxScore', name: 'Pontuação máxima'},
+      ]}
+      register={register('rule.type')}
+      placeholder="Selecione"
+      className="col-span-2"
+      />
+      {
+        watchRuleType === 'MaxScore' && (
+          <FormGroup
+          labelText="Pontuação máxima"
+          isRequired
+          register={register('rule.maxScore')}
+          error={errors.maxScore?.message}
+          className="col-span-2"
+          />
+        )
+      }
+      {
+        watchRuleType === 'Conditional' && (
+          <div className="col-span-2 grid grid-cols-6 items-center text-sm gap-2 text-center">
+            <span>Se a pontuação for </span>
+            <Select
+            options={[
+              {value: '>', name: 'Maior que'},
+              {value: '<', name: 'Menor que'},
+              {value: '=', name: 'Igual a'},
+            ]}
+            register={register('rule.condition')}
+            />
+            <Input
+            register={register('rule.value1')}
+            />
+            <span>então</span>
+            <Select
+            options={[
+              {value: '+', name: 'somar'},
+              {value: '-', name: 'subtrair'},
+              {value: '*', name: 'multiplicar por'},
+              {value: '/', name: 'subtrair por'},
+            ]}
+            register={register('rule.operation')}
+            />
+            <Input
+            register={register('rule.value2')}
+            />
+          </div>
+        )
+      }
+      {
+        watchRuleType === 'MathOperation' && (
+        <>
+          <div className="col-span-2 grid grid-cols-3 items-end gap-2">
+              <div className={`${ value1Type === 'value' && 'flex items-end gap-1'}`}>
+                <SelectFormGroup
+                labelText="Valor 1"
+                options={[
+                  { value: 'score', name: 'Pontuação' },
+                  { value: 'value', name: 'Inserir valor' },
+                ]}
+                register={register('rule.value1Type',{
+                  onChange: (e) => setValue1Type(e.target.value)
+                })}
+                placeholder="Selecione"
+                className={`${ value1Type === 'value' && 'w-1/2'}`}
+                />
+                {
+                  value1Type === 'value' && (
+                    <Input
+                      placeholder="Digite o valor"
+                      register={register('rule.value1')}
+                      className="w-1/2"
+                    />
+                  )
+                }
+              </div>
+              <Select
+                options={[
+                  { value: '+', name: '+' },
+                  { value: '-', name: '-' },
+                  { value: '*', name: '*' },
+                  { value: '/', name: '/' },
+                ]}
+                register={register('rule.operation')}
+              />
+
+              <div className={`${ value2Type === 'value' && 'flex items-end gap-1'}`}>
+              <SelectFormGroup
+                labelText="Valor 2"
+                options={[
+                  { value: 'score', name: 'Pontuação' },
+                  { value: 'value', name: 'Inserir valor' },
+                ]}
+                register={register('rule.value2Type',{
+                  onChange: (e) => setValue2Type(e.target.value)
+                })}
+                placeholder="Selecione"
+                className={`${ value2Type === 'value' && 'w-1/2'}`}
+                />
+                {
+                  value2Type === 'value' && (
+                    <Input
+                      placeholder="Digite o valor"
+                      register={register('rule.value2')}
+                      className="w-1/2"
+                    />
+                  )
+                }
+              </div>
+            </div>
+        </>
+        )
+        }
+      <Button
+        type="button"
+        className="btn-error w-fit text-white mt-2"
+        onClick={handleRemoveRule}
+      >
+        Remover Regra
+      </Button>
+    </fieldset>
+  )
+}
+
+export default CreateRule;

@@ -22,28 +22,11 @@ export default function CreateQuestionPage() {
     formState: { errors },
     control, 
     watch
-  } = useForm<Question>({
-    resolver: zodResolver(CreateQuestionSchema),
-  })
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "options" 
-  });
-
-  const handleAddOption = () => {
-    append({ 
-      description: '',
-      score: 0,
-    });
-  };
-
-  const handleRemoveOption = (index: number) => {
-    remove(index);
-  };
+  } = useForm<Form>()
 
 
-  const handleCreateQuestion = async (data: Question) => {
+
+  const handleCreateQuestion = async (data: Form) => {
     await createQuestion(data)
   }
 

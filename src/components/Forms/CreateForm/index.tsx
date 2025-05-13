@@ -12,16 +12,17 @@ import TextAreaFormGroup from "@/components/TextAreaFormGroup";
 import { useForms } from "@/contexts/formsContext";
 import { formatDate } from "@/utils/formatters/formateDate";
 import { setQuestionComponent } from "@/utils/functions/setQuestionComponent";
-import { faChevronLeft, faEye, faPlus } from "@fortawesome/free-solid-svg-icons"
+import { faChevronLeft, faEye, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { UseFormRegister, useForm } from "react-hook-form";
+import CreateRule from "../CreateRule";
 
 interface ICreateFormProps {
   handleSubmit: any;
-  onSubmit: (data: Question) => Promise<void>;
-  register: UseFormRegister<Question>
+  onSubmit: (data: Form) => Promise<void>;
+  register: UseFormRegister<Form>
   errors: any;
   control: any;
   isEditing?: boolean;
@@ -45,11 +46,13 @@ const CreateForm: React.FC<ICreateFormProps> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [modalTable, setModalTable] = useState('DataTable');
   const [questionsList, setQuestionsList] = useState<QuestionDetails[]>([])
+  const [formSections, setFormSections] = useState<Section[]>([]);
+  const [activeSectionId, setActiveSectionId] = useState<number | null>(null);
+
 
   const handleSearch = () => {
     searchQuestions(searchTerm)
   }
-
   const {
     fetchQuestions,
     questions,
@@ -63,20 +66,6 @@ const CreateForm: React.FC<ICreateFormProps> = ({
   }, [])
 
 
-  const [value1Type, setValue1Type] = useState('');
-  const [value2Type, setValue2Type] = useState('');
-  const [value1Manual, setValue1Manual] = useState('');
-  const [value2Manual, setValue2Manual] = useState('');
-
-
-
-  const {
-    control: controlRule,
-    register: registerRule,
-    watch: watchRule,
-  } = useForm()
-
-  const watchRuleType = watchRule('type');
 
   const handleAddQuestion = async (id: string) => {
     await getQuestionById(id)
@@ -88,6 +77,61 @@ const CreateForm: React.FC<ICreateFormProps> = ({
       return prevState;
     });
   }
+
+  const handleAddSection = () => {
+    setFormSections(prev => [...prev, { questions: [], title: '', rule:{}, id: Date.now() }]);
+  };
+
+  const handleDeleteSection = (sectionId: number) => {
+    setFormSections(prev => prev.filter(section => section.id !== sectionId));
+  };
+
+  const handleAddQuestionToSection = (sectionId: number | null, question: QuestionDetails) => {
+    if (!sectionId) return
+    setFormSections(prev =>
+      prev.map(section =>
+        section.id === sectionId && !section.questions.some((q: any) => q.id === question.id)
+          ? { ...section, questions: [...section.questions, question] }
+          : section
+      )
+    );
+  };
+
+
+  const handleRemoveQuestionFromSection = (sectionId: number, questionId: string) => {
+    setFormSections(prev =>
+      prev.map(section =>
+        section.id === sectionId
+          ? { ...section, questions: section.questions.filter((q: any) => q.id !== questionId) }
+          : section
+      )
+    );
+  };
+
+  const handleSectionTitleChange = (sectionId: number, newTitle: string) => {
+    setFormSections(prev =>
+      prev.map(section =>
+        section.id === sectionId
+          ? { ...section, title: newTitle }
+          : section
+      )
+    );
+  };
+
+  const handleAddOrResetRule = (sectionId: number | null) => {
+    if(!sectionId) return
+    const emptyRule: Rule = {
+      id: String(Date.now()),
+    };
+    setFormSections(prev =>
+      prev.map(section =>
+        section.id === sectionId
+          ? { ...section, rule: emptyRule }
+          : section
+      )
+    );
+  };
+  
 
   
   return (
@@ -118,10 +162,58 @@ const CreateForm: React.FC<ICreateFormProps> = ({
         labelText="Tipo"
         isRequired
         />
-        <Button type="button" className="btn-success text-white my-2" onClick={() => setIsQuestionModalOpen(true)}>
-          <FontAwesomeIcon icon={faPlus}/> Adicionar Questão
+        <Button type="button" className="btn-success text-white my-2" onClick={handleAddSection}>
+          <FontAwesomeIcon icon={faPlus} /> Adicionar Sessão
         </Button>
         <br/>
+        {formSections.map(section => (
+          <fieldset key={section.id} className="border border-gray-300 p-4 rounded mb-4">
+            <legend className="text-sm font-bold">Sessão {section.title}</legend>
+            <Label labelText="Título">
+              <Input
+              value={section.title}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSectionTitleChange(section.id, e.target.value)}
+              />
+            </Label>
+            <Button type="button" className="btn-success text-white my-2" onClick={() => {
+              setIsQuestionModalOpen(true)
+              setActiveSectionId(section.id)
+              }}>
+              <FontAwesomeIcon icon={faPlus}/> Adicionar Questão
+            </Button> 
+            {section.questions.map((question: any) => (
+              <fieldset key={question.id} className="border border-base-300 rounded p-2 gap-4 my-4 text-xs">
+                {setQuestionComponent(question)}
+                <Button
+                  type="button"
+                  className="btn-error text-white mt-2"
+                  onClick={() => handleRemoveQuestionFromSection(section.id, question.id)}
+                >
+                  Remover Questão
+                </Button>
+              </fieldset>
+            ))}
+          <br/>
+          <Button type="button" className="btn-success text-white mt-2" onClick={() => {
+            handleAddOrResetRule(section.id)
+            }}>
+            Adicionar Regra
+          </Button>
+          <br/>
+          {
+            section?.rule?.id && (
+              <p>regra</p>
+            )
+          }
+          <Button
+            type="button"
+            className="btn-error w-fit text-white mt-2"
+            onClick={() => handleDeleteSection(section.id)}
+          >
+            <FontAwesomeIcon icon={faTrash}/>
+          </Button>
+          </fieldset>
+        ))}
         {
           questionsList.length > 0 && (
             <div>
@@ -142,130 +234,6 @@ const CreateForm: React.FC<ICreateFormProps> = ({
             </div>
           )
         }
-        <Button type="button" className="btn-success text-white mt-2">
-          Adicionar Regra
-        </Button>
-        <fieldset className="border border-base-300 rounded p-2 grid grid-cols-2 gap-4 my-4 text-xs">
-          <legend>Regra</legend>
-          <SelectFormGroup
-          labelText="Tipo"
-          options={[
-            {value: 'Conditional', name: 'Condicional'},
-            {value: 'MathOperation', name: 'Operação matemática'},
-            {value: 'MaxScore', name: 'Pontuação máxima'},
-          ]}
-          register={registerRule('type')}
-          placeholder="Selecione"
-          className="col-span-2"
-          />
-          {
-            watchRuleType === 'MaxScore' && (
-              <FormGroup
-              labelText="Pontuação máxima"
-              isRequired
-              register={registerRule('maxScore')}
-              error={errors.maxScore?.message}
-              className="col-span-2"
-              />
-            )
-          }
-          {
-            watchRuleType === 'Conditional' && (
-              <div className="col-span-2 grid grid-cols-6 items-center text-sm gap-2 text-center">
-                <span>Se a pontuação for </span>
-                <Select
-                options={[
-                  {value: '>', name: 'Maior que'},
-                  {value: '<', name: 'Menor que'},
-                  {value: '=', name: 'Igual a'},
-                ]}
-                />
-                <Input/>
-                <span>então</span>
-                <Select
-                options={[
-                  {value: '+', name: 'somar'},
-                  {value: '-', name: 'subtrair'},
-                  {value: '*', name: 'multiplicar por'},
-                  {value: '/', name: 'subtrair por'},
-                ]}
-                />
-                <Input/>
-              </div>
-            )
-          }
-          {
-            watchRuleType === 'MathOperation' && (
-            <>
-              <div className="col-span-2 grid grid-cols-3 items-end gap-2">
-                  <div className={`${ value1Type === 'value' && 'flex items-end gap-1'}`}>
-                    <SelectFormGroup
-                    labelText="Valor 1"
-                    options={[
-                      { value: 'score', name: 'Pontuação' },
-                      { value: 'value', name: 'Inserir valor' },
-                    ]}
-                    register={registerRule('value1',{
-                      onChange: (e) => setValue1Type(e.target.value)
-                    })}
-                    placeholder="Selecione"
-                    className={`${ value1Type === 'value' && 'w-1/2'}`}
-                    />
-                    {
-                      value1Type === 'value' && (
-                        <Input
-                          placeholder="Digite o valor"
-                          value={value1Manual}
-                          onChange={(e: any) => setValue1Manual(e.target.value)}
-                          className="w-1/2"
-                        />
-                      )
-                    }
-                  </div>
-                  <Select
-                    options={[
-                      { value: '+', name: '+' },
-                      { value: '-', name: '-' },
-                      { value: '*', name: '*' },
-                      { value: '/', name: '/' },
-                    ]}
-                  />
-
-                  <div className={`${ value2Type === 'value' && 'flex items-end gap-1'}`}>
-                  <SelectFormGroup
-                    labelText="Valor 2"
-                    options={[
-                      { value: 'score', name: 'Pontuação' },
-                      { value: 'value', name: 'Inserir valor' },
-                    ]}
-                    register={registerRule('value2',{
-                      onChange: (e) => setValue2Type(e.target.value)
-                    })}
-                    placeholder="Selecione"
-                    className={`${ value2Type === 'value' && 'w-1/2'}`}
-                    />
-                    {
-                      value2Type === 'value' && (
-                        <Input
-                          placeholder="Digite o valor"
-                          value={value2Manual}
-                          onChange={(e: any) => setValue2Manual(e.target.value)}
-                          className="w-1/2"
-                        />
-                      )
-                    }
-                  </div>
-                </div>
-              <Button
-                type="button"
-                className="btn-error w-fit text-white mt-2"
-              >
-                Remover Regra
-              </Button>
-            </>
-            )
-            }
-        </fieldset>
         <div className="flex item-center justify-between mt-4">
           <div>
             <Button type="submit" className="btn-success text-white">
@@ -362,23 +330,12 @@ const CreateForm: React.FC<ICreateFormProps> = ({
                       >
                         <FontAwesomeIcon icon={faEye} />
                       </Button>
-                      <Button
-                        type="button"
-                        className="btn-success text-white"
-                        onClick={() => {
-                          handleAddQuestion(row.id)
-                          setIsQuestionModalOpen(false)
-                        }}
-                      >
-                        <FontAwesomeIcon icon={faPlus} />
-                      </Button>
                     </>
                   )
                 }
               }
             ]}
             data={questions}
-            onRowClicked={(row:Professional) => router.push(`/questoes/${row.id}`)}
             />
             </>
           )
@@ -393,7 +350,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
                 </Button>
                 <Button type="button" className="btn-link " onClick={() => {
                   setModalTable('DataTable')
-                  handleAddQuestion(questionDetails.id)
+                  handleAddQuestionToSection(activeSectionId, questionDetails)
                 }}>
                   Adicionar
                 </Button>

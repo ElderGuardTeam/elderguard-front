@@ -1,17 +1,14 @@
+'use client'
 import Button from "@/components/Button";
 import FormGroup from "@/components/FormGroup"
-import Input from "@/components/Input";
-import Label from "@/components/Label";
-import MaskedInput from "@/components/MaskedInput";
 import Modal from "@/components/Modal";
-import Select from "@/components/Select";
 import SelectFormGroup from "@/components/SelectFormGroup";
 import TextAreaFormGroup from "@/components/TextAreaFormGroup";
 import { faChevronLeft, faPlus } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FieldErrors, UseFormHandleSubmit, UseFormRegister, UseFormReset, UseFormSetValue, useForm } from "react-hook-form";
+import { UseFormRegister, UseFormReset } from "react-hook-form";
 import CreateRule from "../CreateRule";
 
 interface ICreateQuestionFormProps {
@@ -51,9 +48,6 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
 
   const watchType = watch('type');
 
-
-
-  
   return (
     <form className="bg-white rounded p-4" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="flex gap-2 items-center">
