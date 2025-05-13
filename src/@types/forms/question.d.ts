@@ -8,6 +8,7 @@ interface Question {
 interface QuestionOption {
   description: string;
   score: number;
+  questionId: string
 }
 
 interface QuestionList {
