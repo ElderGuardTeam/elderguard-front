@@ -1,5 +1,6 @@
 'use client'
 
+import CreateForm from "@/components/Forms/CreateForm"
 import CreateQuestion from "@/components/Forms/CreateQuestion"
 import { useForms } from "@/contexts/formsContext"
 import { useUsers } from "@/contexts/usersContext"
@@ -49,16 +50,12 @@ export default function CreateQuestionPage() {
 
   return (
     <div className="p-8 w-full">
-      <CreateQuestion
+      <CreateForm
       control={control}
       errors={errors}
       handleSubmit={handleSubmit}
       onSubmit={handleCreateQuestion}
       register={register}
-      watch={watch}
-      fields={fields}
-      handleAddOption={handleAddOption}
-      handleRemoveOption={handleRemoveOption}
       />
     </div>
   )
