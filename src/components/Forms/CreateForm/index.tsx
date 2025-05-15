@@ -15,7 +15,7 @@ import { setQuestionComponent } from "@/utils/functions/setQuestionComponent";
 import { faChevronLeft, faEye, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { UseFormRegister, useForm } from "react-hook-form";
 import CreateRule from "../CreateRule";
 import CreateRuleSection from "../CreateRuleSection";
@@ -30,6 +30,8 @@ interface ICreateFormProps {
   formTitle?: string;
   deleteQuestion?: () => Promise<void>;
   watch: any
+  formSections: Section[]
+  setFormSections: Dispatch<SetStateAction<Section[]>>
 }
 
 const CreateForm: React.FC<ICreateFormProps> = ({
@@ -41,15 +43,15 @@ const CreateForm: React.FC<ICreateFormProps> = ({
   isEditing,
   formTitle,
   deleteQuestion,
-  watch
+  watch,
+  formSections,
+  setFormSections
 }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [modalTable, setModalTable] = useState('DataTable');
-  const [questionsList, setQuestionsList] = useState<QuestionDetails[]>([])
-  const [formSections, setFormSections] = useState<Section[]>([]);
   const [activeSectionId, setActiveSectionId] = useState<number | null>(null);
 
 
@@ -73,7 +75,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
 
   const handleAddSection = () => {
     const index = formSections.length
-    setFormSections(prev => [...prev, { questions: [], title: '', rule:{}, id: index + 1 }]);
+    setFormSections(prev => [...prev, { questionsIds: [], title: '', rule:{}, id: index + 1 }]);
   };
 
   const handleDeleteSection = (sectionId: number) => {
@@ -84,8 +86,8 @@ const CreateForm: React.FC<ICreateFormProps> = ({
     if (!sectionId) return
     setFormSections(prev =>
       prev.map(section =>
-        section.id === sectionId && !section.questions.some((q: any) => q.id === question.id)
-          ? { ...section, questions: [...section.questions, question] }
+        section.id === sectionId && !section.questionsIds.some((q: any) => q.id === question.id)
+          ? { ...section, questionsIds: [...section.questionsIds, question] }
           : section
       )
     );
@@ -96,7 +98,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
     setFormSections(prev =>
       prev.map(section =>
         section.id === sectionId
-          ? { ...section, questions: section.questions.filter((q: any) => q.id !== questionId) }
+          ? { ...section, questions: section.questionsIds.filter((q: any) => q.id !== questionId) }
           : section
       )
     );
@@ -165,6 +167,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
         <FormGroup
         labelText="Tipo"
         isRequired
+        register={register('type')}
         />
         <Button type="button" className="btn-success text-white my-2" onClick={handleAddSection}>
           <FontAwesomeIcon icon={faPlus} /> Adicionar Sessão
@@ -185,7 +188,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
               }}>
               <FontAwesomeIcon icon={faPlus}/> Adicionar Questão
             </Button> 
-            {section.questions.map((question: any) => (
+            {section.questionsIds.map((question: any) => (
               <fieldset key={question.id} className="border border-base-300 rounded p-2 gap-4 my-4 text-xs">
                 {setQuestionComponent(question)}
                 <Button
@@ -224,26 +227,6 @@ const CreateForm: React.FC<ICreateFormProps> = ({
           </Button>
           </fieldset>
         ))}
-        {
-          questionsList.length > 0 && (
-            <div>
-              {
-                questionsList.map((question: QuestionDetails) => (
-                  <fieldset key={question.id} className="border border-base-300 rounded p-2  gap-4 my-4 text-xs">
-                    {setQuestionComponent(question)}
-                    <Button
-                      type="button"
-                      className="btn-error text-white mt-2"
-                      onClick={() => setQuestionsList(questionsList.filter((q) => q.id !== question.id))}
-                    >
-                      Remover
-                    </Button>
-                  </fieldset>
-                ))
-              }
-            </div>
-          )
-        }
         <div className="flex item-center justify-between mt-4">
           <div>
             <Button type="submit" className="btn-success text-white">

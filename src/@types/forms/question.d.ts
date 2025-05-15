@@ -34,13 +34,13 @@ interface QuestionDetails {
 interface Rule {
   id?: string
   type?: string | null
-  maxScore?: number | null
+  maxScore?: number | null | number
   operation?: string | null
   condition?: string | null
   value1Type?: string | null
   value2Type?: string | null
-  value1?: number | null
-  value2?: number | null
+  value1?: number | null | number
+  value2?: number | null | number
   valueIf?: number | null
   valueThen?: number | null
 }

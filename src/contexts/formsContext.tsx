@@ -16,6 +16,7 @@ type FormsContextType = {
   deleteQuestion: (id: string) => Promise<void>
   editQuestion: (question: Question, id: string) => Promise<void>
   searchQuestions: (searchTerm: string) => Promise<void>
+  createForm: (data:Form) => Promise<void>
   questions: QuestionList[]
   questionDetails: QuestionDetails
 }
@@ -92,6 +93,14 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  async function createForm(data: Form) {
+    api.post('/form', data).then((response) => {
+      toastSuccess('Formulário criado com sucesso', 5000)
+    }).catch((error) => {
+      toastError('Erro ao criar formulário', false)
+    })
+  }
+
   return (
     <FormsContext.Provider
       value={{
@@ -103,6 +112,7 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       deleteQuestion,
       editQuestion,
       searchQuestions,
+      createForm
       }}
     >
       {children}

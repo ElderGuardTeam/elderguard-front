@@ -25,7 +25,7 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
   const [value1Type, setValue1Type] = useState('');
   const [value2Type, setValue2Type] = useState('');
 
-  const watchRuleType = watch(`seccion.${index}.rule.type`);
+  const watchRuleType = watch(`seccions.${index}.rule.type`);
 
 
 
@@ -36,27 +36,27 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
       <SelectFormGroup
       labelText="Tipo"
       options={[
-        {value: 'Conditional', name: 'Condicional'},
-        {value: 'MathOperation', name: 'Operação matemática'},
-        {value: 'MaxScore', name: 'Pontuação máxima'},
+        {value: 'CONDITIONAL', name: 'Condicional'},
+        {value: 'ARITHMETIC', name: 'Operação matemática'},
+        {value: 'SUM', name: 'Pontuação máxima'},
       ]}
-      register={register(`seccion.${index}.rule.type`)}
+      register={register(`seccions.${index}.rule.type`)}
       placeholder="Selecione"
       className="col-span-2"
       />
       {
-        watchRuleType === 'MaxScore' && (
+        watchRuleType === 'SUM' && (
           <FormGroup
           labelText="Pontuação máxima"
           isRequired
-          register={register(`seccion.${index}.rule.maxScore`)}
+          register={register(`seccions.${index}.rule.maxScore`)}
           error={errors.maxScore?.message}
           className="col-span-2"
           />
         )
       }
       {
-        watchRuleType === 'Conditional' && (
+        watchRuleType === 'CONDITIONAL' && (
           <div className="col-span-2 grid grid-cols-6 items-center text-sm gap-2 text-center">
             <span>Se a pontuação for </span>
             <Select
@@ -65,10 +65,11 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
               {value: '<', name: 'Menor que'},
               {value: '=', name: 'Igual a'},
             ]}
-            register={register(`seccion.${index}.rule.condition`)}
+            register={register(`seccions.${index}.rule.condition`)}
             />
             <Input
-            register={register(`seccion.${index}.rule.value1`)}
+            register={register(`seccions.${index}.rule.value1`)}
+            type="number"
             />
             <span>então</span>
             <Select
@@ -78,16 +79,17 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
               {value: '*', name: 'multiplicar por'},
               {value: '/', name: 'subtrair por'},
             ]}
-            register={register(`seccion.${index}.rule.operation`)}
+            register={register(`seccions.${index}.rule.operation`)}
             />
             <Input
-            register={register(`seccion.${index}.rule.value2`)}
+            register={register(`seccions.${index}.rule.value2`)}
+            type="number"
             />
           </div>
         )
       }
       {
-        watchRuleType === 'MathOperation' && (
+        watchRuleType === 'ARITHMETIC' && (
         <>
           <div className="col-span-2 grid grid-cols-3 items-end gap-2">
               <div className={`${ value1Type === 'value' && 'flex items-end gap-1'}`}>
@@ -97,7 +99,7 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
                   { value: 'score', name: 'Pontuação' },
                   { value: 'value', name: 'Inserir valor' },
                 ]}
-                register={register(`seccion.${index}.rule.value1Type`,{
+                register={register(`seccions.${index}.rule.value1Type`,{
                   onChange: (e) => setValue1Type(e.target.value)
                 })}
                 placeholder="Selecione"
@@ -107,8 +109,9 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
                   value1Type === 'value' && (
                     <Input
                       placeholder="Digite o valor"
-                      register={register(`seccion.${index}.rule.value1`)}
+                      register={register(`seccions.${index}.rule.value1`)}
                       className="w-1/2"
+                      type="number"
                     />
                   )
                 }
@@ -120,7 +123,7 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
                   { value: '*', name: '*' },
                   { value: '/', name: '/' },
                 ]}
-                register={register(`seccion.${index}.rule.operation`)}
+                register={register(`seccions.${index}.rule.operation`)}
               />
 
               <div className={`${ value2Type === 'value' && 'flex items-end gap-1'}`}>
@@ -130,7 +133,7 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
                   { value: 'score', name: 'Pontuação' },
                   { value: 'value', name: 'Inserir valor' },
                 ]}
-                register={register(`seccion.${index}.rule.value2Type`,{
+                register={register(`seccions.${index}.rule.value2Type`,{
                   onChange: (e) => setValue2Type(e.target.value)
                 })}
                 placeholder="Selecione"
@@ -140,8 +143,9 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
                   value2Type === 'value' && (
                     <Input
                       placeholder="Digite o valor"
-                      register={register(`seccion.${index}.rule.value2`)}
+                      register={register(`seccions.${index}.rule.value2`)}
                       className="w-1/2"
+                      type="number"
                     />
                   )
                 }

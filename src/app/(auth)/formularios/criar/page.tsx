@@ -3,12 +3,13 @@
 import CreateForm from "@/components/Forms/CreateForm"
 import CreateQuestion from "@/components/Forms/CreateQuestion"
 import { useForms } from "@/contexts/formsContext"
+import { useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 import { validateCPF } from 'validations-br'
 
 export default function CreateQuestionPage() {
   const {
-    createQuestion
+    createForm
   } = useForms()
 
   const {
@@ -19,11 +20,26 @@ export default function CreateQuestionPage() {
     watch
   } = useForm<Form>()
 
+  const [formSections, setFormSections] = useState<Section[]>([])
 
 
-  const handleCreateQuestion = async (data: Form) => {
-    await createQuestion(data)
-  }
+
+  const handleCreateForm = async (data: Form) => {
+    const mergedSections = formSections.map((section, index) => ({
+      ...section,
+      rule: {
+        ...data.seccions?.[index+1]?.rule || section.rule,
+        value1: data.seccions?.[index+1]?.rule.value1 ?  Number(data.seccions?.[index+1]?.rule.value1) : null,
+        value2: data.seccions?.[index+1]?.rule.value2 ? Number(data.seccions?.[index+1]?.rule.value2) : null,
+      }, 
+      questionsIds: section.questionsIds.map((question) => question.id)
+    }));
+  
+    await createForm({
+      ...data,
+      seccions: mergedSections,
+    });
+  };
 
 
   return (
@@ -32,9 +48,11 @@ export default function CreateQuestionPage() {
       control={control}
       errors={errors}
       handleSubmit={handleSubmit}
-      onSubmit={handleCreateQuestion}
+      onSubmit={handleCreateForm}
       register={register}
       watch={watch}
+      setFormSections={setFormSections}
+      formSections={formSections}
       />
     </div>
   )

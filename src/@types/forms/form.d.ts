@@ -2,12 +2,12 @@ interface Form {
   title: string
   description: string
   type: string
-  seccion: Section[]
+  seccions: Section[]
 }
 
 interface Section {
   id: number
   title: string
   rule: Rule | any
-  questions: Question[]
+  questionsIds: any[]
 }
