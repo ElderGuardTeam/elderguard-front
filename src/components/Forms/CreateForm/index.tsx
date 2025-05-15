@@ -52,7 +52,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
   const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [modalTable, setModalTable] = useState('DataTable');
-  const [activeSectionId, setActiveSectionId] = useState<number | null>(null);
+  const [activeSectionId, setActiveSectionId] = useState<number | null | undefined>(null);
 
 
   const handleSearch = () => {
@@ -78,11 +78,12 @@ const CreateForm: React.FC<ICreateFormProps> = ({
     setFormSections(prev => [...prev, { questionsIds: [], title: '', rule:{}, id: index + 1 }]);
   };
 
-  const handleDeleteSection = (sectionId: number) => {
+  const handleDeleteSection = (sectionId: number | undefined) => {
+    if (!sectionId) return
     setFormSections(prev => prev.filter(section => section.id !== sectionId));
   };
 
-  const handleAddQuestionToSection = (sectionId: number | null, question: QuestionDetails) => {
+  const handleAddQuestionToSection = (sectionId: number | null | undefined, question: QuestionDetails) => {
     if (!sectionId) return
     setFormSections(prev =>
       prev.map(section =>
@@ -94,7 +95,8 @@ const CreateForm: React.FC<ICreateFormProps> = ({
   };
 
 
-  const handleRemoveQuestionFromSection = (sectionId: number, questionId: string) => {
+  const handleRemoveQuestionFromSection = (sectionId: number | undefined, questionId: string) => {
+    if(!sectionId) return
     setFormSections(prev =>
       prev.map(section =>
         section.id === sectionId
@@ -104,7 +106,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
     );
   };
 
-  const handleSectionTitleChange = (sectionId: number, newTitle: string) => {
+  const handleSectionTitleChange = (sectionId: number | undefined, newTitle: string) => {
     setFormSections(prev =>
       prev.map(section =>
         section.id === sectionId
@@ -114,7 +116,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
     );
   };
 
-  const handleAddOrResetRule = (sectionId: number | null) => {
+  const handleAddOrResetRule = (sectionId: number | null | undefined) => {
     if(!sectionId) return
     const emptyRule: Rule = {
       id: String(Date.now()),

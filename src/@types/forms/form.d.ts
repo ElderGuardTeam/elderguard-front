@@ -6,8 +6,17 @@ interface Form {
 }
 
 interface Section {
-  id: number
+  id?: number
   title: string
   rule: Rule | any
   questionsIds: any[]
+}
+
+interface FormList {
+  id: string
+  title: string
+  description: string
+  type: string
+  created: string
+  updated: string
 }

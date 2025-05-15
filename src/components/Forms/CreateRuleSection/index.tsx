@@ -10,7 +10,7 @@ interface ICreateRuleSectionFormProps {
   register: UseFormRegister<Form>
   errors: any;
   watch: any;
-  index: number
+  index?: number
   handleRemoveRule: (sectionId: number) => void
 }
 
@@ -18,7 +18,7 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
   register,
   errors,
   watch,
-  index,
+  index = 0,
   handleRemoveRule
 }) => {
 

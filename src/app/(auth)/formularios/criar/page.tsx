@@ -25,15 +25,23 @@ export default function CreateQuestionPage() {
 
 
   const handleCreateForm = async (data: Form) => {
-    const mergedSections = formSections.map((section, index) => ({
-      ...section,
-      rule: {
-        ...data.seccions?.[index+1]?.rule || section.rule,
-        value1: data.seccions?.[index+1]?.rule.value1 ?  Number(data.seccions?.[index+1]?.rule.value1) : null,
-        value2: data.seccions?.[index+1]?.rule.value2 ? Number(data.seccions?.[index+1]?.rule.value2) : null,
-      }, 
-      questionsIds: section.questionsIds.map((question) => question.id)
-    }));
+    const mergedSections = formSections.map((section, index) => {
+      const { id, ...rest } = section; // Remove o `id`
+  
+      return {
+        ...rest,
+        rule: {
+          ...(data.seccions?.[index + 1]?.rule || section.rule),
+          value1: data.seccions?.[index + 1]?.rule?.value1
+            ? Number(data.seccions[index + 1].rule.value1)
+            : null,
+          value2: data.seccions?.[index + 1]?.rule?.value2
+            ? Number(data.seccions[index + 1].rule.value2)
+            : null,
+        },
+        questionsIds: section.questionsIds.map((question) => question.id),
+      };
+    });
   
     await createForm({
       ...data,

@@ -13,20 +13,20 @@ import { formatDate } from "@/utils/formatters/formateDate";
 export default function Questions() {
 
   const {
-    fetchQuestions,
-    questions,
-    searchQuestions
+    fetchForms,
+    forms,
+    searchForms
   } = useForms()
 
   useEffect(() => {
-    fetchQuestions()
+    fetchForms()
   }, [])
 
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = () => {
-    searchQuestions(searchTerm)
+    searchForms(searchTerm)
   }
 
 
@@ -91,8 +91,8 @@ export default function Questions() {
           cell: (row: { updated: any }) => formatDate(row.updated),
         },
       ]}
-      data={questions}
-      onRowClicked={(row:Professional) => router.push(`/questoes/${row.id}`)}
+      data={forms}
+      onRowClicked={(row:Professional) => router.push(`/forms/${row.id}`)}
       />
     </div>
   );

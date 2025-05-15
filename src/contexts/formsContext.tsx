@@ -17,8 +17,11 @@ type FormsContextType = {
   editQuestion: (question: Question, id: string) => Promise<void>
   searchQuestions: (searchTerm: string) => Promise<void>
   createForm: (data:Form) => Promise<void>
+  fetchForms: () => Promise<void>
+  searchForms: (searchTerm: string) => Promise<void>
   questions: QuestionList[]
   questionDetails: QuestionDetails
+  forms: FormList[]
 }
 
 export const FormsContext = createContext({} as FormsContextType)
@@ -27,6 +30,7 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const [questions, setQuestions] = useState<QuestionList[]>([])
   const [questionDetails, setQuestionDetails] = useState<QuestionDetails>({} as QuestionDetails)
+  const [forms, setForms] = useState<FormList[]>([])
 
   async function createQuestion(data: Question) {
     api.post('/question', {
@@ -107,6 +111,22 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  async function fetchForms() {
+    api.get('/form').then((response) => {
+      setForms(response.data)
+    }).catch((error) => {
+      toastError('Erro ao buscar formulários', false)
+    })
+  }
+
+  async function searchForms(searchTerm: string) {
+    api.get(`/form?search=${searchTerm}`).then((response) => {
+      setForms(response.data)
+    }).catch((error) => {
+      toastError('Erro ao buscar formulários', false)
+    })
+  }
+
   return (
     <FormsContext.Provider
       value={{
@@ -118,7 +138,10 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       deleteQuestion,
       editQuestion,
       searchQuestions,
-      createForm
+      createForm,
+      fetchForms,
+      forms,
+      searchForms
       }}
     >
       {children}
