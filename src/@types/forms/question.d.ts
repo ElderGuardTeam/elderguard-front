@@ -2,8 +2,8 @@ interface Question {
   title: string;
   description: string;
   type: string;
-  options?: QuestionOption[];
   rule?: Rule
+  options?: QuestionOption[];
 }
 
 interface QuestionOption {
@@ -32,15 +32,15 @@ interface QuestionDetails {
 }
 
 interface Rule {
-  id?: string
+  id?: string | undefined
   type?: string | null
-  maxScore?: number | null | number
-  operation?: string | null
-  condition?: string | null
-  value1Type?: string | null
-  value2Type?: string | null
-  value1?: number | null | number
-  value2?: number | null | number
-  valueIf?: number | null
-  valueThen?: number | null
+  maxScore?: number | null | undefined
+  operation?: string | null| undefined
+  condition?: string | null| undefined
+  value1Type?: string | null| undefined
+  value2Type?: string | null| undefined
+  value1?: number | null | undefined
+  value2?: number | null| undefined
+  valueIf?: number | null| undefined
+  valueThen?: number | null| undefined
 }

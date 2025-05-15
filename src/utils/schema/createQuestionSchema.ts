@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ruleSchema } from "./createRuleSchema";
 
 const CreateQuestionSchema = z.object({
   title: z.string({
@@ -29,6 +30,7 @@ const CreateQuestionSchema = z.object({
       )
     })
   ).optional(),
+  rule: ruleSchema.optional()
 });
 
 export default CreateQuestionSchema;

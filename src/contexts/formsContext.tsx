@@ -31,6 +31,12 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   async function createQuestion(data: Question) {
     api.post('/question', {
       ...data,
+      rule: {
+        ...data.rule,
+        maxScore: data.rule?.maxScore ? Number(data.rule?.maxScore) : null,
+        value1: data.rule?.value1? Number(data.rule?.value1) : null,
+        value2: data.rule?.value2 ? Number(data.rule?.value2) : null
+      },
       options: data.options?.map((option) => ({
         description: option.description,
         score: Number(option.score),

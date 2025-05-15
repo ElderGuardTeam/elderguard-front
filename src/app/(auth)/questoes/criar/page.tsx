@@ -22,9 +22,7 @@ export default function CreateQuestionPage() {
     control, 
     watch,
     reset
-  } = useForm<Question>({
-    resolver: zodResolver(CreateQuestionSchema),
-  })
+  } = useForm<Question>()
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -44,6 +42,7 @@ export default function CreateQuestionPage() {
 
 
   const handleCreateQuestion = async (data: Question) => {
+    console.log(data)
     await createQuestion(data)
   }
 
