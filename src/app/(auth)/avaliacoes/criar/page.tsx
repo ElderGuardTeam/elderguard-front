@@ -1,5 +1,6 @@
 'use client'
 
+import CreateEvaluation from "@/components/Forms/CreateEvaluation"
 import CreateForm from "@/components/Forms/CreateForm"
 import CreateQuestion from "@/components/Forms/CreateQuestion"
 import { useForms } from "@/contexts/formsContext"
@@ -22,6 +23,7 @@ export default function CreateQuestionPage() {
   } = useForm<Form>()
 
   const [formSections, setFormSections] = useState<Section[]>([])
+  const [formList, setFormList] = useState<QuestionDetails[]>([])
 
 
 
@@ -53,16 +55,14 @@ export default function CreateQuestionPage() {
 
   return (
     <div className="p-8 w-full">
-      <CreateForm
+      <CreateEvaluation
       control={control}
       errors={errors}
       handleSubmit={handleSubmit}
       onSubmit={handleCreateForm}
       register={register}
-      watch={watch}
-      setFormSections={setFormSections}
-      formSections={formSections}
-      reset={reset}
+      formList={formList}
+      setFormList={setFormList}
       />
     </div>
   )

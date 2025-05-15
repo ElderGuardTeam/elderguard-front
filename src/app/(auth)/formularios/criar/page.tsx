@@ -17,7 +17,8 @@ export default function CreateQuestionPage() {
     handleSubmit,
     formState: { errors },
     control, 
-    watch
+    watch,
+    reset
   } = useForm<Form>()
 
   const [formSections, setFormSections] = useState<Section[]>([])
@@ -61,6 +62,7 @@ export default function CreateQuestionPage() {
       watch={watch}
       setFormSections={setFormSections}
       formSections={formSections}
+      reset={reset}
       />
     </div>
   )

@@ -20,7 +20,7 @@ import { UseFormRegister, UseFormReset, useForm } from "react-hook-form";
 import CreateRule from "../CreateRule";
 import CreateRuleSection from "../CreateRuleSection";
 
-interface ICreateFormProps {
+interface ICreateEvaluationProps {
   handleSubmit: any;
   onSubmit: (data: Form) => Promise<void>;
   register: UseFormRegister<Form>
@@ -29,120 +29,54 @@ interface ICreateFormProps {
   isEditing?: boolean;
   formTitle?: string;
   deleteQuestion?: () => Promise<void>;
-  watch: any
-  formSections: Section[]
-  setFormSections: Dispatch<SetStateAction<Section[]>>
-  reset: UseFormReset<Form>
+  formList: QuestionDetails[]
+  setFormList: Dispatch<SetStateAction<QuestionDetails[]>>
 }
 
-const CreateForm: React.FC<ICreateFormProps> = ({
+const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
   handleSubmit,
   onSubmit,
   register,
   errors,
-  control,
   isEditing,
   formTitle,
   deleteQuestion,
-  watch,
-  formSections,
-  setFormSections, 
-  reset
+  formList,
+  setFormList
 }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [modalTable, setModalTable] = useState('DataTable');
-  const [activeSectionId, setActiveSectionId] = useState<number | null | undefined>(null);
-  const [hasRule, setHasRule] = useState(false)
-
 
   const handleSearch = () => {
     searchQuestions(searchTerm)
   }
   const {
-    fetchQuestions,
-    questions,
+    fetchForms,
+    forms,
     searchQuestions,
-    getQuestionById,
+    getFormById,
     questionDetails,
   } = useForms()
 
   useEffect(() => {
-    fetchQuestions()
+    fetchForms()
   }, [])
 
 
 
 
-  const handleAddSection = () => {
-    const index = formSections.length
-    setFormSections(prev => [...prev, { questionsIds: [], title: '', rule:{}, id: index + 1 }]);
-  };
-
-  const handleDeleteSection = (sectionId: number | undefined) => {
-    if (!sectionId) return
-    setFormSections(prev => prev.filter(section => section.id !== sectionId));
-  };
-
-  const handleAddQuestionToSection = (sectionId: number | null | undefined, question: QuestionDetails) => {
-    if (!sectionId) return
-    setFormSections(prev =>
-      prev.map(section =>
-        section.id === sectionId && !section.questionsIds.some((q: any) => q.id === question.id)
-          ? { ...section, questionsIds: [...section.questionsIds, question] }
-          : section
-      )
-    );
-  };
-
-
-  const handleRemoveQuestionFromSection = (sectionId: number | undefined, questionId: string) => {
-    if(!sectionId) return
-    setFormSections(prev =>
-      prev.map(section =>
-        section.id === sectionId
-          ? { ...section, questions: section.questionsIds.filter((q: any) => q.id !== questionId) }
-          : section
-      )
-    );
-  };
-
-  const handleSectionTitleChange = (sectionId: number | undefined, newTitle: string) => {
-    setFormSections(prev =>
-      prev.map(section =>
-        section.id === sectionId
-          ? { ...section, title: newTitle }
-          : section
-      )
-    );
-  };
-
-  const handleAddOrResetRule = (sectionId: number | null | undefined) => {
-    if(!sectionId) return
-    const emptyRule: Rule = {
-      id: String(Date.now()),
-    };
-    setFormSections(prev =>
-      prev.map(section =>
-        section.id === sectionId
-          ? { ...section, rule: emptyRule }
-          : section
-      )
-    );
-  };
-
-  const handleRemoveRule = (sectionId: number) => {
-    setFormSections(prev =>
-      prev.map(section =>
-        section.id === sectionId
-          ? { ...section, rule: undefined }
-          : section
-      )
-    );
-  };
-  
+  const handleAddForm = async (questionDetails: QuestionDetails) => {
+    setFormList((prevState) => {
+      const questionExists = prevState.some((question) => question.id === questionDetails.id);
+      if (!questionExists) {
+        return [...prevState, questionDetails];
+      }
+      return prevState;
+    });
+  }
 
   
   return (
@@ -152,7 +86,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
           <FontAwesomeIcon icon={faChevronLeft} />
         </div>
         {
-            formTitle ? `Editar ${formTitle}` : 'Novo Formulário'
+            formTitle ? `Editar ${formTitle}` : 'Nova Avaliação'
           }
       </h1>
       <div>
@@ -169,82 +103,23 @@ const CreateForm: React.FC<ICreateFormProps> = ({
         inputClass="input input-bordered h-24"
         error={errors.description?.message}
         />
-        <FormGroup
-        labelText="Tipo"
-        isRequired
-        register={register('type')}
-        />
-        <Button type="button" className="btn-success text-white my-2" onClick={handleAddSection}>
-          <FontAwesomeIcon icon={faPlus} /> Adicionar Sessão
-        </Button>
-        <br/>
-        {formSections.map(section => (
-          <fieldset key={section.id} className="border border-gray-300 p-4 rounded mb-4">
-            <legend className="text-sm font-bold">Sessão {section.title}</legend>
-            <Label labelText="Título">
-              <Input
-              value={section.title}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSectionTitleChange(section.id, e.target.value)}
-              />
-            </Label>
-            <Button type="button" className="btn-success text-white my-2" onClick={() => {
-              setIsQuestionModalOpen(true)
-              setActiveSectionId(section.id)
-              }}>
-              <FontAwesomeIcon icon={faPlus}/> Adicionar Questão
-            </Button> 
-            {section.questionsIds.map((question: any) => (
+        <Button type="button" className="btn-success text-white my-2" onClick={() => {
+          setIsQuestionModalOpen(true)
+          }}>
+          <FontAwesomeIcon icon={faPlus}/> Adicionar Formulário
+        </Button> 
+        {formList.map((question: any) => (
               <fieldset key={question.id} className="border border-base-300 rounded p-2 gap-4 my-4 text-xs">
                 {setQuestionComponent(question)}
                 <Button
                   type="button"
                   className="btn-error text-white mt-2"
-                  onClick={() => handleRemoveQuestionFromSection(section.id, question.id)}
+                  onClick={() => setFormList(formList.filter((q) => q.id !== question.id))}
                 >
                   Remover Questão
                 </Button>
               </fieldset>
             ))}
-          <br/>
-          <Button type="button" className="btn-success text-white mt-2" onClick={() => {
-            handleAddOrResetRule(section.id)
-            }}>
-            Adicionar Regra
-          </Button>
-          <br/>
-          {
-            section?.rule?.id && (
-              <CreateRuleSection
-              errors={errors}
-              index={section.id}
-              register={register}
-              watch={watch}  
-              handleRemoveRule={handleRemoveRule}
-              />
-            )
-          }
-          <Button
-            type="button"
-            className="btn-error w-fit text-white mt-2"
-            onClick={() => handleDeleteSection(section.id)}
-          >
-            <FontAwesomeIcon icon={faTrash}/>
-          </Button>
-          </fieldset>
-        ))}
-        <Button type="button" className="btn-success text-white mt-2" onClick={() => setHasRule(true)}>
-          Adicionar Regra
-        </Button>
-        {
-          hasRule && (
-          <CreateRule
-          errors={errors}
-          register={register}
-          watch={watch}
-          setHasRule={setHasRule}
-          reset={reset}
-          />)
-        }
         <div className="flex item-center justify-between mt-4">
           <div>
             <Button type="submit" className="btn-success text-white">
@@ -286,7 +161,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
       isOpen={isQuestionModalOpen}
       onClose={() => setIsQuestionModalOpen(false)}
       className="w-3/4 "
-      headerText="Adicionar Questão"
+      headerText="Adicionar Formulário"
       >
         {
           modalTable === 'DataTable' && (
@@ -335,7 +210,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
                       className="bg-salmon text-white"
                       type="button"
                       onClick={() => {
-                        getQuestionById(row.id)
+                        getFormById(row.id)
                         setModalTable('QuestionDetails')
                       }}
                       >
@@ -346,7 +221,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
                 }
               }
             ]}
-            data={questions}
+            data={forms}
             />
             </>
           )
@@ -361,7 +236,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
                 </Button>
                 <Button type="button" className="btn-link " onClick={() => {
                   setModalTable('DataTable')
-                  handleAddQuestionToSection(activeSectionId, questionDetails)
+                  handleAddForm(questionDetails)
                 }}>
                   Adicionar
                 </Button>
@@ -374,4 +249,4 @@ const CreateForm: React.FC<ICreateFormProps> = ({
   )
 }
 
-export default CreateForm;
+export default CreateEvaluation;

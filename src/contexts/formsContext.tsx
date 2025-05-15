@@ -19,6 +19,7 @@ type FormsContextType = {
   createForm: (data:Form) => Promise<void>
   fetchForms: () => Promise<void>
   searchForms: (searchTerm: string) => Promise<void>
+  getFormById: (id: string) => Promise<void>
   questions: QuestionList[]
   questionDetails: QuestionDetails
   forms: FormList[]
@@ -127,6 +128,15 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  async function getFormById(id: string) {
+    api.get(`/form/${id}`).then((response) => {
+      console.log(response.data)
+    }).catch((error) => {
+      toastError('Erro ao buscar questão', false)
+    })
+  }
+
+
   return (
     <FormsContext.Provider
       value={{
@@ -141,7 +151,8 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       createForm,
       fetchForms,
       forms,
-      searchForms
+      searchForms,
+      getFormById
       }}
     >
       {children}

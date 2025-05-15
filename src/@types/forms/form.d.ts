@@ -3,6 +3,8 @@ interface Form {
   description: string
   type: string
   seccions: Section[]
+  rule?: Rule | any
+  questionsIds?: any[]
 }
 
 interface Section {

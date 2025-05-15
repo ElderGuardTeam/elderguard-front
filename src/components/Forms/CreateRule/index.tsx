@@ -7,11 +7,11 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { UseFormRegister, UseFormReset, UseFormSetValue } from "react-hook-form";
 
 interface ICreateRuleFormProps {
-  register: UseFormRegister<Question>
+  register: UseFormRegister<any>
   errors: any;
   watch: any;
   setHasRule: Dispatch<SetStateAction<boolean>>
-  reset: UseFormReset<Question>
+  reset: UseFormReset<any>
 }
 
 const CreateRule: React.FC<ICreateRuleFormProps> = ({
