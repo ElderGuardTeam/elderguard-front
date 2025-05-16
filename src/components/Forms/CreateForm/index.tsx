@@ -250,7 +250,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
             <Button type="submit" className="btn-success text-white">
               Salvar
             </Button>
-            <Button type="button" className="btn-link " onClick={() => router.push('/questoes')}>
+            <Button type="button" className="btn-link " onClick={() => router.push('/formularios')}>
               Cancelar
             </Button>
           </div>

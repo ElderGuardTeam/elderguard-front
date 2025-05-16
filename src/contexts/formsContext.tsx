@@ -23,6 +23,7 @@ type FormsContextType = {
   questions: QuestionList[]
   questionDetails: QuestionDetails
   forms: FormList[]
+  formDetails: FormDetails
 }
 
 export const FormsContext = createContext({} as FormsContextType)
@@ -32,6 +33,7 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   const [questions, setQuestions] = useState<QuestionList[]>([])
   const [questionDetails, setQuestionDetails] = useState<QuestionDetails>({} as QuestionDetails)
   const [forms, setForms] = useState<FormList[]>([])
+  const [formDetails, setFormDetails] = useState<FormDetails>({} as FormDetails)
 
   async function createQuestion(data: Question) {
     api.post('/question', {
@@ -107,7 +109,9 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   async function createForm(data: Form) {
     api.post('/form', data).then((response) => {
       toastSuccess('Formulário criado com sucesso', 5000)
-    }).catch((error) => {
+      router.push('/formularios')
+    })
+    .catch((error) => {
       toastError('Erro ao criar formulário', false)
     })
   }
@@ -130,7 +134,7 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
 
   async function getFormById(id: string) {
     api.get(`/form/${id}`).then((response) => {
-      console.log(response.data)
+      setFormDetails(response.data)
     }).catch((error) => {
       toastError('Erro ao buscar questão', false)
     })
@@ -152,7 +156,8 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       fetchForms,
       forms,
       searchForms,
-      getFormById
+      getFormById,
+      formDetails
       }}
     >
       {children}

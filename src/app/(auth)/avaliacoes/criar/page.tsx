@@ -23,13 +23,13 @@ export default function CreateQuestionPage() {
   } = useForm<Form>()
 
   const [formSections, setFormSections] = useState<Section[]>([])
-  const [formList, setFormList] = useState<QuestionDetails[]>([])
+  const [formList, setFormList] = useState<FormDetails[]>([])
 
 
 
   const handleCreateForm = async (data: Form) => {
     const mergedSections = formSections.map((section, index) => {
-      const { id, ...rest } = section; // Remove o `id`
+      const { id, ...rest } = section; 
   
       return {
         ...rest,

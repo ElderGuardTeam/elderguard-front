@@ -5,7 +5,7 @@ import Label from "@/components/Label"
 import SelectFormGroup from "@/components/SelectFormGroup"
 import { useForm } from "react-hook-form"
 
-export const setQuestionComponent = (questionDetails: QuestionDetails) => {
+export const setQuestionComponent = (questionDetails: QuestionDetails | Question) => {
 
   switch (questionDetails.type) {
     case 'TEXT':

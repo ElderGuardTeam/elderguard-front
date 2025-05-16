@@ -22,3 +22,34 @@ interface FormList {
   created: string
   updated: string
 }
+
+
+interface FormDetails{
+  id: string
+  title: string
+  ruleId?: string
+  formId: string
+  created: string
+  updated: string
+  questionsRel: QuestionsRel[]
+  seccions: SectionDetails[]
+  rule?: Rule
+}
+
+interface QuestionsRel {
+  seccionId: string
+  questionId: string
+  question: Question
+}
+
+interface SectionDetails {
+  id: string
+  title: string
+  ruleId: string
+  formId: string
+  created: string
+  updated: string
+  questionsRel: QuestionsRel[]
+  rule: Rule
+}
+

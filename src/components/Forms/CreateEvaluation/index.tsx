@@ -29,8 +29,8 @@ interface ICreateEvaluationProps {
   isEditing?: boolean;
   formTitle?: string;
   deleteQuestion?: () => Promise<void>;
-  formList: QuestionDetails[]
-  setFormList: Dispatch<SetStateAction<QuestionDetails[]>>
+  formList: FormDetails[]
+  setFormList: Dispatch<SetStateAction<FormDetails[]>>
 }
 
 const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
@@ -51,14 +51,14 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
   const [modalTable, setModalTable] = useState('DataTable');
 
   const handleSearch = () => {
-    searchQuestions(searchTerm)
+    searchForms(searchTerm)
   }
   const {
     fetchForms,
     forms,
-    searchQuestions,
+    searchForms,
     getFormById,
-    questionDetails,
+    formDetails,
   } = useForms()
 
   useEffect(() => {
@@ -68,11 +68,11 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
 
 
 
-  const handleAddForm = async (questionDetails: QuestionDetails) => {
+  const handleAddForm = async (formDetails: FormDetails) => {
     setFormList((prevState) => {
-      const questionExists = prevState.some((question) => question.id === questionDetails.id);
+      const questionExists = prevState.some((question) => question.id === formDetails.id);
       if (!questionExists) {
-        return [...prevState, questionDetails];
+        return [...prevState, formDetails];
       }
       return prevState;
     });
@@ -108,9 +108,14 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
           }}>
           <FontAwesomeIcon icon={faPlus}/> Adicionar Formulário
         </Button> 
-        {formList.map((question: any) => (
+        {formList.map((question: FormDetails) => (
               <fieldset key={question.id} className="border border-base-300 rounded p-2 gap-4 my-4 text-xs">
-                {setQuestionComponent(question)}
+                <p>
+                  {question.title}
+                </p>
+                {/* <p>
+                  {question.}
+                </p> */}
                 <Button
                   type="button"
                   className="btn-error text-white mt-2"
@@ -229,14 +234,43 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
         {
           modalTable === 'QuestionDetails' && (
             <>
-              {setQuestionComponent(questionDetails)}
+              {formDetails?.seccions?.map((section, sectionIndex) => (
+  <div key={section.id} className="mb-8 border border-gray-200 rounded-lg p-4 shadow-sm">
+    <h2 className="text-lg font-bold mb-2">Sessão {sectionIndex + 1}: {section.title}</h2>
+
+    {/* Exibir informações da regra da seção, se houver */}
+    {section.rule && (
+      <div className="mb-4 text-sm text-gray-600 bg-gray-50 p-2 rounded">
+        <strong>Regra:</strong> {section.rule.type} (
+        {section.rule.value1} {section.rule.condition} {section.rule.value2})
+      </div>
+    )}
+
+    {/* Questões da sessão */}
+    {section.questionsRel.length > 0 ? (
+      section.questionsRel.map((rel, questionIndex) => (
+        <div key={rel.question.id} className="mb-4">
+          <label className="block text-md font-medium mb-1">
+            {questionIndex + 1}. {rel.question.title}
+          </label>
+          <p className="text-sm text-gray-500 mb-2">{rel.question.description}</p>
+          {/* Componente dinâmico baseado no tipo da questão */}
+          {setQuestionComponent(rel.question)}
+        </div>
+      ))
+    ) : (
+      <p className="text-sm italic text-gray-400">Nenhuma questão nesta sessão.</p>
+    )}
+  </div>
+))}
+
               <div className="flex gap-2 mt-4">
                 <Button type="button" className="btn-error text-white" onClick={() => setModalTable('DataTable')}>
                   Voltar
                 </Button>
                 <Button type="button" className="btn-link " onClick={() => {
                   setModalTable('DataTable')
-                  handleAddForm(questionDetails)
+                  handleAddForm(formDetails)
                 }}>
                   Adicionar
                 </Button>
