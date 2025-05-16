@@ -41,19 +41,21 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
       )
     case 'MULTISELECT':
       return (
-        <>
+        <div className="space-y-2">
         {questionDetails.options?.map((option) => (
-          <Label labelText={option.description}>
+          <div className="flex items-center gap-2">
             <Checkbox value={option.questionId}/>
-          </Label>
+            <Label labelText={option.description}/>
+          </div>
         ))}
-        </>
+        </div>
       )
     case 'BOOLEAN':
       return (
-        <Label labelText={questionDetails.description}>
+        <div>
           <Checkbox />
-        </Label>
+          <Label labelText={questionDetails.description}/>
+        </div>
       )
     default:
       return null

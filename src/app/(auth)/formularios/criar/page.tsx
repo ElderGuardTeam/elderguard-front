@@ -27,7 +27,7 @@ export default function CreateQuestionPage() {
 
   const handleCreateForm = async (data: Form) => {
     const mergedSections = formSections.map((section, index) => {
-      const { id, ...rest } = section; // Remove o `id`
+      const { id, ...rest } = section; 
   
       return {
         ...rest,
@@ -39,6 +39,9 @@ export default function CreateQuestionPage() {
           value2: data.seccions?.[index + 1]?.rule?.value2
             ? Number(data.seccions[index + 1].rule.value2)
             : null,
+          maxScore: data.seccions?.[index + 1]?.rule?.maxScore
+          ? Number(data.seccions[index + 1].rule.maxScore)
+          : null,
         },
         questionsIds: section.questionsIds.map((question) => question.id),
       };
@@ -47,6 +50,12 @@ export default function CreateQuestionPage() {
     await createForm({
       ...data,
       seccions: mergedSections,
+      rule: {
+        ...data.rule,
+        maxScore: data.rule?.maxScore ? Number(data.rule?.maxScore) : null,
+        value1: data.rule?.value1? Number(data.rule?.value1) : null,
+        value2: data.rule?.value2 ? Number(data.rule?.value2) : null
+      }
     });
   };
 

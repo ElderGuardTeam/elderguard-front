@@ -62,8 +62,8 @@ const DataTableComponent: React.FC<IDataTableProps> = ({
         }
         />
       }
-      paginationPerPage={20}
-      paginationRowsPerPageOptions={[20, 50, 100, 1000]}
+      paginationPerPage={10}
+      paginationRowsPerPageOptions={[10, 20, 50, 100, 1000]}
       paginationComponentOptions={
         {
           rowsPerPageText: 'Itens por página',

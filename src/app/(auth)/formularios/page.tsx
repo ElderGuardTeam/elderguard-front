@@ -92,7 +92,7 @@ export default function Questions() {
         },
       ]}
       data={forms}
-      onRowClicked={(row:Professional) => router.push(`/forms/${row.id}`)}
+      onRowClicked={(row:Professional) => router.push(`/formularios/${row.id}`)}
       />
     </div>
   );
