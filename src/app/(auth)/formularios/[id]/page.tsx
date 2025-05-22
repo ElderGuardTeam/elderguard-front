@@ -3,13 +3,14 @@
 import CreateForm from "@/components/Forms/CreateForm"
 import CreateQuestion from "@/components/Forms/CreateQuestion"
 import { useForms } from "@/contexts/formsContext"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 import { validateCPF } from 'validations-br'
 
-export default function CreateQuestionPage() {
+export default function CreateQuestionPage({params}: {params: {id: string}}) {
   const {
-    createForm
+    getFormById,
+    formDetails
   } = useForms()
 
   const {
@@ -18,16 +19,29 @@ export default function CreateQuestionPage() {
     formState: { errors },
     control, 
     watch,
-    reset
+    reset, 
+    setValue
   } = useForm<Form>()
 
   const [formSections, setFormSections] = useState<Section[]>([])
 
+  useEffect(() => {
+    getFormById(params.id)
+  }, [params.id])
 
+  useEffect(() => {
+    if (formDetails) {
+      setValue("rule", formDetails.rule)
+      setValue("description", formDetails.description)
+      setValue("type", formDetails.type)
+      setValue("title", formDetails.title)
+      
+    }
+  }, [formDetails])
 
   const handleCreateForm = async (data: Form) => {
     const mergedSections = formSections.map((section, index) => {
-      const { id, ...rest } = section; // Remove o `id`
+      const { id, ...rest } = section; 
   
       return {
         ...rest,
@@ -43,11 +57,16 @@ export default function CreateQuestionPage() {
         questionsIds: section.questionsIds.map((question) => question.id),
       };
     });
+
+    console.log({
+        ...data,
+        seccions: mergedSections,
+      })
   
-    await createForm({
-      ...data,
-      seccions: mergedSections,
-    });
+    // await createForm({
+    //   ...data,
+    //   seccions: mergedSections,
+    // });
   };
 
 

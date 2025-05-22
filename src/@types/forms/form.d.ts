@@ -27,6 +27,8 @@ interface FormList {
 interface FormDetails{
   id: string
   title: string
+  type: string
+  description: string
   ruleId?: string
   formId: string
   created: string

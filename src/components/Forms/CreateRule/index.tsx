@@ -22,10 +22,9 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
   reset
 }) => {
 
-  const [value1Type, setValue1Type] = useState('');
-  const [value2Type, setValue2Type] = useState('');
-
   const watchRuleType = watch('rule.type');
+  const watchValue1Type = watch('rule.value1Type')
+  const watchValue2Type = watch('rule.value2Type')
 
   const handleRemoveRule = () => {
     setHasRule(false)
@@ -106,21 +105,19 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
         watchRuleType === 'ARITHMETIC' && (
         <>
           <div className="col-span-2 grid grid-cols-3 items-end gap-2">
-              <div className={`${ value1Type === 'value' && 'flex items-end gap-1'}`}>
+              <div className={`${ watchValue1Type === 'value' && 'flex items-end gap-1'}`}>
                 <SelectFormGroup
                 labelText="Valor 1"
                 options={[
                   { value: 'score', name: 'Pontuação' },
                   { value: 'value', name: 'Inserir valor' },
                 ]}
-                register={register('rule.value1Type',{
-                  onChange: (e) => setValue1Type(e.target.value)
-                })}
+                register={register('rule.value1Type')}
                 placeholder="Selecione"
-                className={`${ value1Type === 'value' && 'w-1/2'}`}
+                className={`${ watchValue1Type === 'value' && 'w-1/2'}`}
                 />
                 {
-                  value1Type === 'value' && (
+                  watchValue1Type === 'value' && (
                     <Input
                       placeholder="Digite o valor"
                       register={register('rule.value1')}
@@ -139,21 +136,19 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
                 register={register('rule.operation')}
               />
 
-              <div className={`${ value2Type === 'value' && 'flex items-end gap-1'}`}>
+              <div className={`${ watchValue2Type === 'value' && 'flex items-end gap-1'}`}>
               <SelectFormGroup
                 labelText="Valor 2"
                 options={[
                   { value: 'score', name: 'Pontuação' },
                   { value: 'value', name: 'Inserir valor' },
                 ]}
-                register={register('rule.value2Type',{
-                  onChange: (e) => setValue2Type(e.target.value)
-                })}
+                register={register('rule.value2Type')}
                 placeholder="Selecione"
-                className={`${ value2Type === 'value' && 'w-1/2'}`}
+                className={`${ watchValue2Type  === 'value' && 'w-1/2'}`}
                 />
                 {
-                  value2Type === 'value' && (
+                  watchValue2Type  === 'value' && (
                     <Input
                       placeholder="Digite o valor"
                       register={register('rule.value2')}

@@ -27,6 +27,7 @@ export default function CreatePatient({params}: {params: {id: string}}) {
       setValue('description', questionDetails.description)
       setValue('options', questionDetails.options)
       setValue('type', questionDetails.type)
+      setValue('rule', questionDetails.rule)
     }
   }, [questionDetails])
 
@@ -36,7 +37,8 @@ export default function CreatePatient({params}: {params: {id: string}}) {
     formState: { errors },
     control, 
     setValue,
-    watch
+    watch,
+    reset
   } = useForm<Question>({
     resolver: zodResolver(CreateQuestionSchema),
   })
@@ -75,11 +77,13 @@ export default function CreatePatient({params}: {params: {id: string}}) {
       register={register}
       questionTitle={questionDetails.title}
       isEditing
+      questionHasRule={questionDetails.rule ? true : false}
       deleteQuestion={handleDeleteQuestion}
       fields={fields}
       handleAddOption={handleAddOption}
       handleRemoveOption={handleRemoveOption}
       watch={watch}
+      reset={reset}
       />
     </div>
   )

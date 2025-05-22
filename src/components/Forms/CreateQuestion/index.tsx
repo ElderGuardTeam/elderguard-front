@@ -25,6 +25,7 @@ interface ICreateQuestionFormProps {
   handleAddOption: () => void;
   handleRemoveOption: (index: number) => void;
   reset: UseFormReset<Question>
+  questionHasRule?: boolean
 }
 
 const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
@@ -40,11 +41,12 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
   fields,
   handleAddOption,
   handleRemoveOption,
-  reset
+  reset,
+  questionHasRule = false
 }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const [hasRule, setHasRule] = useState(false)
+  const [hasRule, setHasRule] = useState(questionHasRule)
 
   const watchType = watch('type');
 
@@ -115,11 +117,16 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
             </div>
           )
         }
-        <Button type="button" className="btn-success text-white mt-2" onClick={() => setHasRule(true)}>
-          Adicionar Regra
-        </Button>
         {
-          hasRule && (
+          !questionHasRule && (
+            <Button type="button" className="btn-success text-white mt-2" onClick={() => setHasRule(true)}>
+              Adicionar Regra
+            </Button>
+          )
+        }
+        
+        {
+          (hasRule || questionHasRule) && (
           <CreateRule
           errors={errors}
           register={register}

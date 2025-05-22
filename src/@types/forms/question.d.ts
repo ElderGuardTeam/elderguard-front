@@ -30,6 +30,7 @@ interface QuestionDetails {
   created: string
   updated: string
   options?: QuestionOption[]
+  rule?: Rule
 }
 
 interface Rule {
