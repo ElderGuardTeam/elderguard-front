@@ -16,7 +16,7 @@ import { faChevronLeft, faEye, faPlus, faTrash } from "@fortawesome/free-solid-s
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { UseFormRegister, UseFormReset, useForm } from "react-hook-form";
+import { UseFormRegister, UseFormReset, UseFormSetValue, useForm } from "react-hook-form";
 import CreateRule from "../CreateRule";
 import CreateRuleSection from "../CreateRuleSection";
 
@@ -28,11 +28,11 @@ interface ICreateFormProps {
   control: any;
   isEditing?: boolean;
   formTitle?: string;
-  deleteQuestion?: () => Promise<void>;
+  deleteForm?: () => Promise<void>;
   watch: any
   formSections: Section[]
   setFormSections: Dispatch<SetStateAction<Section[]>>
-  reset: UseFormReset<Form>
+  setValue: UseFormSetValue<Form>
   formHasRule?: boolean
 }
 
@@ -41,14 +41,13 @@ const CreateForm: React.FC<ICreateFormProps> = ({
   onSubmit,
   register,
   errors,
-  control,
   isEditing,
   formTitle,
-  deleteQuestion,
+  deleteForm,
   watch,
   formSections,
   setFormSections, 
-  reset,
+  setValue,
   formHasRule = false
 }) => {
   const router = useRouter();
@@ -244,7 +243,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
           register={register}
           watch={watch}
           setHasRule={setHasRule}
-          reset={reset}
+          setValue={setValue}
           />)
         }
         <div className="flex item-center justify-between mt-4">
@@ -275,7 +274,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
           <h1 className="text-lg font-bold">Deseja realmente excluir?</h1>
           <p className="text-xs text-center">Essa ação não pode ser desfeita</p>
           <div className="flex gap-2 mt-4">
-            <Button type="button" className="btn-error text-white" onClick={deleteQuestion}>
+            <Button type="button" className="btn-error text-white" onClick={deleteForm}>
               Sim
             </Button>
             <Button type="button" className="btn-link " onClick={() => setIsOpen(false)}>

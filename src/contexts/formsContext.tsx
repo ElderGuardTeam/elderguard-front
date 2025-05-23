@@ -1,9 +1,6 @@
 'use client'
 import { createContext, useContext, useEffect, useState } from 'react'
-import { setCookie, parseCookies, destroyCookie } from 'nookies'
 import { useRouter } from 'next/navigation'
-import jwt from 'jsonwebtoken'
-import { useLoader } from './loaderContext'
 import { api } from '@/utils/lib/axios'
 import toastError from '@/utils/toast/toastError'
 import toastSuccess from '@/utils/toast/toastSuccess'
@@ -21,6 +18,7 @@ type FormsContextType = {
   searchForms: (searchTerm: string) => Promise<void>
   getFormById: (id: string) => Promise<void>
   createEvaluation: (data: Evaluation) => Promise<void>
+  deleteForm: (id: string) => Promise<void>
   questions: QuestionList[]
   questionDetails: QuestionDetails
   forms: FormList[]
@@ -133,6 +131,16 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  async function deleteForm(id: string) {
+    api.delete(`/form/${id}`).then((response) => {
+      toastSuccess('Formulário deletado com sucesso', 5000)
+      fetchQuestions()
+      router.push('/formularios')
+    }).catch((error) => {
+      toastError('Erro ao deletar formulário', false)
+    })
+  }
+
   async function getFormById(id: string) {
     api.get(`/form/${id}`).then((response) => {
       setFormDetails(response.data)
@@ -150,6 +158,8 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       toastError('Erro ao criar avaliação', false)
     })
   }
+
+  
 
 
   return (
@@ -169,7 +179,8 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       searchForms,
       getFormById,
       formDetails,
-      createEvaluation
+      createEvaluation,
+      deleteForm
       }}
     >
       {children}

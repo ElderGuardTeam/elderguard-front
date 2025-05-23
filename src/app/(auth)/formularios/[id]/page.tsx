@@ -10,7 +10,8 @@ import { validateCPF } from 'validations-br'
 export default function CreateQuestionPage({params}: {params: {id: string}}) {
   const {
     getFormById,
-    formDetails
+    formDetails,
+    deleteForm
   } = useForms()
 
   const {
@@ -68,6 +69,9 @@ export default function CreateQuestionPage({params}: {params: {id: string}}) {
     // });
   };
 
+  const handleDeleteForm = async () => {
+    deleteForm(formDetails.id ? formDetails.id : '')
+  }
 
   return (
     <div className="p-8 w-full">
@@ -80,7 +84,9 @@ export default function CreateQuestionPage({params}: {params: {id: string}}) {
       watch={watch}
       setFormSections={setFormSections}
       formSections={formSections}
-      reset={reset}
+      setValue={setValue}
+      isEditing
+      deleteForm={handleDeleteForm}
       />
     </div>
   )
