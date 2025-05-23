@@ -30,7 +30,7 @@ const CreateQuestionSchema = z.object({
       )
     })
   ).optional(),
-  rule: ruleSchema.optional()
+  rule: ruleSchema.optional().nullable()
 });
 
 export default CreateQuestionSchema;

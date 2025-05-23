@@ -11,7 +11,7 @@ interface ICreateRuleFormProps {
   errors: any;
   watch: any;
   setHasRule: Dispatch<SetStateAction<boolean>>
-  reset: UseFormReset<any>
+  setValue: UseFormSetValue<any>
 }
 
 const CreateRule: React.FC<ICreateRuleFormProps> = ({
@@ -19,7 +19,7 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
   errors,
   watch,
   setHasRule,
-  reset
+  setValue
 }) => {
 
   const watchRuleType = watch('rule.type');
@@ -28,20 +28,7 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
 
   const handleRemoveRule = () => {
     setHasRule(false)
-    reset({
-      rule: {
-        condition: null,
-        maxScore: null,
-        operation: null,
-        type: null,
-        value1: null,
-        value1Type: null,
-        value2: null,
-        value2Type: null,
-        valueIf: null,
-        valueThen: null
-      }
-    })
+    setValue('rule', null)
   }
 
   

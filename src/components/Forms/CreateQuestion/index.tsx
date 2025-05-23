@@ -8,7 +8,7 @@ import { faChevronLeft, faPlus } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { UseFormRegister, UseFormReset } from "react-hook-form";
+import { UseFormRegister, UseFormReset, UseFormSetValue } from "react-hook-form";
 import CreateRule from "../CreateRule";
 
 interface ICreateQuestionFormProps {
@@ -24,8 +24,8 @@ interface ICreateQuestionFormProps {
   fields: any;
   handleAddOption: () => void;
   handleRemoveOption: (index: number) => void;
-  reset: UseFormReset<Question>
   questionHasRule?: boolean
+  setValue: UseFormSetValue<Question>
 }
 
 const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
@@ -41,14 +41,20 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
   fields,
   handleAddOption,
   handleRemoveOption,
-  reset,
+  setValue,
   questionHasRule = false
 }) => {
   const router = useRouter();
+
   const [isOpen, setIsOpen] = useState(false);
   const [hasRule, setHasRule] = useState(questionHasRule)
 
+  console.log(questionHasRule)
+
   const watchType = watch('type');
+
+  console.log(errors)
+
 
   return (
     <form className="bg-white rounded p-4" onSubmit={handleSubmit(onSubmit)}>
@@ -118,7 +124,7 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
           )
         }
         {
-          !questionHasRule && (
+          !hasRule && (
             <Button type="button" className="btn-success text-white mt-2" onClick={() => setHasRule(true)}>
               Adicionar Regra
             </Button>
@@ -126,13 +132,13 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
         }
         
         {
-          (hasRule || questionHasRule) && (
+          hasRule && (
           <CreateRule
           errors={errors}
           register={register}
           watch={watch}
           setHasRule={setHasRule}
-          reset={reset}
+          setValue={setValue}
           />)
         }
         <div className="flex item-center justify-between mt-4">

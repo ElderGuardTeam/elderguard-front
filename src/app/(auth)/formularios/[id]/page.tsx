@@ -35,7 +35,6 @@ export default function CreateQuestionPage({params}: {params: {id: string}}) {
       setValue("description", formDetails.description)
       setValue("type", formDetails.type)
       setValue("title", formDetails.title)
-      
     }
   }, [formDetails])
 
