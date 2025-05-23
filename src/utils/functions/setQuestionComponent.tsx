@@ -42,6 +42,7 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
     case 'MULTISELECT':
       return (
         <div className="space-y-2">
+        <Label labelText={questionDetails.title}/>
         {questionDetails.options?.map((option) => (
           <div className="flex items-center gap-2">
             <Checkbox value={option.questionId}/>

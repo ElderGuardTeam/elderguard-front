@@ -20,6 +20,7 @@ type FormsContextType = {
   fetchForms: () => Promise<void>
   searchForms: (searchTerm: string) => Promise<void>
   getFormById: (id: string) => Promise<void>
+  createEvaluation: (data: Evaluation) => Promise<void>
   questions: QuestionList[]
   questionDetails: QuestionDetails
   forms: FormList[]
@@ -140,6 +141,16 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  async function createEvaluation(data: Evaluation) {
+    api.post('/evaluation', data).then((response) => {
+      toastSuccess('Avaliação criada com sucesso', 5000)
+      router.push('/avaliacoes')
+    })
+    .catch((error) => {
+      toastError('Erro ao criar avaliação', false)
+    })
+  }
+
 
   return (
     <FormsContext.Provider
@@ -157,7 +168,8 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       forms,
       searchForms,
       getFormById,
-      formDetails
+      formDetails,
+      createEvaluation
       }}
     >
       {children}

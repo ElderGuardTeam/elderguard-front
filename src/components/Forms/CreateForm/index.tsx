@@ -33,6 +33,7 @@ interface ICreateFormProps {
   formSections: Section[]
   setFormSections: Dispatch<SetStateAction<Section[]>>
   reset: UseFormReset<Form>
+  formHasRule?: boolean
 }
 
 const CreateForm: React.FC<ICreateFormProps> = ({
@@ -47,7 +48,8 @@ const CreateForm: React.FC<ICreateFormProps> = ({
   watch,
   formSections,
   setFormSections, 
-  reset
+  reset,
+  formHasRule = false
 }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +57,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [modalTable, setModalTable] = useState('DataTable');
   const [activeSectionId, setActiveSectionId] = useState<number | null | undefined>(null);
-  const [hasRule, setHasRule] = useState(false)
+  const [hasRule, setHasRule] = useState(formHasRule)
 
 
   const handleSearch = () => {
@@ -236,7 +238,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
           Adicionar Regra
         </Button>
         {
-          hasRule && (
+          (hasRule || !formHasRule) && (
           <CreateRule
           errors={errors}
           register={register}

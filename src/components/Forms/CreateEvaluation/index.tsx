@@ -19,11 +19,12 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { UseFormRegister, UseFormReset, useForm } from "react-hook-form";
 import CreateRule from "../CreateRule";
 import CreateRuleSection from "../CreateRuleSection";
+import { setRuleType } from "@/utils/functions/setRuleType";
 
 interface ICreateEvaluationProps {
   handleSubmit: any;
-  onSubmit: (data: Form) => Promise<void>;
-  register: UseFormRegister<Form>
+  onSubmit: (data: Evaluation) => Promise<void>;
+  register: UseFormRegister<Evaluation>
   errors: any;
   control: any;
   isEditing?: boolean;
@@ -108,23 +109,20 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
           }}>
           <FontAwesomeIcon icon={faPlus}/> Adicionar Formulário
         </Button> 
-        {formList.map((question: FormDetails) => (
-              <fieldset key={question.id} className="border border-base-300 rounded p-2 gap-4 my-4 text-xs">
-                <p>
-                  {question.title}
-                </p>
-                {/* <p>
-                  {question.}
-                </p> */}
-                <Button
-                  type="button"
-                  className="btn-error text-white mt-2"
-                  onClick={() => setFormList(formList.filter((q) => q.id !== question.id))}
-                >
-                  Remover Questão
-                </Button>
-              </fieldset>
-            ))}
+        {formList.map((form: FormDetails) => (
+              <fieldset key={form.id} className="border border-base-300 rounded p-2 gap-4 my-4 text-xs">
+                <p className="text-lg font-bold mb-1">{form?.title}</p>
+                <p className="text-sm text-gray-500">Descrição: {form?.description}</p>
+                <p className="text-sm text-gray-500 mb-2">Tipo: {form?.type}</p>
+                    <Button
+                      type="button"
+                      className="btn-error text-white mt-2"
+                      onClick={() => setFormList(formList.filter((q) => q.id !== form.id))}
+                    >
+                      Remover Formulário
+                    </Button>
+                  </fieldset>
+                ))}
         <div className="flex item-center justify-between mt-4">
           <div>
             <Button type="submit" className="btn-success text-white">
@@ -234,47 +232,41 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
         {
           modalTable === 'QuestionDetails' && (
             <>
+            <fieldset className="border border-base-300 rounded p-2 gap-4 my-4 text-xs">
+            <p className="text-lg font-bold mb-1">{formDetails?.title}</p>
+            <p className="text-sm text-gray-500">Descrição: {formDetails?.description}</p>
+            <p className="text-sm text-gray-500 mb-2">Tipo: {formDetails?.type}</p>
               {formDetails?.seccions?.map((section, sectionIndex) => (
-  <div key={section.id} className="mb-8 border border-gray-200 rounded-lg p-4 shadow-sm">
-    <h2 className="text-lg font-bold mb-2">Sessão {sectionIndex + 1}: {section.title}</h2>
-
-    {/* Exibir informações da regra da seção, se houver */}
-    {section.rule && (
-      <div className="mb-4 text-sm text-gray-600 bg-gray-50 p-2 rounded">
-        <strong>Regra:</strong> {section.rule.type} (
-        {section.rule.value1} {section.rule.condition} {section.rule.value2})
-      </div>
-    )}
-
-    {/* Questões da sessão */}
-    {section.questionsRel.length > 0 ? (
-      section.questionsRel.map((rel, questionIndex) => (
-        <div key={rel.question.id} className="mb-4">
-          <label className="block text-md font-medium mb-1">
-            {questionIndex + 1}. {rel.question.title}
-          </label>
-          <p className="text-sm text-gray-500 mb-2">{rel.question.description}</p>
-          {/* Componente dinâmico baseado no tipo da questão */}
-          {setQuestionComponent(rel.question)}
-        </div>
-      ))
-    ) : (
-      <p className="text-sm italic text-gray-400">Nenhuma questão nesta sessão.</p>
-    )}
-  </div>
-))}
-
-              <div className="flex gap-2 mt-4">
-                <Button type="button" className="btn-error text-white" onClick={() => setModalTable('DataTable')}>
-                  Voltar
-                </Button>
-                <Button type="button" className="btn-link " onClick={() => {
-                  setModalTable('DataTable')
-                  handleAddForm(formDetails)
-                }}>
-                  Adicionar
-                </Button>
-              </div>
+                <fieldset key={section.id} className="border border-gray-300 p-4 rounded mb-4">
+                  <legend className="text-sm font-bold">Sessão {sectionIndex + 1}: {section.title}</legend>
+                  {section.rule && (
+                    <div className="mb-4 text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                      <strong>Regra:</strong> {setRuleType(section.rule)}
+                    </div>
+                  )}
+                  {section.questionsRel.length > 0 ? (
+                    section.questionsRel.map((rel, questionIndex) => (
+                      <div key={rel.question.id} className="mb-4">
+                        {setQuestionComponent(rel.question)}
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm italic text-gray-400">Nenhuma questão nesta sessão.</p>
+                  )}
+                </fieldset>
+              ))}
+            </fieldset>
+            <div className="flex gap-2 mt-4">
+              <Button type="button" className="btn-error text-white" onClick={() => setModalTable('DataTable')}>
+                Voltar
+              </Button>
+              <Button type="button" className="btn-link " onClick={() => {
+                setModalTable('DataTable')
+                handleAddForm(formDetails)
+              }}>
+                Adicionar
+              </Button>
+            </div>
             </>
           )
         }

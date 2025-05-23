@@ -10,7 +10,7 @@ import { validateCPF } from 'validations-br'
 
 export default function CreateQuestionPage() {
   const {
-    createForm
+    createEvaluation
   } = useForms()
 
   const {
@@ -20,36 +20,18 @@ export default function CreateQuestionPage() {
     control, 
     watch,
     reset
-  } = useForm<Form>()
+  } = useForm<Evaluation>()
 
   const [formSections, setFormSections] = useState<Section[]>([])
   const [formList, setFormList] = useState<FormDetails[]>([])
 
 
-
-  const handleCreateForm = async (data: Form) => {
-    const mergedSections = formSections.map((section, index) => {
-      const { id, ...rest } = section; 
-  
-      return {
-        ...rest,
-        rule: {
-          ...(data.seccions?.[index + 1]?.rule || section.rule),
-          value1: data.seccions?.[index + 1]?.rule?.value1
-            ? Number(data.seccions[index + 1].rule.value1)
-            : null,
-          value2: data.seccions?.[index + 1]?.rule?.value2
-            ? Number(data.seccions[index + 1].rule.value2)
-            : null,
-        },
-        questionsIds: section.questionsIds.map((question) => question.id),
-      };
-    });
-  
-    await createForm({
+  const handleCreateEvaluation = async (data: Evaluation) => {
+    createEvaluation({
       ...data,
-      seccions: mergedSections,
-    });
+      formsIds: formList.map((form) => form.id)
+    })
+  
   };
 
 
@@ -59,7 +41,7 @@ export default function CreateQuestionPage() {
       control={control}
       errors={errors}
       handleSubmit={handleSubmit}
-      onSubmit={handleCreateForm}
+      onSubmit={handleCreateEvaluation}
       register={register}
       formList={formList}
       setFormList={setFormList}
