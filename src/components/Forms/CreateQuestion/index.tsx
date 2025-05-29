@@ -139,6 +139,7 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
           watch={watch}
           setHasRule={setHasRule}
           setValue={setValue}
+          isEditing={isEditing}
           />)
         }
         <div className="flex item-center justify-between mt-4">

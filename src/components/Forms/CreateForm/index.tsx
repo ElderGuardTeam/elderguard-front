@@ -1,24 +1,23 @@
 'use client'
+import { faChevronLeft, faEye, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { UseFormRegister, UseFormSetValue } from "react-hook-form";
+
+import { useForms } from "@/contexts/formsContext";
+import { formatDate } from "@/utils/formatters/formateDate";
+import { setQuestionComponent } from "@/utils/functions/setQuestionComponent";
+
+import CreateRule from "../CreateRule";
+import CreateRuleSection from "../CreateRuleSection";
 import Button from "@/components/Button";
 import DataTableComponent from "@/components/DataTable";
 import FormGroup from "@/components/FormGroup"
 import Input from "@/components/Input";
 import Label from "@/components/Label";
-import MaskedInput from "@/components/MaskedInput";
 import Modal from "@/components/Modal";
-import Select from "@/components/Select";
-import SelectFormGroup from "@/components/SelectFormGroup";
 import TextAreaFormGroup from "@/components/TextAreaFormGroup";
-import { useForms } from "@/contexts/formsContext";
-import { formatDate } from "@/utils/formatters/formateDate";
-import { setQuestionComponent } from "@/utils/functions/setQuestionComponent";
-import { faChevronLeft, faEye, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { UseFormRegister, UseFormReset, UseFormSetValue, useForm } from "react-hook-form";
-import CreateRule from "../CreateRule";
-import CreateRuleSection from "../CreateRuleSection";
 
 interface ICreateFormProps {
   handleSubmit: any;
@@ -244,6 +243,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
           watch={watch}
           setHasRule={setHasRule}
           setValue={setValue}
+          isEditing={isEditing}
           />)
         }
         <div className="flex item-center justify-between mt-4">

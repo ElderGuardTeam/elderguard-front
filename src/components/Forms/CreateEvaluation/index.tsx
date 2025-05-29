@@ -1,25 +1,21 @@
 'use client'
-import Button from "@/components/Button";
-import DataTableComponent from "@/components/DataTable";
-import FormGroup from "@/components/FormGroup"
-import Input from "@/components/Input";
-import Label from "@/components/Label";
-import MaskedInput from "@/components/MaskedInput";
-import Modal from "@/components/Modal";
-import Select from "@/components/Select";
-import SelectFormGroup from "@/components/SelectFormGroup";
-import TextAreaFormGroup from "@/components/TextAreaFormGroup";
-import { useForms } from "@/contexts/formsContext";
-import { formatDate } from "@/utils/formatters/formateDate";
-import { setQuestionComponent } from "@/utils/functions/setQuestionComponent";
-import { faChevronLeft, faEye, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
+import { faChevronLeft, faEye, faPlus} from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { UseFormRegister, UseFormReset, useForm } from "react-hook-form";
-import CreateRule from "../CreateRule";
-import CreateRuleSection from "../CreateRuleSection";
+import { UseFormRegister } from "react-hook-form";
+
+import { useForms } from "@/contexts/formsContext";
+import { formatDate } from "@/utils/formatters/formateDate";
+import { setQuestionComponent } from "@/utils/functions/setQuestionComponent";
 import { setRuleType } from "@/utils/functions/setRuleType";
+
+import Button from "@/components/Button";
+import DataTableComponent from "@/components/DataTable";
+import FormGroup from "@/components/FormGroup"
+import Input from "@/components/Input"; 
+import Modal from "@/components/Modal";
+import TextAreaFormGroup from "@/components/TextAreaFormGroup";
 
 interface ICreateEvaluationProps {
   handleSubmit: any;
@@ -65,8 +61,6 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
   useEffect(() => {
     fetchForms()
   }, [])
-
-
 
 
   const handleAddForm = async (formDetails: FormDetails) => {

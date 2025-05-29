@@ -12,6 +12,7 @@ interface ICreateRuleFormProps {
   watch: any;
   setHasRule: Dispatch<SetStateAction<boolean>>
   setValue: UseFormSetValue<any>
+  isEditing?: boolean
 }
 
 const CreateRule: React.FC<ICreateRuleFormProps> = ({
@@ -19,7 +20,8 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
   errors,
   watch,
   setHasRule,
-  setValue
+  setValue,
+  isEditing
 }) => {
 
   const watchRuleType = watch('rule.type');
@@ -148,13 +150,18 @@ const CreateRule: React.FC<ICreateRuleFormProps> = ({
         </>
         )
         }
-      <Button
-        type="button"
-        className="btn-error w-fit text-white mt-2"
-        onClick={handleRemoveRule}
-      >
-        Remover Regra
-      </Button>
+        {
+          !isEditing && (
+            <Button
+              type="button"
+              className="btn-error w-fit text-white mt-2"
+              onClick={handleRemoveRule}
+            >
+              Remover Regra
+            </Button>
+          )
+        }
+      
     </fieldset>
   )
 }
