@@ -6,11 +6,10 @@ import Label from "@/components/Label"
 import MaskedInput from "@/components/MaskedInput"
 import SelectFormGroup from "@/components/SelectFormGroup"
 import { useUsers } from "@/contexts/usersContext"
-import toastSuccess from "@/utils/toast/toastSuccess"
 import { useForm } from "react-hook-form"
 import { ToastContainer } from "react-toastify"
 
-export default function ValidateID() {
+export default function InitiateEvaluation({params}: {params: {id: string}}) {
   const {
     validadeIdentity
   } = useUsers()
@@ -24,7 +23,10 @@ export default function ValidateID() {
 
 
   const handleValidateID = async (data: ValidatePatient) => {
-    validadeIdentity(data)
+    validadeIdentity({
+      elderlyData: data,
+      evaluationId: params.id
+    })
     reset({
       cpf: '',
       name: '',

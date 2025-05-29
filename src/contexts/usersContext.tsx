@@ -20,7 +20,7 @@ type UsersContextType = {
 	searchElderly: (searchTerm: string) => Promise<void>
 	deleteProfessional: (id: string) => Promise<void>
 	deleteElderly: (id: string) => Promise<void>
-	validadeIdentity: (data: ValidatePatient) => Promise<void>
+	validadeIdentity: (data: InitiateEvaluation) => Promise<void>
 	elderly: Elderly[]
 	elderlyInfo: ElderlyInfo
 	professional: Professional[]
@@ -183,9 +183,9 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 		})
 	}
 
-	const validadeIdentity = async (data: ValidatePatient) => {
+	const validadeIdentity = async (data: InitiateEvaluation) => {
 		setLoading(true);
-		await api.post("elderly/validate-identity", data, headerConfig).then(() => {
+		await api.post("evaluation/start", data, headerConfig).then(() => {
 			toastSuccess("Identidade validada com sucesso", 5000);
 		}).catch((error) => {
 			toastError("Dados inválidos", 5000);

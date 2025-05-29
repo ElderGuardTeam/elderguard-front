@@ -85,6 +85,10 @@ export default function Evaluations() {
           sortable: true,
           cell: (row: { updated: any }) => formatDate(row.updated),
         },
+        {
+          name: '',
+          cell: (row: { id: any }) => <Button className="btn btn-sm bg-salmon" onClick={() => router.push(`avaliacoes/${row.id}/iniciar`)}>Iniciar</Button>,
+        },
       ]}
       data={evaluations}
       onRowClicked={(row:EvaluationList) => router.push(`/avaliacoes/${row.id}`)}
