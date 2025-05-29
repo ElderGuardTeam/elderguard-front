@@ -3,7 +3,7 @@ import { z } from "zod";
 const CreateProfessionalSchema = z.object({
   name: z.string({
     required_error: "Nome é obrigatório",
-  }),
+  }).min(1, 'Nome é obrigatório'),
   cpf: z.string({
     required_error: "CPF é obrigatório",
   }),

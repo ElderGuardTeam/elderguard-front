@@ -3,6 +3,7 @@ import FormGroup from "@/components/FormGroup"
 import Label from "@/components/Label";
 import MaskedInput from "@/components/MaskedInput";
 import Modal from "@/components/Modal";
+
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation";
@@ -50,7 +51,11 @@ const CreateProfessional: React.FC<ICreateProfessionalFormProps> = ({
         register={register('name')}
         error={errors.name?.message}
         />
-        <Label labelText="CPF" required className="flex flex-col items-start justify-start font-bold text-sm">
+        <Label 
+        hasError={errors.cpf?.message ? true : false} 
+        labelText="CPF" 
+        required 
+        className="flex flex-col items-start justify-start font-bold text-sm">
           <MaskedInput
           control={control}
           mask="999.999.999-99"
@@ -67,7 +72,11 @@ const CreateProfessional: React.FC<ICreateProfessionalFormProps> = ({
         register={register('email')}
         error={errors.email?.message}
         />
-        <Label labelText="Telefone" required className="flex flex-col items-start justify-start font-bold text-sm">
+        <Label 
+        hasError={errors.phone?.message ? true : false} 
+        labelText="Telefone" 
+        required 
+        className="flex flex-col items-start justify-start font-bold text-sm">
           <MaskedInput
           control={control}
           mask="(99) 99999-9999"

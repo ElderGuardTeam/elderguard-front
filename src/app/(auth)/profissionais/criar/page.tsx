@@ -30,6 +30,7 @@ export default function CreatePatient() {
     await createProfessional(data)
   }
 
+  console.log(errors)
 
   return (
     <div className="p-8 w-full">
