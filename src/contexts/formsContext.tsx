@@ -19,10 +19,14 @@ type FormsContextType = {
   getFormById: (id: string) => Promise<void>
   createEvaluation: (data: Evaluation) => Promise<void>
   deleteForm: (id: string) => Promise<void>
+  editForm: (form: Form, id: string) => Promise<void>
+  fetchEvaluation: () => Promise<void>
+  searchEvaluations: (searchTerm: string) => Promise<void>
   questions: QuestionList[]
   questionDetails: QuestionDetails
   forms: FormList[]
   formDetails: FormDetails
+  evaluations: EvaluationList[]
 }
 
 export const FormsContext = createContext({} as FormsContextType)
@@ -33,6 +37,7 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   const [questionDetails, setQuestionDetails] = useState<QuestionDetails>({} as QuestionDetails)
   const [forms, setForms] = useState<FormList[]>([])
   const [formDetails, setFormDetails] = useState<FormDetails>({} as FormDetails)
+  const [evaluations, setEvaluations] = useState<EvaluationList[]>([])
 
   async function createQuestion(data: Question) {
     api.post('/question', {
@@ -84,6 +89,12 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   async function editQuestion(question: Question, id: string) {
     api.patch(`/question/${id}`, {
       ...question,
+      rule: {
+        ...question.rule,
+        maxScore: question.rule?.maxScore ? Number(question.rule?.maxScore) : null,
+        value1: question.rule?.value1? Number(question.rule?.value1) : null,
+        value2: question.rule?.value2 ? Number(question.rule?.value2) : null
+      },
       options: question.options?.map((option) => ({
         description: option.description,
         score: Number(option.score),
@@ -114,6 +125,17 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       toastError('Erro ao criar formulário', false)
     })
   }
+
+  async function editForm(form: Form, id: string) {
+    api.patch(`/form/${id}`, form).then((response) => {
+      toastSuccess('Formulário editado com sucesso', 5000)
+      router.push('/formularios')
+    })
+    .catch((error) => {
+      toastError('Erro ao editar formulário', false)
+    })
+  }
+
 
   async function fetchForms() {
     api.get('/form').then((response) => {
@@ -159,7 +181,22 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
-  
+
+  async function fetchEvaluation() {
+    api.get('/evaluation').then((response) => {
+      setEvaluations(response.data)
+    }).catch((error) => {
+      toastError('Erro ao buscar avaliações', false)
+    })
+  }
+
+  async function searchEvaluations(searchTerm: string) {
+    api.get(`/evaluation?search=${searchTerm}`).then((response) => {
+      setForms(response.data)
+    }).catch((error) => {
+      toastError('Erro ao buscar avaliação', false)
+    })
+  }
 
 
   return (
@@ -180,7 +217,11 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       getFormById,
       formDetails,
       createEvaluation,
-      deleteForm
+      deleteForm,
+      editForm,
+      fetchEvaluation,
+      evaluations,
+      searchEvaluations
       }}
     >
       {children}

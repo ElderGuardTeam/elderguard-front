@@ -10,23 +10,23 @@ import Input from "@/components/Input";
 import { useForms } from "@/contexts/formsContext";
 import { formatDate } from "@/utils/formatters/formateDate";
 
-export default function Questions() {
+export default function Evaluations() {
 
   const {
-    fetchForms,
-    forms,
-    searchForms
+    evaluations,
+    searchEvaluations,
+    fetchEvaluation
   } = useForms()
 
   useEffect(() => {
-    fetchForms()
+    fetchEvaluation()
   }, [])
 
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = () => {
-    searchForms(searchTerm)
+    searchEvaluations(searchTerm)
   }
 
 
@@ -74,11 +74,6 @@ export default function Questions() {
           )
         },
         {
-          name: 'Tipo',
-          selector: (row: { type: any }) => row.type,
-          sortable: true,
-        },
-        {
           name: 'Criado em',
           selector: (row: { created: any }) => row.created,
           sortable: true,
@@ -91,8 +86,8 @@ export default function Questions() {
           cell: (row: { updated: any }) => formatDate(row.updated),
         },
       ]}
-      data={forms}
-      onRowClicked={(row:Professional) => router.push(`/forms/${row.id}`)}
+      data={evaluations}
+      onRowClicked={(row:EvaluationList) => router.push(`/avaliacoes/${row.id}`)}
       />
     </div>
   );

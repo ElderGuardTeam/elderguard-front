@@ -11,7 +11,8 @@ export default function CreateQuestionPage({params}: {params: {id: string}}) {
   const {
     getFormById,
     formDetails,
-    deleteForm
+    deleteForm,
+    editForm
   } = useForms()
 
   const {
@@ -63,10 +64,10 @@ export default function CreateQuestionPage({params}: {params: {id: string}}) {
         seccions: mergedSections,
       })
   
-    // await createForm({
-    //   ...data,
-    //   seccions: mergedSections,
-    // });
+    await editForm({
+      ...data,
+      seccions: mergedSections,
+    }, formDetails.id);
   };
 
   const handleDeleteForm = async () => {
