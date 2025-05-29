@@ -1,14 +1,15 @@
 'use client'
 
 import CreateProfessional from "@/components/Forms/CreateProfessional"
+
 import { useUsers } from "@/contexts/usersContext"
 import CreateProfessionalSchema from "@/utils/schema/createProfessionalSchema"
+
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 
-export default function CreatePatient({params}: {params: {id: string}}) {
+export default function EditProfessional({params}: {params: {id: string}}) {
   const {
     getProfessionalById,
     professionalInfo,

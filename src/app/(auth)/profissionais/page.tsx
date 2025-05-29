@@ -8,6 +8,7 @@ import Button from "@/components/Button";
 import DataTableComponent from "@/components/DataTable";
 import Input from "@/components/Input";
 import { useUsers } from "@/contexts/usersContext";
+
 import { formatCPF } from "@/utils/formatters/formatCPF";
 
 export default function Professionals() {
