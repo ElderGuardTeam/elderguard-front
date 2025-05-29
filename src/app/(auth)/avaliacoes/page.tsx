@@ -1,5 +1,5 @@
 'use client'
-import { faFileLines, faFilePen, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faFilePen, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -87,7 +87,7 @@ export default function Evaluations() {
         },
         {
           name: '',
-          cell: (row: { id: any }) => <Button className="btn btn-sm bg-salmon" onClick={() => router.push(`avaliacoes/${row.id}/iniciar`)}>Iniciar</Button>,
+          cell: (row: { id: any }) => <Button className="btn btn-sm bg-salmon" onClick={() => router.push(`avaliacoes/${row.id}/validar-identidade`)}>Iniciar</Button>,
         },
       ]}
       data={evaluations}

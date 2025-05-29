@@ -1,12 +1,10 @@
 'use client'
 
-import CreateEvaluation from "@/components/Forms/CreateEvaluation"
-import CreateForm from "@/components/Forms/CreateForm"
-import CreateQuestion from "@/components/Forms/CreateQuestion"
-import { useForms } from "@/contexts/formsContext"
 import { useState } from "react"
-import { useFieldArray, useForm } from "react-hook-form"
-import { validateCPF } from 'validations-br'
+import { useForm } from "react-hook-form"
+
+import CreateEvaluation from "@/components/Forms/CreateEvaluation"
+import { useForms } from "@/contexts/formsContext"
 
 export default function CreateQuestionPage() {
   const {
@@ -18,11 +16,8 @@ export default function CreateQuestionPage() {
     handleSubmit,
     formState: { errors },
     control, 
-    watch,
-    reset
   } = useForm<Evaluation>()
 
-  const [formSections, setFormSections] = useState<Section[]>([])
   const [formList, setFormList] = useState<FormDetails[]>([])
 
 
