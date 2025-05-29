@@ -88,7 +88,11 @@ const CreateElderlyForm: React.FC<ICreateElderlyFormProps> = ({
           register={register('name')}
           error={errors.name?.message}
           />
-          <Label labelText="CPF" required className="flex flex-col items-start justify-start font-bold text-sm">
+          <Label 
+          hasError={errors.cpf?.message ? true : false}
+          labelText="CPF" 
+          required 
+          className="flex flex-col items-start justify-start font-bold text-sm">
             <MaskedInput
             control={control}
             mask="999.999.999-99"
@@ -114,7 +118,11 @@ const CreateElderlyForm: React.FC<ICreateElderlyFormProps> = ({
           register={register('email')}
           error={errors.email?.message}
           />   
-          <Label labelText="Telefone" required className="flex flex-col items-start justify-start font-bold text-sm">
+          <Label 
+          hasError={errors.phone?.message ? true : false}
+          labelText="Telefone" 
+          required 
+          className="flex flex-col items-start justify-start font-bold text-sm">
             <MaskedInput
             control={control}
             mask="(99) 99999-9999"
@@ -141,7 +149,11 @@ const CreateElderlyForm: React.FC<ICreateElderlyFormProps> = ({
         </fieldset>
         <fieldset className="border border-base-300 rounded p-2 grid grid-cols-2 gap-4 my-4 text-xs">
           <legend>Endereço</legend>
-          <Label labelText='CEP' required className="flex flex-col items-start justify-start font-bold text-sm">
+          <Label 
+          hasError={errors.address?.zipCode?.message ? true : false}
+          labelText='CEP' 
+          required 
+          className="flex flex-col items-start justify-start font-bold text-sm">
             <MaskedInput
             control={control}
             name="address.zipCode"
@@ -229,6 +241,7 @@ const CreateElderlyForm: React.FC<ICreateElderlyFormProps> = ({
           options={educationLevel}
           placeholder="Selecione"
           register={register('education')}
+          error={errors.education?.message}
           />
           <SelectFormGroup
           labelText="Situação socioeconômica"
@@ -236,6 +249,7 @@ const CreateElderlyForm: React.FC<ICreateElderlyFormProps> = ({
           options={socioeconomicStatus}
           placeholder="Selecione"
           register={register('socialeconomic')}
+          error={errors.socialeconomic?.message}
           />
         </fieldset>
         <fieldset className="border border-base-300 rounded p-2 gap-4 my-4 text-xs">

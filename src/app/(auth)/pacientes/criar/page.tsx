@@ -26,7 +26,8 @@ export default function CreatePatient() {
     setValue,
     watch
   } = useForm<Elderly>({
-    resolver: zodResolver(CreateElderlySchema)
+    resolver: zodResolver(CreateElderlySchema),
+    shouldFocusError: false
   })
 
   const { fields, append, remove } = useFieldArray({
@@ -72,14 +73,41 @@ export default function CreatePatient() {
       toastError('Adicione pelo menos um contato', 5000);
       return;
     }
+  
     if (!validateCPF(data.cpf)) {
       toastError('CPF do paciente inválido', 5000);
       return;
-    } 
-    if (!data.contacts.every(contact => validateCPF(contact.cpf))) {
-      toastError('CPF de um ou mais contatos inválido', 5000);
-      return;
     }
+  
+    for (let i = 0; i < data.contacts.length; i++) {
+      const contact = data.contacts[i];
+  
+      if (!contact.name || contact.name.trim() === '') {
+        toastError(`O nome do contato ${i + 1} é obrigatório`, 5000);
+        return;
+      }
+  
+      if (!contact.phone || contact.phone.trim() === '') {
+        toastError(`O telefone do contato ${i + 1} é obrigatório`, 5000);
+        return;
+      }
+  
+      if (!validateCPF(contact.cpf)) {
+        toastError(`CPF inválido no contato ${i + 1}`, 5000);
+        return;
+      }
+  
+      if (!contact.email || contact.email.trim() === '') {
+        toastError(`O e-mail do contato ${i + 1} é obrigatório`, 5000);
+        return;
+      }
+  
+      if (!contact.address || !contact.address.street || contact.address.street.trim() === '') {
+        toastError(`O endereço do contato ${i + 1} é obrigatório`, 5000);
+        return;
+      }
+    }
+  
     createElderly({
       ...data,
       weight: Number(data.weight),
@@ -87,6 +115,8 @@ export default function CreatePatient() {
       imc: Number(data.imc),
     });
   }
+  
+
 
   return (
     <div className="p-8 w-full">
