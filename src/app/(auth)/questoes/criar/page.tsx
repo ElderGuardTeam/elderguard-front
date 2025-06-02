@@ -1,14 +1,13 @@
 'use client'
 
+import { useFieldArray, useForm } from "react-hook-form"
+
 import CreateQuestion from "@/components/Forms/CreateQuestion"
 import { useForms } from "@/contexts/formsContext"
-import { useUsers } from "@/contexts/usersContext"
-import CreateProfessionalSchema from "@/utils/schema/createProfessionalSchema"
-import CreateQuestionSchema from "@/utils/schema/createQuestionSchema"
-import toastError from "@/utils/toast/toastError"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useFieldArray, useForm } from "react-hook-form"
-import { validateCPF } from 'validations-br'
+import CreateQuestionSchema, { Question } from "@/utils/schema/createQuestionSchema"
+import toastError from "@/utils/toast/toastError"
+import { isValidScore } from "@/utils/functions/isValidScore"
 
 export default function CreateQuestionPage() {
   const {
@@ -21,8 +20,10 @@ export default function CreateQuestionPage() {
     formState: { errors },
     control, 
     watch,
-    reset
-  } = useForm<Question>()
+    setValue
+  } = useForm<Question>({
+    resolver: zodResolver(CreateQuestionSchema)
+  })
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -32,7 +33,7 @@ export default function CreateQuestionPage() {
   const handleAddOption = () => {
     append({ 
       description: '',
-      score: 0,
+      score: null,
     });
   };
 
@@ -42,10 +43,13 @@ export default function CreateQuestionPage() {
 
 
   const handleCreateQuestion = async (data: Question) => {
-    console.log(data)
+    if (data.options?.some(opt => !isValidScore(opt.score))) {
+      toastError('Todas as opções devem ter uma pontuação válida.', 5000)
+      return;
+    }
+
     await createQuestion(data)
   }
-
 
   return (
     <div className="p-8 w-full">
@@ -59,7 +63,7 @@ export default function CreateQuestionPage() {
       fields={fields}
       handleAddOption={handleAddOption}
       handleRemoveOption={handleRemoveOption}
-      reset={reset}
+      setValue={setValue}
       />
     </div>
   )

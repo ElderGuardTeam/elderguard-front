@@ -1,11 +1,4 @@
-interface Question {
-  id?: string
-  title: string;
-  description: string;
-  type: string;
-  rule?: Rule
-  options?: QuestionOption[];
-}
+
 
 interface QuestionOption {
   description: string;

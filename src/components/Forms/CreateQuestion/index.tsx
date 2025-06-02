@@ -1,15 +1,18 @@
 'use client'
+
+import { faChevronLeft, faPlus } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { UseFormRegister, UseFormSetValue } from "react-hook-form";
+
+import CreateRule from "../CreateRule";
 import Button from "@/components/Button";
 import FormGroup from "@/components/FormGroup"
 import Modal from "@/components/Modal";
 import SelectFormGroup from "@/components/SelectFormGroup";
 import TextAreaFormGroup from "@/components/TextAreaFormGroup";
-import { faChevronLeft, faPlus } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { UseFormRegister, UseFormReset, UseFormSetValue } from "react-hook-form";
-import CreateRule from "../CreateRule";
+import { Question } from "@/utils/schema/createQuestionSchema";
 
 interface ICreateQuestionFormProps {
   handleSubmit: any;
@@ -49,11 +52,7 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [hasRule, setHasRule] = useState(questionHasRule)
 
-  console.log(questionHasRule)
-
   const watchType = watch('type');
-
-  console.log(errors)
 
 
   return (
@@ -63,7 +62,7 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
           <FontAwesomeIcon icon={faChevronLeft} />
         </div>
         {
-            questionTitle ? `Editar ${questionTitle}` : 'Nova Questão'
+            questionTitle ? `Editar Questão` : 'Nova Questão'
           }
       </h1>
       <div>
@@ -106,11 +105,13 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
                   labelText="Descrição"
                   isRequired
                   register={register(`options.${index}.description`)}
+                  error={errors.options?.[index]?.description?.message}
                   />
                   <FormGroup
                   labelText="Pontuação"
                   isRequired
                   register={register(`options.${index}.score`)}
+                  error={errors.options?.[index]?.description?.score}
                   />
                   <Button type="button" className="btn-error text-white w-fit" onClick={() => handleRemoveOption(index)}>
                     Remover
