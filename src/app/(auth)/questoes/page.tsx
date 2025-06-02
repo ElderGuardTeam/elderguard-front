@@ -59,7 +59,7 @@ export default function Questions() {
       <DataTableComponent
       columns={[
         {
-          name: 'Título',
+          name: 'Enunciado',
           selector: (row: { title: any }) => row.title,
           sortable: true,
         },

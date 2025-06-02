@@ -67,14 +67,13 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
       </h1>
       <div>
         <FormGroup
-        labelText="Título"
+        labelText="Enunciado"
         isRequired
         register={register('title')}
         error={errors.title?.message}
         />
         <TextAreaFormGroup
         labelText="Descrição"
-        isRequired
         register={register('description')}
         inputClass="input input-bordered h-24"
         error={errors.description?.message}
