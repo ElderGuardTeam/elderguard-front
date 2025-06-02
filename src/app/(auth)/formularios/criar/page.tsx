@@ -6,7 +6,7 @@ import CreateFormSchema from "@/utils/schema/createFunctionSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { Resolver, useForm } from "react-hook-form"
 
 export default function CreateQuestionPage() {
   const {
@@ -21,19 +21,17 @@ export default function CreateQuestionPage() {
     watch,
     setValue
   } = useForm<Form>({
-    resolver: zodResolver(CreateFormSchema)
+    resolver: zodResolver(CreateFormSchema) as Resolver<Form>
   })
 
   const [formSections, setFormSections] = useState<Section[]>([])
 
-console.log(errors)
 
   const handleCreateForm = async (data: Form) => {
     const mergedSections = formSections.map((section, index) => {
-      const { id, ...rest } = section; 
-  
+      const { title } = section; 
       return {
-        ...rest,
+        title,
         rule: {
           ...(data.seccions?.[index + 1]?.rule || section.rule),
           value1: data.seccions?.[index + 1]?.rule?.value1

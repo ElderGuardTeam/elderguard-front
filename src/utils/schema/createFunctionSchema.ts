@@ -11,9 +11,7 @@ const CreateFormSchema = z.object({
     required_error: "Tipo é obrigatório",
   }).min(1, "Tipo é obrigatório"),
   rule: ruleSchema.optional().nullable(),
-  seccions: z.array(
-    CreateSectionSchema
-  ).optional(),
+  seccions: z.any(),
   questionsIds: z.any().optional()
 });
 
