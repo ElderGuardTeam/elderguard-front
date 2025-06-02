@@ -1,11 +1,12 @@
 'use client'
 
 import CreateForm from "@/components/Forms/CreateForm"
-import CreateQuestion from "@/components/Forms/CreateQuestion"
 import { useForms } from "@/contexts/formsContext"
+import CreateFormSchema from "@/utils/schema/createFunctionSchema"
+import { zodResolver } from "@hookform/resolvers/zod"
+
 import { useState } from "react"
-import { useFieldArray, useForm } from "react-hook-form"
-import { validateCPF } from 'validations-br'
+import { useForm } from "react-hook-form"
 
 export default function CreateQuestionPage() {
   const {
@@ -18,12 +19,14 @@ export default function CreateQuestionPage() {
     formState: { errors },
     control, 
     watch,
-    reset
-  } = useForm<Form>()
+    setValue
+  } = useForm<Form>({
+    resolver: zodResolver(CreateFormSchema)
+  })
 
   const [formSections, setFormSections] = useState<Section[]>([])
 
-
+console.log(errors)
 
   const handleCreateForm = async (data: Form) => {
     const mergedSections = formSections.map((section, index) => {
@@ -34,16 +37,16 @@ export default function CreateQuestionPage() {
         rule: {
           ...(data.seccions?.[index + 1]?.rule || section.rule),
           value1: data.seccions?.[index + 1]?.rule?.value1
-            ? Number(data.seccions[index + 1].rule.value1)
+            ? Number(data.seccions[index + 1].rule?.value1)
             : null,
           value2: data.seccions?.[index + 1]?.rule?.value2
-            ? Number(data.seccions[index + 1].rule.value2)
+            ? Number(data.seccions[index + 1].rule?.value2)
             : null,
           maxScore: data.seccions?.[index + 1]?.rule?.maxScore
-          ? Number(data.seccions[index + 1].rule.maxScore)
+          ? Number(data.seccions[index + 1].rule?.maxScore)
           : null,
         },
-        questionsIds: section.questionsIds.map((question) => question.id),
+        questionsIds: section.questionsIds?.map((question) => question?.id),
       };
     });
   
@@ -59,7 +62,6 @@ export default function CreateQuestionPage() {
     });
   };
 
-
   return (
     <div className="p-8 w-full">
       <CreateForm
@@ -71,7 +73,7 @@ export default function CreateQuestionPage() {
       watch={watch}
       setFormSections={setFormSections}
       formSections={formSections}
-      reset={reset}
+      setValue={setValue}
       />
     </div>
   )

@@ -1,6 +1,6 @@
 'use client'
 
-import { faChevronLeft, faPlus } from "@fortawesome/free-solid-svg-icons"
+import { faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation";
 import { useState } from "react";

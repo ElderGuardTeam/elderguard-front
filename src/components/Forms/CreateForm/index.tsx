@@ -103,7 +103,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
     setFormSections(prev =>
       prev.map(section =>
         section.id === sectionId
-          ? { ...section, questions: section.questionsIds.filter((q: any) => q.id !== questionId) }
+          ? { ...section, questionsIds: section.questionsIds.filter((q: any) => q.id !== questionId) }
           : section
       )
     );
@@ -173,11 +173,8 @@ const CreateForm: React.FC<ICreateFormProps> = ({
         labelText="Tipo"
         isRequired
         register={register('type')}
+        error={errors.type?.message}
         />
-        <Button type="button" className="btn-success text-white my-2" onClick={handleAddSection}>
-          <FontAwesomeIcon icon={faPlus} /> Adicionar Sessão
-        </Button>
-        <br/>
         {formSections.map(section => (
           <fieldset key={section.id} className="border border-gray-300 p-4 rounded mb-4">
             <legend className="text-sm font-bold">Sessão {section.title}</legend>
@@ -232,11 +229,15 @@ const CreateForm: React.FC<ICreateFormProps> = ({
           </Button>
           </fieldset>
         ))}
+        <Button type="button" className="btn-success text-white my-2" onClick={handleAddSection}>
+          <FontAwesomeIcon icon={faPlus} /> Adicionar Sessão
+        </Button>
+        <br/>
         <Button type="button" className="btn-success text-white mt-2" onClick={() => setHasRule(true)}>
           Adicionar Regra
         </Button>
         {
-          (hasRule || !formHasRule) && (
+          hasRule && (
           <CreateRule
           errors={errors}
           register={register}

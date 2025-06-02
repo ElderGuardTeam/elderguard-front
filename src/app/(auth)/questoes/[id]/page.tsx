@@ -2,7 +2,7 @@
 
 import CreateQuestion from "@/components/Forms/CreateQuestion"
 import { useForms } from "@/contexts/formsContext"
-import CreateQuestionSchema from "@/utils/schema/createQuestionSchema"
+import CreateQuestionSchema, { Question } from "@/utils/schema/createQuestionSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"

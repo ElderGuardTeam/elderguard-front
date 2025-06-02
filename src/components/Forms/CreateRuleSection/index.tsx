@@ -69,7 +69,6 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
             />
             <Input
             register={register(`seccions.${index}.rule.value1`)}
-            type="number"
             />
             <span>então</span>
             <Select
@@ -83,7 +82,6 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
             />
             <Input
             register={register(`seccions.${index}.rule.value2`)}
-            type="number"
             />
           </div>
         )
@@ -111,7 +109,6 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
                       placeholder="Digite o valor"
                       register={register(`seccions.${index}.rule.value1`)}
                       className="w-1/2"
-                      type="number"
                     />
                   )
                 }
@@ -145,7 +142,6 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
                       placeholder="Digite o valor"
                       register={register(`seccions.${index}.rule.value2`)}
                       className="w-1/2"
-                      type="number"
                     />
                   )
                 }
