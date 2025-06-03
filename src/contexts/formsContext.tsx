@@ -5,6 +5,7 @@ import { api } from '@/utils/lib/axios'
 import toastError from '@/utils/toast/toastError'
 import toastSuccess from '@/utils/toast/toastSuccess'
 import { Question } from '@/utils/schema/createQuestionSchema'
+import { transformApiResponseToForm } from '@/utils/functions/transformFormData'
 
 
 type FormsContextType = {
@@ -26,7 +27,7 @@ type FormsContextType = {
   questions: QuestionList[]
   questionDetails: QuestionDetails
   forms: FormList[]
-  formDetails: FormDetails
+  formDetails: Form
   evaluations: EvaluationList[]
 }
 
@@ -37,7 +38,7 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   const [questions, setQuestions] = useState<QuestionList[]>([])
   const [questionDetails, setQuestionDetails] = useState<QuestionDetails>({} as QuestionDetails)
   const [forms, setForms] = useState<FormList[]>([])
-  const [formDetails, setFormDetails] = useState<FormDetails>({} as FormDetails)
+  const [formDetails, setFormDetails] = useState<Form>({} as Form)
   const [evaluations, setEvaluations] = useState<EvaluationList[]>([])
 
   async function createQuestion(data: Question) {
@@ -166,7 +167,7 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
 
   async function getFormById(id: string) {
     api.get(`/form/${id}`).then((response) => {
-      setFormDetails(response.data)
+      setFormDetails(transformApiResponseToForm(response.data))
     }).catch((error) => {
       toastError('Erro ao buscar questão', false)
     })

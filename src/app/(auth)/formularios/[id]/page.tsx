@@ -1,11 +1,9 @@
 'use client'
 
 import CreateForm from "@/components/Forms/CreateForm"
-import CreateQuestion from "@/components/Forms/CreateQuestion"
 import { useForms } from "@/contexts/formsContext"
 import { useEffect, useState } from "react"
-import { useFieldArray, useForm } from "react-hook-form"
-import { validateCPF } from 'validations-br'
+import { useForm } from "react-hook-form"
 
 export default function CreateQuestionPage({params}: {params: {id: string}}) {
   const {
@@ -25,7 +23,7 @@ export default function CreateQuestionPage({params}: {params: {id: string}}) {
     setValue
   } = useForm<Form>()
 
-  const [formSections, setFormSections] = useState<Section[]>([])
+  const [formSections, setFormSections] = useState<Section[]>(formDetails.seccions || [])
 
   useEffect(() => {
     getFormById(params.id)
@@ -58,21 +56,18 @@ export default function CreateQuestionPage({params}: {params: {id: string}}) {
         questionsIds: section.questionsIds.map((question) => question.id),
       };
     });
-
-    console.log({
-        ...data,
-        seccions: mergedSections,
-      })
   
     await editForm({
       ...data,
       seccions: mergedSections,
-    }, formDetails.id);
+    }, formDetails.id || '');
   };
 
   const handleDeleteForm = async () => {
     deleteForm(formDetails.id ? formDetails.id : '')
   }
+
+  console.log(formDetails)
 
   return (
     <div className="p-8 w-full">

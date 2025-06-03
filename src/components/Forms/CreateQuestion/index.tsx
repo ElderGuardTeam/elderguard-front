@@ -54,7 +54,6 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
 
   const watchType = watch('type');
 
-
   return (
     <form className="bg-white rounded p-4" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="flex gap-2 items-center">
