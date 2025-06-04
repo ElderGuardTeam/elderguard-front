@@ -9,6 +9,7 @@ import DataTableComponent from "@/components/DataTable";
 import Input from "@/components/Input";
 import { useForms } from "@/contexts/formsContext";
 import { formatDate } from "@/utils/formatters/formateDate";
+import { stripHtmlTags } from "@/utils/functions/removeHTMLTags";
 
 export default function Questions() {
 
@@ -72,11 +73,14 @@ export default function Questions() {
           name: 'Descrição',
           selector: (row: { description: any }) => row.description,
           sortable: true,
-          cell: (row: { description: any }) => (
-            <p>
-              {row.description.length > 39 ? `${row.description.substring(0, 39)}...` : row.description}
-            </p>
-          )
+          cell: (row: { description: any }) => {
+            const plainText = stripHtmlTags(row.description);
+            return (
+              <p>
+                {plainText?.length > 39 ? `${plainText.substring(0, 39)}...` : plainText}
+              </p>
+            );
+          }
         },
         {
           name: 'Tipo',

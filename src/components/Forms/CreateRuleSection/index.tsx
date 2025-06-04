@@ -12,6 +12,7 @@ interface ICreateRuleSectionFormProps {
   watch: any;
   index?: number
   handleRemoveRule: (sectionId: number) => void
+  isEditing?: boolean
 }
 
 const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
@@ -19,14 +20,14 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
   errors,
   watch,
   index = 0,
-  handleRemoveRule
+  handleRemoveRule,
+  isEditing = false
 }) => {
 
-  const [value1Type, setValue1Type] = useState('');
-  const [value2Type, setValue2Type] = useState('');
+  const watchValue1Type = watch(`seccions.${index}.rule.value1Type`)
+  const watchValue2Type = watch(`seccions.${index}.rule.value2Type`)
 
   const watchRuleType = watch(`seccions.${index}.rule.type`);
-
 
 
   
@@ -90,21 +91,19 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
         watchRuleType === 'ARITHMETIC' && (
         <>
           <div className="col-span-2 grid grid-cols-3 items-end gap-2">
-              <div className={`${ value1Type === 'value' && 'flex items-end gap-1'}`}>
+              <div className={`${ watchValue1Type === 'value' && 'flex items-end gap-1'}`}>
                 <SelectFormGroup
                 labelText="Valor 1"
                 options={[
                   { value: 'score', name: 'Pontuação' },
                   { value: 'value', name: 'Inserir valor' },
                 ]}
-                register={register(`seccions.${index}.rule.value1Type`,{
-                  onChange: (e) => setValue1Type(e.target.value)
-                })}
+                register={register(`seccions.${index}.rule.value1Type`)}
                 placeholder="Selecione"
-                className={`${ value1Type === 'value' && 'w-1/2'}`}
+                className={`${ watchValue1Type === 'value' && 'w-1/2'}`}
                 />
                 {
-                  value1Type === 'value' && (
+                  watchValue1Type === 'value' && (
                     <Input
                       placeholder="Digite o valor"
                       register={register(`seccions.${index}.rule.value1`)}
@@ -123,21 +122,19 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
                 register={register(`seccions.${index}.rule.operation`)}
               />
 
-              <div className={`${ value2Type === 'value' && 'flex items-end gap-1'}`}>
+              <div className={`${ watchValue2Type === 'value' && 'flex items-end gap-1'}`}>
               <SelectFormGroup
                 labelText="Valor 2"
                 options={[
                   { value: 'score', name: 'Pontuação' },
                   { value: 'value', name: 'Inserir valor' },
                 ]}
-                register={register(`seccions.${index}.rule.value2Type`,{
-                  onChange: (e) => setValue2Type(e.target.value)
-                })}
+                register={register(`seccions.${index}.rule.value2Type`)}
                 placeholder="Selecione"
-                className={`${ value2Type === 'value' && 'w-1/2'}`}
+                className={`${ watchValue2Type  === 'value' && 'w-1/2'}`}
                 />
                 {
-                  value2Type === 'value' && (
+                  watchValue2Type === 'value' && (
                     <Input
                       placeholder="Digite o valor"
                       register={register(`seccions.${index}.rule.value2`)}
@@ -150,13 +147,17 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
         </>
         )
         }
-      <Button
-        type="button"
-        className="btn-error w-fit text-white mt-2"
-        onClick={() => handleRemoveRule(index)}
-      >
-        Remover Regra
-      </Button>
+        {
+          !isEditing && (
+            <Button
+              type="button"
+              className="btn-error w-fit text-white mt-2"
+              onClick={() => handleRemoveRule(index)}
+            >
+              Remover Regra
+            </Button>
+          )}
+      
     </fieldset>
   )
 }

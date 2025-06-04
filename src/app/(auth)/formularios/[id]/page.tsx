@@ -36,22 +36,29 @@ export default function CreateQuestionPage({params}: {params: {id: string}}) {
       setValue("type", formDetails.type)
       setValue("title", formDetails.title)
       setFormSections(formDetails.seccions|| [])
+      formDetails.seccions?.map((section, index) => {
+        if (!section.id) return
+        setValue(`seccions.${section.id}.rule`, section.rule)
+      })
     }
   }, [formDetails])
 
   const handleCreateForm = async (data: Form) => {
     const mergedSections = formSections.map((section, index) => {
-      const { id, ...rest } = section; 
-  
+      const { title} = section; 
+      if (!section.id) return section;
       return {
-        ...rest,
+        title,
         rule: {
-          ...(data.seccions?.[index + 1]?.rule || section.rule),
-          value1: data.seccions?.[index + 1]?.rule?.value1
-            ? Number(data.seccions[index + 1].rule.value1)
+          ...(data.seccions?.[section.id]?.rule || section.rule),
+          value1: data.seccions?.[section.id]?.rule?.value1
+            ? Number(data.seccions[section.id].rule.value1)
             : null,
-          value2: data.seccions?.[index + 1]?.rule?.value2
-            ? Number(data.seccions[index + 1].rule.value2)
+          value2: data.seccions?.[section.id]?.rule?.value2
+            ? Number(data.seccions[section.id].rule.value2)
+            : null,
+          maxScore: data.seccions?.[section.id]?.rule?.maxScore
+            ? Number(data.seccions[section.id].rule?.maxScore)
             : null,
         },
         questionsIds: section.questionsIds.map((question) => question.id),
@@ -68,7 +75,6 @@ export default function CreateQuestionPage({params}: {params: {id: string}}) {
     deleteForm(formDetails.id ? formDetails.id : '')
   }
 
-  console.log(formDetails)
 
   return (
     <div className="p-8 w-full">

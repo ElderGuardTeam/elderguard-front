@@ -18,6 +18,7 @@ import Input from "@/components/Input";
 import Label from "@/components/Label";
 import Modal from "@/components/Modal";
 import TextAreaFormGroup from "@/components/TextAreaFormGroup";
+import { stripHtmlTags } from "@/utils/functions/removeHTMLTags";
 
 interface ICreateFormProps {
   handleSubmit: any;
@@ -78,7 +79,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
 
   const handleAddSection = () => {
     const index = formSections.length
-    setFormSections(prev => [...prev, { questionsIds: [], title: '', rule:{}, id: index + 1 }]);
+    setFormSections(prev => [...prev, { questionsIds: [], title: '', rule:null, id: index + 1 }]);
   };
 
   const handleDeleteSection = (sectionId: number | undefined) => {
@@ -137,7 +138,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
     setFormSections(prev =>
       prev.map(section =>
         section.id === sectionId
-          ? { ...section, rule: undefined }
+          ? { ...section, rule: null }
           : section
       )
     );
@@ -164,7 +165,6 @@ const CreateForm: React.FC<ICreateFormProps> = ({
         />
         <TextAreaFormGroup
         labelText="Descrição"
-        isRequired
         register={register('description')}
         inputClass="input input-bordered h-24"
         error={errors.description?.message}
@@ -191,7 +191,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
               <FontAwesomeIcon icon={faPlus}/> Adicionar Questão
             </Button> 
             {section.questionsIds.map((question: any) => (
-              <fieldset key={question.id} className="border border-base-300 rounded p-2 gap-4 my-4 text-xs">
+              <fieldset key={question.id} className="border border-base-300 rounded p-2 gap-4 mt-4 text-xs">
                 {setQuestionComponent(question)}
                 <Button
                   type="button"
@@ -203,11 +203,16 @@ const CreateForm: React.FC<ICreateFormProps> = ({
               </fieldset>
             ))}
           <br/>
-          <Button type="button" className="btn-success text-white mt-2" onClick={() => {
-            handleAddOrResetRule(section.id)
-            }}>
-            Adicionar Regra
-          </Button>
+          {
+            !section?.rule?.id && (
+              <Button type="button" className="btn-success text-white mt-2" onClick={() => {
+                handleAddOrResetRule(section.id)
+                }}>
+                Adicionar Regra
+              </Button>
+            )
+          }
+          
           <br/>
           {
             section?.rule?.id && (
@@ -217,6 +222,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
               register={register}
               watch={watch}  
               handleRemoveRule={handleRemoveRule}
+              isEditing={isEditing}
               />
             )
           }
@@ -315,11 +321,14 @@ const CreateForm: React.FC<ICreateFormProps> = ({
                 name: 'Descrição',
                 selector: (row: { description: any }) => row.description,
                 sortable: true,
-                cell: (row: { description: any }) => (
-                  <p>
-                    {row.description.length > 39 ? `${row.description.substring(0, 39)}...` : row.description}
-                  </p>
-                )
+                cell: (row: { description: any }) => {
+                  const plainText = stripHtmlTags(row.description);
+                  return (
+                    <p>
+                      {plainText?.length > 39 ? `${plainText.substring(0, 39)}...` : plainText}
+                    </p>
+                  );
+                }
               },
               {
                 name: 'Tipo',

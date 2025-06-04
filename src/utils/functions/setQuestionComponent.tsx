@@ -4,6 +4,7 @@ import FormGroup from "@/components/FormGroup"
 import Label from "@/components/Label"
 import SelectFormGroup from "@/components/SelectFormGroup"
 import { useForm } from "react-hook-form"
+import { Question } from "../schema/createQuestionSchema"
 
 export const setQuestionComponent = (questionDetails: QuestionDetails | Question) => {
 
@@ -54,8 +55,29 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
     case 'BOOLEAN':
       return (
         <div>
-          <Checkbox />
-          <Label labelText={questionDetails.description}/>
+          <Label labelText={questionDetails.title}/>
+          <p>
+            {questionDetails.description || ''}
+          </p>
+          <div className="flex items-center gap-2">
+            <input type="radio" value="true" name='radio' className="radio radio-primary" />
+            <Label labelText="Sim" />
+          </div>  
+          <div className="flex items-center gap-2">
+            <input type="radio" value="false" name='radio' className="radio radio-primary" />
+            <Label labelText="Não"/>
+          </div>  
+        </div>
+      )
+    case 'SCORE':
+      return (
+        <div>
+          <Label labelText={questionDetails.title}/>
+          <div dangerouslySetInnerHTML={{ __html: questionDetails.description }}/>
+          <FormGroup
+          labelText="Pontuação"
+          className="w-24 mt-2"
+          />
         </div>
       )
     default:
