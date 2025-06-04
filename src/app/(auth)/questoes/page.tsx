@@ -32,7 +32,7 @@ export default function Questions() {
 
     
   return (
-    <div className=" py-8 px-4 h-screen w-screen">
+    <div className=" py-8 px-4 min-h-screen w-screen">
       <div className="mb-2 flex items-center justify-between">
         <h1 className="text-xl text-white flex gap-2 items-center">
           <FontAwesomeIcon icon={faQuestion} className="text-xl" />
@@ -62,6 +62,11 @@ export default function Questions() {
           name: 'Enunciado',
           selector: (row: { title: any }) => row.title,
           sortable: true,
+          cell: (row:{ title: any }) => (
+            <p>
+              {row.title.length > 60 ? `${row.title.substring(0, 60)}...` : row.title}
+            </p>
+          )
         },
         {
           name: 'Descrição',
@@ -77,18 +82,21 @@ export default function Questions() {
           name: 'Tipo',
           selector: (row: { type: any }) => row.type,
           sortable: true,
+          width: '150px',
         },
         {
           name: 'Criado em',
           selector: (row: { created: any }) => row.created,
           sortable: true,
           cell: (row: { created: any }) => formatDate(row.created),
+          width: '150px',
         },
         {
           name: 'Atualizado em',
           selector: (row: { updated: any }) => row.updated,
           sortable: true,
           cell: (row: { updated: any }) => formatDate(row.updated),
+          width: '150px',
         },
       ]}
       data={questions}

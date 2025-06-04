@@ -23,7 +23,7 @@ export default function CreateQuestionPage({params}: {params: {id: string}}) {
     setValue
   } = useForm<Form>()
 
-  const [formSections, setFormSections] = useState<Section[]>(formDetails.seccions || [])
+  const [formSections, setFormSections] = useState<Section[]>([])
 
   useEffect(() => {
     getFormById(params.id)
@@ -35,6 +35,7 @@ export default function CreateQuestionPage({params}: {params: {id: string}}) {
       setValue("description", formDetails.description)
       setValue("type", formDetails.type)
       setValue("title", formDetails.title)
+      setFormSections(formDetails.seccions|| [])
     }
   }, [formDetails])
 

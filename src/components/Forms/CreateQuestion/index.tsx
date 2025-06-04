@@ -3,7 +3,7 @@
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UseFormRegister, UseFormSetValue } from "react-hook-form";
 
 import CreateRule from "../CreateRule";
@@ -13,6 +13,8 @@ import Modal from "@/components/Modal";
 import SelectFormGroup from "@/components/SelectFormGroup";
 import TextAreaFormGroup from "@/components/TextAreaFormGroup";
 import { Question } from "@/utils/schema/createQuestionSchema";
+import Quill from "@/components/Quill";
+import Label from "@/components/Label";
 
 interface ICreateQuestionFormProps {
   handleSubmit: any;
@@ -54,6 +56,15 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
 
   const watchType = watch('type');
 
+  useEffect(() => {
+    if (watchType === 'BOOLEAN') {
+      setValue('options', [
+        { description: 'true', score: 0 },
+        { description: 'false', score: 0 }
+      ])
+    }
+  },[watchType] )
+
   return (
     <form className="bg-white rounded p-4" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="flex gap-2 items-center">
@@ -71,12 +82,12 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
         register={register('title')}
         error={errors.title?.message}
         />
-        <TextAreaFormGroup
-        labelText="Descrição"
-        register={register('description')}
-        inputClass="input input-bordered h-24"
-        error={errors.description?.message}
-        />
+        <Label labelText="Descrição" className="flex flex-col items-start justify-start text-sm w-full mt-1">
+          <Quill
+          control={control}
+          name="description"
+          />
+        </Label>
         <SelectFormGroup
         labelText="Tipo"
         isRequired
@@ -89,6 +100,7 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
           { value: 'NUMBER', name: 'Número' },
           { value: 'MULTISELECT', name: 'Seleção múltipla' },
           { value: 'IMAGE', name: 'Imagem' },
+          { value: 'SCORE', name: 'Inserir pontuação' },
         ]}
         placeholder="Selecione"
         isDisabled={isEditing}
@@ -119,6 +131,28 @@ const CreateQuestion: React.FC<ICreateQuestionFormProps> = ({
               <Button type="button" className="btn-success text-white mt-2" onClick={handleAddOption}>
                 Adicionar Opção
               </Button>
+            </div>
+          )
+        }
+        {
+          (watchType === 'BOOLEAN') && (
+            <div>
+              <div className="flex items-end gap-4 my-4">
+                <p>Sim:</p>
+                <FormGroup
+                  labelText="Pontuação"
+                  isRequired
+                  register={register(`options.0.score`)}
+                  />
+              </div>
+              <div className="flex items-end gap-4 my-4">
+                <p>Não:</p>
+                <FormGroup
+                  labelText="Pontuação"
+                  isRequired
+                  register={register(`options.1.score`)}
+                  />
+              </div> 
             </div>
           )
         }

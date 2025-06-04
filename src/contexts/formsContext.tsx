@@ -169,6 +169,7 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
     api.get(`/form/${id}`).then((response) => {
       setFormDetails(transformApiResponseToForm(response.data))
     }).catch((error) => {
+      console.log(error)
       toastError('Erro ao buscar questão', false)
     })
   }

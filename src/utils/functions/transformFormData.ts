@@ -4,7 +4,7 @@ export function transformApiResponseToForm(apiResponse: any): Form {
     title: apiResponse.title,
     description: apiResponse.description,
     type: apiResponse.type,
-    rule: apiResponse.rule.id,
+    rule: apiResponse.rule?.id,
     questionsIds: [],  
     seccions: apiResponse.seccions.map((seccion: any) => ({
       id: seccion.id, 
@@ -17,7 +17,7 @@ export function transformApiResponseToForm(apiResponse: any): Form {
         type: qr.question.type,
         created: qr.question.created,
         updated: qr.question.updated,
-        options: [] 
+        options: qr.question.options
       }))
     }))
   }
