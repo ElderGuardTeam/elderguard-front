@@ -20,6 +20,7 @@ type FormsContextType = {
   searchForms: (searchTerm: string) => Promise<void>
   getFormById: (id: string) => Promise<void>
   createEvaluation: (data: Evaluation) => Promise<void>
+  getEvaluationById: (id: string) => Promise<void>
   deleteForm: (id: string) => Promise<void>
   editForm: (form: Form, id: string) => Promise<void>
   fetchEvaluation: () => Promise<void>
@@ -29,6 +30,7 @@ type FormsContextType = {
   forms: FormList[]
   formDetails: Form
   evaluations: EvaluationList[]
+  evaluationDetails: Evaluation
 }
 
 export const FormsContext = createContext({} as FormsContextType)
@@ -40,6 +42,7 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   const [forms, setForms] = useState<FormList[]>([])
   const [formDetails, setFormDetails] = useState<Form>({} as Form)
   const [evaluations, setEvaluations] = useState<EvaluationList[]>([])
+  const [evaluationDetails, setEvaluationDetails] = useState<Evaluation>({} as Evaluation)
 
   async function createQuestion(data: Question) {
     api.post('/question', {
@@ -174,6 +177,15 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  async function getEvaluationById(id: string) {
+    api.get(`/evaluation/${id}`).then((response) => {
+      setEvaluationDetails(response.data)
+    }).catch((error) => {
+      console.log(error)
+      toastError('Erro ao buscar questão', false)
+    })
+  }
+
   async function createEvaluation(data: Evaluation) {
     api.post('/evaluation', data).then((response) => {
       toastSuccess('Avaliação criada com sucesso', 5000)
@@ -224,7 +236,9 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       editForm,
       fetchEvaluation,
       evaluations,
-      searchEvaluations
+      searchEvaluations,
+      getEvaluationById,
+      evaluationDetails
       }}
     >
       {children}

@@ -88,6 +88,7 @@ export default function CreateQuestionPage({params}: {params: {id: string}}) {
       setFormSections={setFormSections}
       formSections={formSections}
       setValue={setValue}
+      formTitle= {formDetails.title || ''}
       isEditing
       deleteForm={handleDeleteForm}
       />

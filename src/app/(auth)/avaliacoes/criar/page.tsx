@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import CreateEvaluation from "@/components/Forms/CreateEvaluation"
 import { useForms } from "@/contexts/formsContext"
 
-export default function CreateQuestionPage() {
+export default function CreateEvaluationPage() {
   const {
     createEvaluation
   } = useForms()
@@ -18,13 +18,13 @@ export default function CreateQuestionPage() {
     control, 
   } = useForm<Evaluation>()
 
-  const [formList, setFormList] = useState<FormDetails[]>([])
+  const [formList, setFormList] = useState<Form[]>([])
 
 
   const handleCreateEvaluation = async (data: Evaluation) => {
     createEvaluation({
       ...data,
-      formsIds: formList.map((form) => form.id)
+      formsIds: formList.map((form) => form.id || ""),
     })
   
   };

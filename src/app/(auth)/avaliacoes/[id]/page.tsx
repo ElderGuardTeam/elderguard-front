@@ -1,15 +1,16 @@
 'use client'
 
-import CreateForm from "@/components/Forms/CreateForm"
-import CreateQuestion from "@/components/Forms/CreateQuestion"
-import { useForms } from "@/contexts/formsContext"
-import { useState } from "react"
-import { useFieldArray, useForm } from "react-hook-form"
-import { validateCPF } from 'validations-br'
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
 
-export default function CreateQuestionPage() {
+import CreateEvaluation from "@/components/Forms/CreateEvaluation"
+import { useForms } from "@/contexts/formsContext"
+
+export default function EditEvaluationPage({params}: {params: {id: string}}) {
   const {
-    createForm
+    createEvaluation,
+    getEvaluationById,
+    evaluationDetails
   } = useForms()
 
   const {
@@ -17,52 +18,40 @@ export default function CreateQuestionPage() {
     handleSubmit,
     formState: { errors },
     control, 
-    watch,
-    reset
-  } = useForm<Form>()
+    setValue
+  } = useForm<Evaluation>()
 
-  const [formSections, setFormSections] = useState<Section[]>([])
+  useEffect(() => {
+    getEvaluationById(params.id)
+  }, [params.id])
 
+  const [formList, setFormList] = useState<Form[]>([])
 
-
-  const handleCreateForm = async (data: Form) => {
-    const mergedSections = formSections.map((section, index) => {
-      const { id, ...rest } = section; // Remove o `id`
-  
-      return {
-        ...rest,
-        rule: {
-          ...(data.seccions?.[index + 1]?.rule || section.rule),
-          value1: data.seccions?.[index + 1]?.rule?.value1
-            ? Number(data.seccions[index + 1].rule.value1)
-            : null,
-          value2: data.seccions?.[index + 1]?.rule?.value2
-            ? Number(data.seccions[index + 1].rule.value2)
-            : null,
-        },
-        questionsIds: section.questionsIds.map((question) => question.id),
-      };
-    });
-  
-    await createForm({
+  useEffect(() => {
+    if (evaluationDetails) {
+      setValue("title", evaluationDetails.title)
+      setValue("description", evaluationDetails.description)
+    }
+  }, [evaluationDetails])
+  const handleCreateEvaluation = async (data: Evaluation) => {
+    createEvaluation({
       ...data,
-      seccions: mergedSections,
-    });
+      formsIds: formList.map((form) => form.id || ""),
+    })
+  
   };
 
 
   return (
     <div className="p-8 w-full">
-      <CreateForm
+      <CreateEvaluation
       control={control}
       errors={errors}
       handleSubmit={handleSubmit}
-      onSubmit={handleCreateForm}
+      onSubmit={handleCreateEvaluation}
       register={register}
-      watch={watch}
-      setFormSections={setFormSections}
-      formSections={formSections}
-      reset={reset}
+      formList={formList}
+      setFormList={setFormList}
       />
     </div>
   )

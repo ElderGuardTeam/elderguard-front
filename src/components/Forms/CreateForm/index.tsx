@@ -153,7 +153,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
           <FontAwesomeIcon icon={faChevronLeft} />
         </div>
         {
-            formTitle ? `Editar ${formTitle}` : 'Novo Formulário'
+            formTitle ? `Editar Formulário` : 'Novo Formulário'
           }
       </h1>
       <div>

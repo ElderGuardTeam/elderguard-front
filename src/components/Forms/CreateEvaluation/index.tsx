@@ -26,8 +26,8 @@ interface ICreateEvaluationProps {
   isEditing?: boolean;
   formTitle?: string;
   deleteQuestion?: () => Promise<void>;
-  formList: FormDetails[]
-  setFormList: Dispatch<SetStateAction<FormDetails[]>>
+  formList: Form[]
+  setFormList: Dispatch<SetStateAction<Form[]>>
 }
 
 const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
@@ -63,7 +63,7 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
   }, [])
 
 
-  const handleAddForm = async (formDetails: FormDetails) => {
+  const handleAddForm = async (formDetails: Form) => {
     setFormList((prevState) => {
       const questionExists = prevState.some((question) => question.id === formDetails.id);
       if (!questionExists) {
@@ -73,7 +73,7 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
     });
   }
 
-  
+  console.log(formDetails)
   return (
     <form className="bg-white rounded p-4" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="flex gap-2 items-center">
@@ -103,7 +103,7 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
           }}>
           <FontAwesomeIcon icon={faPlus}/> Adicionar Formulário
         </Button> 
-        {formList.map((form: FormDetails) => (
+        {formList.map((form: Form) => (
               <fieldset key={form.id} className="border border-base-300 rounded p-2 gap-4 my-4 text-xs">
                 <p className="text-lg font-bold mb-1">{form?.title}</p>
                 <p className="text-sm text-gray-500">Descrição: {form?.description}</p>
@@ -157,7 +157,7 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
       <Modal 
       isOpen={isQuestionModalOpen}
       onClose={() => setIsQuestionModalOpen(false)}
-      className="w-3/4 "
+      className="w-3/4 max-h-3/4 overflow-y-auto pb-0"
       headerText="Adicionar Formulário"
       >
         {
@@ -232,16 +232,16 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
             <p className="text-sm text-gray-500 mb-2">Tipo: {formDetails?.type}</p>
               {formDetails?.seccions?.map((section, sectionIndex) => (
                 <fieldset key={section.id} className="border border-gray-300 p-4 rounded mb-4">
-                  <legend className="text-sm font-bold">Sessão {sectionIndex + 1}: {section.title}</legend>
+                  <legend className="text-sm font-bold">{section.title}</legend>
                   {section.rule && (
                     <div className="mb-4 text-sm text-gray-600 bg-gray-50 p-2 rounded">
                       <strong>Regra:</strong> {setRuleType(section.rule)}
                     </div>
                   )}
-                  {section.questionsRel.length > 0 ? (
-                    section.questionsRel.map((rel, questionIndex) => (
-                      <div key={rel.question.id} className="mb-4">
-                        {setQuestionComponent(rel.question)}
+                  {section.questionsIds.length > 0 ? (
+                    section.questionsIds.map((rel, questionIndex) => (
+                      <div key={questionIndex} className="mb-4">
+                        {setQuestionComponent(rel)}
                       </div>
                     ))
                   ) : (
@@ -250,7 +250,7 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
                 </fieldset>
               ))}
             </fieldset>
-            <div className="flex gap-2 mt-4">
+            <div className="flex gap-2 mt-4 sticky bottom-0 bg-white py-2">
               <Button type="button" className="btn-error text-white" onClick={() => setModalTable('DataTable')}>
                 Voltar
               </Button>
