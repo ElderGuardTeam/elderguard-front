@@ -3,7 +3,7 @@ import { UseFormRegister } from 'react-hook-form';
 import React from 'react';
 
 export interface InputProps extends React.HTMLProps<HTMLSelectElement> {
-  options: Option[] ;
+  options: any[] ;
   register?: ReturnType<UseFormRegister<any>>;
   hasError?: boolean;
 }

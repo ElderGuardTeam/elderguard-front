@@ -24,8 +24,8 @@ interface ICreateEvaluationProps {
   errors: any;
   control: any;
   isEditing?: boolean;
-  formTitle?: string;
-  deleteQuestion?: () => Promise<void>;
+  evaluationTitle?: string;
+  deleteEvaluation?: () => Promise<void>;
   formList: Form[]
   setFormList: Dispatch<SetStateAction<Form[]>>
 }
@@ -36,8 +36,8 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
   register,
   errors,
   isEditing,
-  formTitle,
-  deleteQuestion,
+  evaluationTitle,
+  deleteEvaluation,
   formList,
   setFormList
 }) => {
@@ -73,7 +73,6 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
     });
   }
 
-  console.log(formDetails)
   return (
     <form className="bg-white rounded p-4" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="flex gap-2 items-center">
@@ -81,7 +80,7 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
           <FontAwesomeIcon icon={faChevronLeft} />
         </div>
         {
-            formTitle ? `Editar ${formTitle}` : 'Nova Avaliação'
+            evaluationTitle ? `Editar Avaliação ` : 'Nova Avaliação'
           }
       </h1>
       <div>
@@ -93,7 +92,6 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
         />
         <TextAreaFormGroup
         labelText="Descrição"
-        isRequired
         register={register('description')}
         inputClass="input input-bordered h-24"
         error={errors.description?.message}
@@ -122,7 +120,7 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
             <Button type="submit" className="btn-success text-white">
               Salvar
             </Button>
-            <Button type="button" className="btn-link " onClick={() => router.push('/questoes')}>
+            <Button type="button" className="btn-link " onClick={() => router.push('/avaliacoes')}>
               Cancelar
             </Button>
           </div>
@@ -145,7 +143,7 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
           <h1 className="text-lg font-bold">Deseja realmente excluir?</h1>
           <p className="text-xs text-center">Essa ação não pode ser desfeita</p>
           <div className="flex gap-2 mt-4">
-            <Button type="button" className="btn-error text-white" onClick={deleteQuestion}>
+            <Button type="button" className="btn-error text-white" onClick={deleteEvaluation}>
               Sim
             </Button>
             <Button type="button" className="btn-link " onClick={() => setIsOpen(false)}>

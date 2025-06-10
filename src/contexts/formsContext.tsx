@@ -25,12 +25,14 @@ type FormsContextType = {
   editForm: (form: Form, id: string) => Promise<void>
   fetchEvaluation: () => Promise<void>
   searchEvaluations: (searchTerm: string) => Promise<void>
+  deleteEvaluation: (id: string) => Promise<void>
   questions: QuestionList[]
   questionDetails: QuestionDetails
   forms: FormList[]
   formDetails: Form
   evaluations: EvaluationList[]
-  evaluationDetails: Evaluation
+  evaluationDetails: EvaluationDetails
+  answerEvaluation: AnswerEvaluation
 }
 
 export const FormsContext = createContext({} as FormsContextType)
@@ -42,7 +44,8 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   const [forms, setForms] = useState<FormList[]>([])
   const [formDetails, setFormDetails] = useState<Form>({} as Form)
   const [evaluations, setEvaluations] = useState<EvaluationList[]>([])
-  const [evaluationDetails, setEvaluationDetails] = useState<Evaluation>({} as Evaluation)
+  const [evaluationDetails, setEvaluationDetails] = useState<EvaluationDetails>({} as EvaluationDetails)
+  const [answerEvaluation, setAnswerEvaluation] = useState<AnswerEvaluation>({} as AnswerEvaluation)
 
   async function createQuestion(data: Question) {
     api.post('/question', {
@@ -180,6 +183,7 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   async function getEvaluationById(id: string) {
     api.get(`/evaluation/${id}`).then((response) => {
       setEvaluationDetails(response.data)
+      setAnswerEvaluation(response.data)
     }).catch((error) => {
       console.log(error)
       toastError('Erro ao buscar questão', false)
@@ -213,6 +217,14 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  async function deleteEvaluation(id: string) {
+    api.delete(`/evaluation/${id}`).then((response) => {
+      toastSuccess('Avaliação deletada com sucesso', 5000)
+      router.push('/avaliacoes')
+    }).catch((error) => {
+      toastError('Erro ao deletar avaliacao', false)
+    })
+  }
 
   return (
     <FormsContext.Provider
@@ -238,7 +250,9 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       evaluations,
       searchEvaluations,
       getEvaluationById,
-      evaluationDetails
+      evaluationDetails,
+      answerEvaluation,
+      deleteEvaluation
       }}
     >
       {children}

@@ -5,12 +5,14 @@ import { useForm } from "react-hook-form"
 
 import CreateEvaluation from "@/components/Forms/CreateEvaluation"
 import { useForms } from "@/contexts/formsContext"
+import { transformFormDataArray } from "@/utils/functions/transformFormData"
 
 export default function EditEvaluationPage({params}: {params: {id: string}}) {
   const {
     createEvaluation,
     getEvaluationById,
-    evaluationDetails
+    evaluationDetails,
+    deleteEvaluation
   } = useForms()
 
   const {
@@ -31,6 +33,7 @@ export default function EditEvaluationPage({params}: {params: {id: string}}) {
     if (evaluationDetails) {
       setValue("title", evaluationDetails.title)
       setValue("description", evaluationDetails.description)
+      setFormList(transformFormDataArray(evaluationDetails.formsRel || []))
     }
   }, [evaluationDetails])
   const handleCreateEvaluation = async (data: Evaluation) => {
@@ -41,7 +44,10 @@ export default function EditEvaluationPage({params}: {params: {id: string}}) {
   
   };
 
-
+  const handleDeleteEvaluation = async () => {
+    if (!evaluationDetails?.id) return;
+    await deleteEvaluation(evaluationDetails.id);
+  }
   return (
     <div className="p-8 w-full">
       <CreateEvaluation
@@ -52,6 +58,9 @@ export default function EditEvaluationPage({params}: {params: {id: string}}) {
       register={register}
       formList={formList}
       setFormList={setFormList}
+      evaluationTitle={ evaluationDetails?.title || ""}
+      isEditing
+      deleteEvaluation={handleDeleteEvaluation}
       />
     </div>
   )

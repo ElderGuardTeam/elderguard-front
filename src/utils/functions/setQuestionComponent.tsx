@@ -5,40 +5,73 @@ import Label from "@/components/Label"
 import SelectFormGroup from "@/components/SelectFormGroup"
 import { useForm } from "react-hook-form"
 import { Question } from "../schema/createQuestionSchema"
+import Input from "@/components/Input"
+import Select from "@/components/Select"
 
 export const setQuestionComponent = (questionDetails: QuestionDetails | Question) => {
 
   switch (questionDetails.type) {
     case 'TEXT':
       return (
-        <FormGroup
-        labelText={questionDetails.title}
-        />
+        <div className="w-full break-words text-wrap">
+          <Label labelText={questionDetails.title} >
+            {
+              questionDetails.description && (
+                <div className="my-2 text-sm text-gray-600 bg-gray-50 p-2 rounded" 
+                dangerouslySetInnerHTML={{ __html: questionDetails.description || '' }}/>
+              )
+            }
+            <Input/>
+          </Label>
+        </div>
       )
     case 'NUMBER':
       return (
-        <FormGroup
-        labelText={questionDetails.title}
-        type="number"
-        />
+        <div className="w-full break-words text-wrap">
+          <Label labelText={questionDetails.title} >
+            {
+              questionDetails.description && (
+                <div className="my-2 text-sm text-gray-600 bg-gray-50 p-2 rounded" 
+                dangerouslySetInnerHTML={{ __html: questionDetails.description || '' }}/>
+              )
+            }
+            <Input type="number"/>
+          </Label>
+        </div>
       )
     case 'IMAGE':
       return (
-        <FormGroup
-        labelText={questionDetails.title}
-        type="file"
-        />
+        <div className="w-full break-words text-wrap">
+          <Label labelText={questionDetails.title} >
+            {
+              questionDetails.description && (
+                <div className="my-2 text-sm text-gray-600 bg-gray-50 p-2 rounded" 
+                dangerouslySetInnerHTML={{ __html: questionDetails.description || '' }}/>
+              )
+            }
+            <Input type="file" className="input"/>
+          </Label>
+        </div>
       )
     case 'SELECT':
       return (
-        <SelectFormGroup
-        labelText={questionDetails.title}
-        options={questionDetails.options?.map((option) => ({
-          name: option.description,
-          value: option.questionId
-        })) || []}
-        placeholder="Selecione"
-        />
+        <div className="w-full break-words text-wrap">
+          <Label labelText={questionDetails.title} >
+            {
+              questionDetails.description && (
+                <div className="my-2 text-sm text-gray-600 bg-gray-50 p-2 rounded" 
+                dangerouslySetInnerHTML={{ __html: questionDetails.description || '' }}/>
+              )
+            }
+            <Select
+            options={questionDetails.options?.map((option) => ({
+              name: option.description,
+              value: option.questionId
+            })) || []}
+            placeholder="Selecione"
+            />
+          </Label>
+        </div>
       )
     case 'MULTISELECT':
       return (
@@ -73,7 +106,7 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
       return (
         <div>
           <Label labelText={questionDetails.title}/>
-          <div dangerouslySetInnerHTML={{ __html: questionDetails.description }}/>
+          <div dangerouslySetInnerHTML={{ __html: questionDetails.description || '' }}/>
           <FormGroup
           labelText="Pontuação"
           className="w-24 mt-2"

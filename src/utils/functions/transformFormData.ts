@@ -22,3 +22,15 @@ export function transformApiResponseToForm(apiResponse: any): Form {
     }))
   }
 }
+
+export function transformFormDataArray(data: any[]): Form[] {
+  return data.map(item => ({
+    id: item.form.id,
+    title: item.form.title,
+    description: item.form.description,
+    type: 'default_type', 
+    seccions: [],          
+    rule: {},              
+    questionsIds: []      
+  }));
+}

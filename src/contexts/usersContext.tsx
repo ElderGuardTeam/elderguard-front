@@ -187,6 +187,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 		setLoading(true);
 		await api.post("evaluation/start", data, headerConfig).then(() => {
 			toastSuccess("Identidade validada com sucesso", 5000);
+			router.push(`/avaliacoes/${data.evaluationId}/responder`);
 		}).catch((error) => {
 			toastError("Dados inválidos", 5000);
 		}).finally(() => {
