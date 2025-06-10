@@ -26,6 +26,7 @@ type FormsContextType = {
   fetchEvaluation: () => Promise<void>
   searchEvaluations: (searchTerm: string) => Promise<void>
   deleteEvaluation: (id: string) => Promise<void>
+  editEvaluation: (evaluation: Evaluation, id: string) => Promise<void>
   questions: QuestionList[]
   questionDetails: QuestionDetails
   forms: FormList[]
@@ -226,6 +227,16 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  async function editEvaluation(evaluation: Evaluation, id: string) {
+    api.patch(`/evaluation/${id}`, evaluation).then((response) => {
+      toastSuccess('Avaliação editada com sucesso', 5000)
+      router.push('/avaliacoes')
+    })
+    .catch((error) => {
+      toastError('Erro ao editar avaliação', false)
+    })
+  }
+
   return (
     <FormsContext.Provider
       value={{
@@ -252,7 +263,8 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       getEvaluationById,
       evaluationDetails,
       answerEvaluation,
-      deleteEvaluation
+      deleteEvaluation,
+      editEvaluation
       }}
     >
       {children}

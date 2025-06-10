@@ -9,10 +9,10 @@ import { transformFormDataArray } from "@/utils/functions/transformFormData"
 
 export default function EditEvaluationPage({params}: {params: {id: string}}) {
   const {
-    createEvaluation,
     getEvaluationById,
     evaluationDetails,
-    deleteEvaluation
+    deleteEvaluation,
+    editEvaluation
   } = useForms()
 
   const {
@@ -37,10 +37,10 @@ export default function EditEvaluationPage({params}: {params: {id: string}}) {
     }
   }, [evaluationDetails])
   const handleCreateEvaluation = async (data: Evaluation) => {
-    createEvaluation({
+    editEvaluation({
       ...data,
       formsIds: formList.map((form) => form.id || ""),
-    })
+    }, params.id)
   
   };
 
