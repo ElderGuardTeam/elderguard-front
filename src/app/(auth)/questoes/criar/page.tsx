@@ -46,7 +46,7 @@ export default function CreateQuestionPage() {
     if (data.options?.some(opt => !isValidScore(opt.score))) {
       toastError('Todas as opções devem ter uma pontuação válida.', 5000)
       return;
-    }
+    }    
 
     await createQuestion(data)
   }

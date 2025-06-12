@@ -51,12 +51,12 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   async function createQuestion(data: Question) {
     api.post('/question', {
       ...data,
-      rule: {
+      rule: data.rule?.type ? {
         ...data.rule,
         maxScore: data.rule?.maxScore ? Number(data.rule?.maxScore) : null,
         value1: data.rule?.value1? Number(data.rule?.value1) : null,
         value2: data.rule?.value2 ? Number(data.rule?.value2) : null
-      },
+      } : null,
       options: data.options?.map((option) => ({
         description: option.description,
         score: Number(option.score),
@@ -98,12 +98,12 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   async function editQuestion(question: Question, id: string) {
     api.patch(`/question/${id}`, {
       ...question,
-      rule: {
-        ...question.rule,
+      rule: question.rule?.type ? {
+        ...question.rule, 
         maxScore: question.rule?.maxScore ? Number(question.rule?.maxScore) : null,
         value1: question.rule?.value1? Number(question.rule?.value1) : null,
         value2: question.rule?.value2 ? Number(question.rule?.value2) : null
-      },
+      } : null,
       options: question.options?.map((option) => ({
         description: option.description,
         score: Number(option.score),
