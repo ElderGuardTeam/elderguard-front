@@ -9,6 +9,7 @@ import DataTableComponent from "@/components/DataTable";
 import Input from "@/components/Input";
 import { useForms } from "@/contexts/formsContext";
 import { formatDate } from "@/utils/formatters/formateDate";
+import { useAuth } from "@/contexts/authContext";
 
 export default function Evaluations() {
 
@@ -17,6 +18,10 @@ export default function Evaluations() {
     searchEvaluations,
     fetchEvaluation
   } = useForms()
+
+  const {
+    user,
+  } = useAuth()
 
   useEffect(() => {
     fetchEvaluation()
@@ -91,7 +96,7 @@ export default function Evaluations() {
         },
       ]}
       data={evaluations}
-      onRowClicked={(row:EvaluationList) => router.push(`/avaliacoes/${row.id}`)}
+      onRowClicked={(row:EvaluationList) => user?.userType === 'ADMIN' ? router.push(`/avaliacoes/${row.id}/responder`) : router.push(`/avaliacoes/${row.id}/validar-identidade`)}
       />
     </div>
   );

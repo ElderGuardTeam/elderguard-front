@@ -2,10 +2,12 @@
 
 import Button from "@/components/Button"
 import { useForms } from "@/contexts/formsContext"
+import { normalizeAnswers } from "@/utils/functions/setFormAnwerObject"
 import { setQuestionComponent } from "@/utils/functions/setQuestionComponent"
 import { faCheck, faCheckCircle } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
 
 export default function AnswerEvaluation({params}: {params: {id: string}}) {
   const {
@@ -17,6 +19,11 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
 
   const [formId, setFormId] = useState<string | null>(null)
   const [endedForms, setEndedForms] = useState<string[]>([])
+
+  const {
+    register,
+    handleSubmit,
+  } = useForm()
 
   useEffect(() => {
     getEvaluationById(params.id)
@@ -38,24 +45,25 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
     }
   }, [formId])
 
-  const handleEndForm = () => {
-    if (!answerEvaluation?.formsRel || !formId) return;
+  const handleEndForm = (data: any) => {
+    const answers = normalizeAnswers(data, formDetails)
+    console.log(answers)
+    // if (!answerEvaluation?.formsRel || !formId) return;
   
-    const currentIndex = answerEvaluation.formsRel.findIndex(
-      (formsRel) => formsRel.form?.id === formId
-    );
+    // const currentIndex = answerEvaluation.formsRel.findIndex(
+    //   (formsRel) => formsRel.form?.id === formId
+    // );
   
-    if (currentIndex !== -1 && currentIndex + 1 < answerEvaluation.formsRel.length) {
-      const nextFormId = answerEvaluation.formsRel[currentIndex + 1].form?.id;
-      if (nextFormId) {
-        setFormId(nextFormId);
-        setEndedForms((prev) => [...prev, formId]); 
-      }
-    } else {
-      console.log("Último formulário respondido ou nenhum próximo formulário encontrado.");
-    }
+    // if (currentIndex !== -1 && currentIndex + 1 < answerEvaluation.formsRel.length) {
+    //   const nextFormId = answerEvaluation.formsRel[currentIndex + 1].form?.id;
+    //   if (nextFormId) {
+    //     setFormId(nextFormId);
+    //     setEndedForms((prev) => [...prev, formId]); 
+    //   }
+    // } else {
+    //   console.log("Último formulário respondido ou nenhum próximo formulário encontrado.");
+    // }
   };
-
   return(
     <div className="flex py-8 justify-center min-h-screen w-full">
       <div className="card bg-white shadow-2xl w-2/3">
@@ -111,14 +119,14 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
                     }
                     {
                       (formId === formsRel.form?.id) && (
-                        <div>
+                        <form onSubmit={handleSubmit(handleEndForm)}>
                         {formDetails?.seccions?.map((section, sectionIndex) => (
                           <fieldset key={section.id} className=" border border-gray-300 p-4 rounded mb-4">
                             <legend className="text-sm font-bold">{section.title}</legend>
                             {section.questionsIds.length > 0 ? (
                               section.questionsIds.map((rel, questionIndex) => (
                                 <div key={questionIndex} className="mb-4">
-                                  {setQuestionComponent(rel)}
+                                  {setQuestionComponent(rel, register)}
                                 </div>
                               ))
                             ) : (
@@ -127,14 +135,14 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
                           </fieldset>
                         ))}
                           <div className="flex items-center justify-between">
-                            <Button className="btn btn-success text-white" onClick={handleEndForm}>
+                            <Button className="btn btn-success text-white" type="submit">
                               Finalizar
                             </Button>
                             <Button className="btn bg-salmon text-white">
                               Pausar
                             </Button>
                           </div>
-                        </div>
+                        </form>
                       )
                     }
                   </fieldset>

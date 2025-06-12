@@ -47,26 +47,28 @@ const Sidebar: React.FC = () => {
           </LiMenu> 
           {
             user?.userType === 'ADMIN' && (
+              <>
               <LiMenu>
                 <Link className="flex items-center gap-3" href="/profissionais">
                   <FontAwesomeIcon icon={faUserNurse} className='text-lg' />
                   <span>Profissionais</span>
                 </Link>
-              </LiMenu>  
+              </LiMenu> 
+              <LiMenu>
+                <Link className="flex items-center gap-3" href="/questoes">
+                  <FontAwesomeIcon icon={faQuestion} className='text-lg' />
+                  <span>Questões</span>
+                </Link>
+              </LiMenu> 
+              <LiMenu>
+                <Link className="flex items-center gap-3" href="/formularios">
+                  <FontAwesomeIcon icon={faFileLines} className='text-lg' />
+                  <span>Formulários</span>
+                </Link>
+              </LiMenu> 
+            </> 
             )
           } 
-          <LiMenu>
-            <Link className="flex items-center gap-3" href="/questoes">
-              <FontAwesomeIcon icon={faQuestion} className='text-lg' />
-              <span>Questões</span>
-            </Link>
-          </LiMenu> 
-          <LiMenu>
-            <Link className="flex items-center gap-3" href="/formularios">
-              <FontAwesomeIcon icon={faFileLines} className='text-lg' />
-              <span>Formulários</span>
-            </Link>
-          </LiMenu>  
           <LiMenu>
             <Link className="flex items-center gap-3" href="/avaliacoes">
               <FontAwesomeIcon icon={faFilePen} className='text-lg' />

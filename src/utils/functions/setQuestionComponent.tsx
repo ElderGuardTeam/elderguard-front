@@ -3,12 +3,12 @@ import Checkbox from "@/components/Checkbox"
 import FormGroup from "@/components/FormGroup"
 import Label from "@/components/Label"
 import SelectFormGroup from "@/components/SelectFormGroup"
-import { useForm } from "react-hook-form"
+import { UseFormRegister, useForm } from "react-hook-form"
 import { Question } from "../schema/createQuestionSchema"
 import Input from "@/components/Input"
 import Select from "@/components/Select"
 
-export const setQuestionComponent = (questionDetails: QuestionDetails | Question) => {
+export const setQuestionComponent = (questionDetails: QuestionDetails | Question, register: UseFormRegister<any>) => {
 
   switch (questionDetails.type) {
     case 'TEXT':
@@ -21,7 +21,9 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
                 dangerouslySetInnerHTML={{ __html: questionDetails.description || '' }}/>
               )
             }
-            <Input/>
+            <Input
+            register={register(questionDetails.id || '')}
+            />
           </Label>
         </div>
       )
@@ -35,7 +37,10 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
                 dangerouslySetInnerHTML={{ __html: questionDetails.description || '' }}/>
               )
             }
-            <Input type="number"/>
+            <Input 
+            type="number"
+            register={register(questionDetails.id || '')}
+            />
           </Label>
         </div>
       )
@@ -49,7 +54,11 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
                 dangerouslySetInnerHTML={{ __html: questionDetails.description || '' }}/>
               )
             }
-            <Input type="file" className="input"/>
+            <Input 
+            type="file" 
+            className="input"
+            register={register(questionDetails.id || '')}
+            />
           </Label>
         </div>
       )
@@ -69,6 +78,7 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
               value: option.questionId
             })) || []}
             placeholder="Selecione"
+            register={register(questionDetails.id || '')}
             />
           </Label>
         </div>
@@ -79,7 +89,10 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
         <Label labelText={questionDetails.title}/>
         {questionDetails.options?.map((option) => (
           <div className="flex items-center gap-2">
-            <Checkbox value={option.questionId}/>
+            <Checkbox 
+            value={option.questionId || ''}
+            register={register(questionDetails.id || '')}
+            />
             <Label labelText={option.description}/>
           </div>
         ))}
@@ -93,11 +106,11 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
             {questionDetails.description || ''}
           </p>
           <div className="flex items-center gap-2">
-            <input type="radio" value="true" name='radio' className="radio radio-primary" />
+            <input type="radio" value="true" className="radio radio-primary" {...register(questionDetails.id || '')} />
             <Label labelText="Sim" />
           </div>  
           <div className="flex items-center gap-2">
-            <input type="radio" value="false" name='radio' className="radio radio-primary" />
+            <input type="radio" value="false"  className="radio radio-primary" {...register(questionDetails.id || '')} />
             <Label labelText="Não"/>
           </div>  
         </div>
@@ -110,6 +123,7 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
           <FormGroup
           labelText="Pontuação"
           className="w-24 mt-2"
+          register={register(questionDetails.id || '')}
           />
         </div>
       )

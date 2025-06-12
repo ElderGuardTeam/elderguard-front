@@ -2,6 +2,7 @@ import { z } from "zod";
 import { ruleSchema } from "./createRuleSchema";
 
 const CreateQuestionSchema = z.object({
+  id: z.string().optional(),
   title: z.string({
     required_error: "Título é obrigatório",
   }).min(1,"Título é obrigatório"),
