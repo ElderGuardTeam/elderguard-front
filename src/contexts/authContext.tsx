@@ -37,10 +37,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const { 'elderguard.token': token } = parseCookies()
+    const { 'elderguard.userId': userId } = parseCookies()
     if (token) {
       const decodedToken = jwt.decode(token)
       setUser(decodedToken as User)
     }
+    if (userId) {
+      setUserId(userId)
+    } 
   }, [])
 
   async function signIn({ login, password }: Login) {
@@ -59,12 +63,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUserId(null)
       }
       const { 'elderguard.token': token } = parseCookies()
-      if (token) {
+      const { 'elderguard.userId': userId } = parseCookies()
+      if (token || userId) {
         destroyCookie({}, 'elderguard.token')
+        destroyCookie({}, 'elderguard.userId')
       }
       const decodedToken = jwt.decode(res.data.access_token)
       setUser(decodedToken as User)
       setCookie(undefined, 'elderguard.token', res.data.access_token, {
+        maxAge: 60 * 60 * 8, // 8 hours
+        httpOnly: false,
+        path: '/',
+      })
+      setCookie(undefined, 'elderguard.userId', res.data.userId, {
         maxAge: 60 * 60 * 8, // 8 hours
         httpOnly: false,
         path: '/',
@@ -81,7 +92,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     destroyCookie({}, 'elderguard.token', {
       path: '/',
     })
+    destroyCookie({}, 'elderguard.userId', {
+      path: '/',
+    })
     setUser(null)
+    setUserId(null)
     router.push('/')
   }
 

@@ -2,7 +2,6 @@
 import Checkbox from "@/components/Checkbox"
 import FormGroup from "@/components/FormGroup"
 import Label from "@/components/Label"
-import SelectFormGroup from "@/components/SelectFormGroup"
 import { UseFormRegister, useForm } from "react-hook-form"
 import { Question } from "../schema/createQuestionSchema"
 import Input from "@/components/Input"
@@ -75,7 +74,7 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
             <Select
             options={questionDetails.options?.map((option) => ({
               name: option.description,
-              value: option.questionId
+              value: option.id
             })) || []}
             placeholder="Selecione"
             register={register(questionDetails.id || '')}

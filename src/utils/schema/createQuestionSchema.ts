@@ -12,6 +12,7 @@ const CreateQuestionSchema = z.object({
   }).min(1, "Tipo é obrigatório"),
   options: z.array(
     z.object({
+      id: z.string().optional(),
       description: z.string({
         required_error: "Descrição é obrigatória",
       }).min(1,"Descrição é obrigatória"),

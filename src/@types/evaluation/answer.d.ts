@@ -30,3 +30,27 @@ interface OptionAnswer {
   answerNumber?: number;
   answerBoolean?: boolean;
 }
+
+interface EvaluationAnswerList {
+  id: string
+  evaluationId: string
+  startedAt: string
+  completedAt: any
+  status: string
+  scoreTotal: number
+  created: string
+  updated: string
+  evaluation: {
+    title:string
+    id: string
+  }
+  formAnswares: Array<{
+    form: {
+      id: string
+    }
+    idoso: {
+      cpf: string
+      id: string
+    }
+  }>
+}

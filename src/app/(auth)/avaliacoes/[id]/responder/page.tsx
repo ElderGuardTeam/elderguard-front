@@ -1,11 +1,15 @@
 'use client'
 
+import Alert from "@/components/Alert"
 import Button from "@/components/Button"
+import { useAuth } from "@/contexts/authContext"
 import { useForms } from "@/contexts/formsContext"
+import { useUsers } from "@/contexts/usersContext"
 import { normalizeAnswers } from "@/utils/functions/setFormAnwerObject"
 import { setQuestionComponent } from "@/utils/functions/setQuestionComponent"
-import { faCheck, faCheckCircle } from "@fortawesome/free-solid-svg-icons"
+import { faBan, faCheck, faCheckCircle } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
@@ -14,23 +18,62 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
     getEvaluationById,
     answerEvaluation,
     getFormById,
-    formDetails
+    formDetails,
+    answerEvaluationRequest,
+    answerId,
+    editAnswerEvaluationRequest,
+    getEvaluationAnswerById,
+    evaluationAnswerDetails
   } = useForms()
+
+  const {
+    elderlyId
+  } = useUsers()
 
   const [formId, setFormId] = useState<string | null>(null)
   const [endedForms, setEndedForms] = useState<string[]>([])
+
+  const searchParams = useSearchParams()
+  const elderlyIdFromUrl = searchParams.get('elderlyId')
+  const answerIdFromUrl = searchParams.get('answerId')
+
+
+  if(!elderlyId && !elderlyIdFromUrl) {
+    return (
+      <div className="h-screen p-8 w-full">
+        <Alert 
+        className="alert alert-error shadow-lg "
+        icon={
+          <FontAwesomeIcon icon={faBan}/>
+        }
+        message="Valide a identidade do idoso antes de responder a avaliação."
+        />
+
+      </div>
+    )
+  }
+
+  useEffect(() => {
+    if (!answerIdFromUrl) return;
+    getEvaluationAnswerById(answerIdFromUrl)
+  }, [answerIdFromUrl])
+
 
   const {
     register,
     handleSubmit,
   } = useForm()
 
+  const {
+    userId,
+  } = useAuth()
+
   useEffect(() => {
     getEvaluationById(params.id)
   }, [params.id])
 
   useEffect(() => {
-    if (answerEvaluation?.formsRel && answerEvaluation.formsRel.length > 0) {
+    if (answerEvaluation?.formsRel && answerEvaluation.formsRel.length > 0 && !answerIdFromUrl) {
       const firstFormId = answerEvaluation.formsRel[0].form?.id
       if (firstFormId) {
         getFormById(firstFormId)
@@ -45,24 +88,64 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
     }
   }, [formId])
 
-  const handleEndForm = (data: any) => {
+  useEffect(() => {
+    if (!evaluationAnswerDetails) return;
+    setEndedForms(evaluationAnswerDetails?.formAnswares?.map((formAnswer) => formAnswer.form.id) || []);
+
+    const lastAnsweredForm = evaluationAnswerDetails?.formAnswares?.[evaluationAnswerDetails?.formAnswares?.length - 1];
+
+    const currentIndex = answerEvaluation?.formsRel?.findIndex(
+      (formsRel) => formsRel.form?.id === lastAnsweredForm?.form.id
+    );
+
+    if (currentIndex !== -1 && currentIndex + 1 < answerEvaluation?.formsRel?.length) {
+      const nextFormId = answerEvaluation.formsRel[currentIndex + 1].form?.id;
+      if (nextFormId) {
+        setFormId(nextFormId);
+      }
+    } else {
+      console.log("Último formulário respondido ou nenhum próximo formulário encontrado.");
+    }
+
+  }, [evaluationAnswerDetails])
+
+  const handleEndForm = async (data: any) => {
     const answers = normalizeAnswers(data, formDetails)
-    console.log(answers)
-    // if (!answerEvaluation?.formsRel || !formId) return;
-  
-    // const currentIndex = answerEvaluation.formsRel.findIndex(
-    //   (formsRel) => formsRel.form?.id === formId
-    // );
-  
-    // if (currentIndex !== -1 && currentIndex + 1 < answerEvaluation.formsRel.length) {
-    //   const nextFormId = answerEvaluation.formsRel[currentIndex + 1].form?.id;
-    //   if (nextFormId) {
-    //     setFormId(nextFormId);
-    //     setEndedForms((prev) => [...prev, formId]); 
-    //   }
-    // } else {
-    //   console.log("Último formulário respondido ou nenhum próximo formulário encontrado.");
-    // }
+    const evaluationAnswer: EvaluationAnswer = {
+      evaluationId: answerEvaluation.id,
+      formAnswares: [
+        {
+          formId: formDetails.id || '',
+          elderlyId: elderlyId || elderlyIdFromUrl || '',
+          questionsAnswares: answers,
+          techProfessionalId: '3f5d87f2-9fc7-41fb-b165-dedde6a019bc',
+        }
+      ]
+    }
+
+    if(answerId || answerIdFromUrl) {
+      editAnswerEvaluationRequest(evaluationAnswer, answerId || answerIdFromUrl || '')
+    } 
+    else {
+      await answerEvaluationRequest(evaluationAnswer)
+    }
+
+      if (!answerEvaluation?.formsRel || !formId) return;
+
+      const currentIndex = answerEvaluation.formsRel.findIndex(
+        (formsRel) => formsRel.form?.id === formId
+      );
+    
+      if (currentIndex !== -1 && currentIndex + 1 < answerEvaluation.formsRel.length) {
+        const nextFormId = answerEvaluation.formsRel[currentIndex + 1].form?.id;
+        if (nextFormId) {
+          setFormId(nextFormId);
+          setEndedForms((prev) => [...prev, formId]); 
+        }
+      } else {
+        console.log("Último formulário respondido ou nenhum próximo formulário encontrado.");
+      }
+    
   };
   return(
     <div className="flex py-8 justify-center min-h-screen w-full">
@@ -136,7 +219,7 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
                         ))}
                           <div className="flex items-center justify-between">
                             <Button className="btn btn-success text-white" type="submit">
-                              Finalizar
+                              Continuar
                             </Button>
                             <Button className="btn bg-salmon text-white">
                               Pausar

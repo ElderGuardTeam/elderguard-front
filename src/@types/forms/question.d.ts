@@ -1,6 +1,7 @@
 
 
 interface QuestionOption {
+  id: string;
   description: string;
   score: number;
   questionId?: string

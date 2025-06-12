@@ -25,6 +25,7 @@ type UsersContextType = {
 	elderlyInfo: ElderlyInfo
 	professional: Professional[]
 	professionalInfo: Professional
+	elderlyId: string | null
 }
 
 const UsersContext = createContext({} as UsersContextType);
@@ -41,6 +42,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 	const [elderlyInfo, setElderlyInfo] = useState<ElderlyInfo>({} as ElderlyInfo);
 	const [professional, setProfessional] = useState<Professional[]>([]);
 	const [professionalInfo, setProfessionalInfo] = useState<Professional>({} as Professional);
+	const [elderlyId, setElderlyId] = useState<string | null>(null);
 
 	const { 'elderguard.token': token } = parseCookies()
 
@@ -185,8 +187,9 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 	const validadeIdentity = async (data: InitiateEvaluation) => {
 		setLoading(true);
-		await api.post("evaluation/start", data, headerConfig).then(() => {
+		await api.post("evaluation/start", data, headerConfig).then((res) => {
 			toastSuccess("Identidade validada com sucesso", 5000);
+			setElderlyId(res.data.elderly.id);
 			router.push(`/avaliacoes/${data.evaluationId}/responder`);
 		}).catch((error) => {
 			toastError("Dados inválidos", 5000);
@@ -214,7 +217,8 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 			searchElderly,
 			deleteProfessional,
 			deleteElderly,
-			validadeIdentity
+			validadeIdentity,
+			elderlyId
 		}}>
 			{children}
 		</UsersContext.Provider>

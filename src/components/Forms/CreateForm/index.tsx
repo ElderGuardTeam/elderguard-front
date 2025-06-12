@@ -3,7 +3,7 @@ import { faChevronLeft, faEye, faPlus, faTrash } from "@fortawesome/free-solid-s
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { UseFormRegister, UseFormSetValue, useForm } from "react-hook-form";
 
 import { useForms } from "@/contexts/formsContext";
 import { formatDate } from "@/utils/formatters/formateDate";
@@ -59,6 +59,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
   const [hasRule, setHasRule] = useState(formHasRule)
 
 
+
   const handleSearch = () => {
     searchQuestions(searchTerm)
   }
@@ -74,7 +75,9 @@ const CreateForm: React.FC<ICreateFormProps> = ({
     fetchQuestions()
   }, [])
 
-
+  const {
+    register: registerQuestion,
+  } = useForm()
 
 
   const handleAddSection = () => {
@@ -192,7 +195,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
             </Button> 
             {section.questionsIds.map((question: any) => (
               <fieldset key={question.id} className="border border-base-300 rounded p-2 gap-4 mt-4 text-xs">
-                {setQuestionComponent(question)}
+                {setQuestionComponent(question, registerQuestion)}
                 <Button
                   type="button"
                   className="btn-error text-white mt-2"
@@ -365,7 +368,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
         {
           modalTable === 'QuestionDetails' && (
             <>
-              {setQuestionComponent(questionDetails)}
+              {setQuestionComponent(questionDetails, registerQuestion)}
               <div className="flex gap-2 mt-4">
                 <Button type="button" className="btn-error text-white" onClick={() => setModalTable('DataTable')}>
                   Voltar

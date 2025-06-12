@@ -27,6 +27,12 @@ type FormsContextType = {
   searchEvaluations: (searchTerm: string) => Promise<void>
   deleteEvaluation: (id: string) => Promise<void>
   editEvaluation: (evaluation: Evaluation, id: string) => Promise<void>
+  answerEvaluationRequest: (data: EvaluationAnswer) => Promise<void>
+  editAnswerEvaluationRequest: (data: EvaluationAnswer, id: string) => Promise<void>
+  getEvaluationAnswerList: () => Promise<void>
+  getEvaluationAnswerById: (id: string) => Promise<void>
+  evaluationAnswerDetails: EvaluationAnswerList
+  evaluationAnswerList: EvaluationAnswerList[]
   questions: QuestionList[]
   questionDetails: QuestionDetails
   forms: FormList[]
@@ -34,6 +40,7 @@ type FormsContextType = {
   evaluations: EvaluationList[]
   evaluationDetails: EvaluationDetails
   answerEvaluation: AnswerEvaluation
+  answerId: string | null
 }
 
 export const FormsContext = createContext({} as FormsContextType)
@@ -47,6 +54,9 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   const [evaluations, setEvaluations] = useState<EvaluationList[]>([])
   const [evaluationDetails, setEvaluationDetails] = useState<EvaluationDetails>({} as EvaluationDetails)
   const [answerEvaluation, setAnswerEvaluation] = useState<AnswerEvaluation>({} as AnswerEvaluation)
+  const [answerId, setAnswerId] = useState<string | null>(null)
+  const [evaluationAnswerList, setEvaluationAnswerList] = useState<EvaluationAnswerList[]>([])
+  const [evaluationAnswerDetails, setEvaluationAnswerDetails] = useState<EvaluationAnswerList>({} as EvaluationAnswerList)
 
   async function createQuestion(data: Question) {
     api.post('/question', {
@@ -237,6 +247,42 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  async function answerEvaluationRequest(data: EvaluationAnswer) {
+    api.post('/evaluation-answares', data).then((response) => {
+      toastSuccess('Avaliação respondida com sucesso', 5000)
+      setAnswerId(response.data.id)
+    })
+    .catch((error) => {
+      toastError('Erro ao responder avaliação', false)
+    })
+  }
+
+  async function editAnswerEvaluationRequest(data: EvaluationAnswer, id: string) {
+    api.patch(`/evaluation-answares/${id}`, data).then((response) => {
+      toastSuccess('Avaliação respondida com sucesso', 5000)
+      setAnswerId(response.data.id)
+    })
+    .catch((error) => {
+      toastError('Erro ao responder avaliação', false)
+    })
+  }
+
+  async function getEvaluationAnswerList() {
+    api.get(`/evaluation-answares`).then((response) => {
+      setEvaluationAnswerList(response.data)
+    }).catch((error) => {
+      toastError('Erro ao buscar respostas da avaliação', false)
+    })
+  }
+
+  async function getEvaluationAnswerById(id: string) {
+    api.get(`/evaluation-answares/${id}`).then((response) => {
+      setEvaluationAnswerDetails(response.data)
+    }).catch((error) => {
+      toastError('Erro ao buscar resposta da avaliação', false)
+    })
+  }
+
   return (
     <FormsContext.Provider
       value={{
@@ -264,7 +310,14 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       evaluationDetails,
       answerEvaluation,
       deleteEvaluation,
-      editEvaluation
+      editEvaluation,
+      answerEvaluationRequest,
+      answerId,
+      editAnswerEvaluationRequest,
+      getEvaluationAnswerList,
+      evaluationAnswerList,
+      getEvaluationAnswerById,
+      evaluationAnswerDetails
       }}
     >
       {children}

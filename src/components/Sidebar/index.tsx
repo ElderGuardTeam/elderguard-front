@@ -18,6 +18,7 @@ import LiMenu from '../LiMenu'
 import Link from 'next/link'
 import Avatar from '../Avatar'
 import { useAuth } from '@/contexts/authContext'
+import { getFirstLetters } from '@/utils/functions/getFirstLetters'
 
 const Sidebar: React.FC = () => {
   const {
@@ -69,29 +70,33 @@ const Sidebar: React.FC = () => {
             </> 
             )
           } 
-          <LiMenu>
-            <Link className="flex items-center gap-3" href="/avaliacoes">
-              <FontAwesomeIcon icon={faFilePen} className='text-lg' />
-              <span>Avaliações</span>
-            </Link>
+          <LiMenu
+          hasSubMenu
+          parentIcon={<FontAwesomeIcon icon={faFilePen} className='text-lg' />}
+          parentName='Avaliações'
+          >
+            <LiMenu>
+              <Link href="/avaliacoes" >
+                <p>Avaliações</p>
+              </Link>
+            </LiMenu>
+            <LiMenu>
+              <Link href="/avaliacoes/historico">
+                <p>Histórico</p>
+              </Link>
+            </LiMenu>
           </LiMenu>      
         </UlMenu>
         <div className='sticky bottom-0 bg-accent'>
         <div className='divider divider-secondary'></div>
         <div className='flex gap-2 px-2 mb-4'>
           <Avatar className="bg-accent text-accent-content dark:bg-base-300 min-w-8 h-8 rounded-full flex text-sm items-center justify-center uppercase">
-            JD
+            {getFirstLetters(user?.name || '')}
           </Avatar>
           <div className='w-full text-white flex flex-col justify-between'>
-            <p className="font-bold text-xs ">Jane Doe</p>
+            <p className="font-bold text-xs ">{user?.name}</p>
             <div className='flex flex-row-reverse items-center justify-between'>
               <div className='flex items-center gap-2'>
-                <Link 
-                href='/perfil'
-                className='btn btn-sm btn-circle text-white bg-transparent shadow-none border-transparent hover:border-white hover:bg-transparent'
-                >
-                  <FontAwesomeIcon icon={faWrench} />
-                </Link>
                 <div 
                 className='btn btn-sm btn-circle text-white shadow-none bg-transparent border-transparent hover:border-white hover:bg-transparent'
                 onClick={signOut}
