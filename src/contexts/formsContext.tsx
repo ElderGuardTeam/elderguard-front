@@ -6,6 +6,7 @@ import toastError from '@/utils/toast/toastError'
 import toastSuccess from '@/utils/toast/toastSuccess'
 import { Question } from '@/utils/schema/createQuestionSchema'
 import { transformApiResponseToForm } from '@/utils/functions/transformFormData'
+import { useLoader } from './loaderContext'
 
 
 type FormsContextType = {
@@ -58,7 +59,12 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   const [evaluationAnswerList, setEvaluationAnswerList] = useState<EvaluationAnswerList[]>([])
   const [evaluationAnswerDetails, setEvaluationAnswerDetails] = useState<EvaluationAnswerList>({} as EvaluationAnswerList)
 
+  const {
+    setLoading
+  } = useLoader()
+
   async function createQuestion(data: Question) {
+    setLoading(true)
     api.post('/question', {
       ...data,
       rule: data.rule?.type ? {
@@ -76,36 +82,51 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       router.push('/questoes')
     }).catch((error) => {
       toastError('Erro ao criar questão', false)
+    }).finally(() => {
+      setLoading(false)
     })
   }
 
   async function fetchQuestions() {
+    setLoading(true)
     api.get('/question').then((response) => {
       setQuestions(response.data)
     }).catch((error) => {
       toastError('Erro ao buscar questões', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
   async function getQuestionById(id: string) {
+    setLoading(true)
     api.get(`/question/${id}`).then((response) => {
       setQuestionDetails(response.data)
     }).catch((error) => {
       toastError('Erro ao buscar questão', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
   async function deleteQuestion(id: string) {
+    setLoading(true)
     api.delete(`/question/${id}`).then((response) => {
       toastSuccess('Questão deletada com sucesso', 5000)
       fetchQuestions()
       router.push('/questoes')
     }).catch((error) => {
       toastError('Erro ao deletar questão', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
   async function editQuestion(question: Question, id: string) {
+    setLoading(true)
     api.patch(`/question/${id}`, {
       ...question,
       rule: question.rule?.type ? {
@@ -124,7 +145,10 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       router.push('/questoes')
     }).catch((error) => {
       toastError('Erro ao editar questão', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
   async function searchQuestions(searchTerm: string) {

@@ -96,7 +96,7 @@ export default function Evaluations() {
         },
       ]}
       data={evaluations}
-      onRowClicked={(row:EvaluationList) => user?.userType === 'ADMIN' ? router.push(`/avaliacoes/${row.id}/responder`) : router.push(`/avaliacoes/${row.id}/validar-identidade`)}
+      onRowClicked={(row:EvaluationList) => user?.userType === 'ADMIN' ? router.push(`/avaliacoes/${row.id}`) : router.push(`/avaliacoes/${row.id}/validar-identidade`)}
       />
     </div>
   );

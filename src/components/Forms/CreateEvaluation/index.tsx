@@ -3,7 +3,7 @@ import { faChevronLeft, faEye, faPlus} from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { UseFormRegister } from "react-hook-form";
+import { UseFormRegister, useForm } from "react-hook-form";
 
 import { useForms } from "@/contexts/formsContext";
 import { formatDate } from "@/utils/formatters/formateDate";
@@ -46,6 +46,10 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
   const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [modalTable, setModalTable] = useState('DataTable');
+
+  const {
+    register: registerQuestion,
+  } = useForm()
 
   const handleSearch = () => {
     searchForms(searchTerm)
@@ -239,7 +243,7 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
                   {section.questionsIds.length > 0 ? (
                     section.questionsIds.map((rel, questionIndex) => (
                       <div key={questionIndex} className="mb-4">
-                        {setQuestionComponent(rel)}
+                        {setQuestionComponent(rel, registerQuestion)}
                       </div>
                     ))
                   ) : (
