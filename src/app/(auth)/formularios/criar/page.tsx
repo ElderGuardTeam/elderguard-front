@@ -32,7 +32,7 @@ export default function CreateQuestionPage() {
       const { title } = section; 
       return {
         title,
-        rule: {
+        rule: data.seccions?.[index + 1]?.rule ? {
           ...(data.seccions?.[index + 1]?.rule || section.rule),
           value1: data.seccions?.[index + 1]?.rule?.value1
             ? Number(data.seccions[index + 1].rule?.value1)
@@ -43,7 +43,7 @@ export default function CreateQuestionPage() {
           maxScore: data.seccions?.[index + 1]?.rule?.maxScore
           ? Number(data.seccions[index + 1].rule?.maxScore)
           : null,
-        },
+        } : null,
         questionsIds: section.questionsIds?.map((question) => question?.id),
       };
     });
@@ -51,12 +51,12 @@ export default function CreateQuestionPage() {
     await createForm({
       ...data,
       seccions: mergedSections,
-      rule: {
+      rule: data.rule ? {
         ...data.rule,
         maxScore: data.rule?.maxScore ? Number(data.rule?.maxScore) : null,
         value1: data.rule?.value1? Number(data.rule?.value1) : null,
         value2: data.rule?.value2 ? Number(data.rule?.value2) : null
-      }
+      } : null,
     });
   };
 

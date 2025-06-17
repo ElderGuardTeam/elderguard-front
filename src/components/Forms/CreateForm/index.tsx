@@ -147,7 +147,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
     );
   };
   
-
+  console.log(errors)
   
   return (
     <form className="bg-white rounded p-4" onSubmit={handleSubmit(onSubmit)}>
@@ -296,7 +296,7 @@ const CreateForm: React.FC<ICreateFormProps> = ({
       <Modal 
       isOpen={isQuestionModalOpen}
       onClose={() => setIsQuestionModalOpen(false)}
-      className="w-3/4 "
+      className="w-3/4 max-h-11/12"
       headerText="Adicionar Questão"
       >
         {

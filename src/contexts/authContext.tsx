@@ -80,7 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         httpOnly: false,
         path: '/',
       })
-      router.push('/pacientes')
+      router.push('/avaliacoes')
   }).catch((error) => {
     toastError(error.response.data.message, false)
   }).finally(() => {

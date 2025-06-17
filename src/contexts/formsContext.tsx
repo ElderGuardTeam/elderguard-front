@@ -7,6 +7,7 @@ import toastSuccess from '@/utils/toast/toastSuccess'
 import { Question } from '@/utils/schema/createQuestionSchema'
 import { transformApiResponseToForm } from '@/utils/functions/transformFormData'
 import { useLoader } from './loaderContext'
+import { parseCookies } from 'nookies'
 
 
 type FormsContextType = {
@@ -62,6 +63,15 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   const {
     setLoading
   } = useLoader()
+
+  const { 'elderguard.token': token } = parseCookies()
+
+  const headerConfig = {
+    headers:{
+      Authorization: 'Bearer ' + token,
+    },
+    }
+
 
   async function createQuestion(data: Question) {
     setLoading(true)
@@ -160,125 +170,176 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function createForm(data: Form) {
+    setLoading(true)
     api.post('/form', data).then((response) => {
       toastSuccess('Formulário criado com sucesso', 5000)
       router.push('/formularios')
     })
     .catch((error) => {
       toastError('Erro ao criar formulário', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
   async function editForm(form: Form, id: string) {
+    setLoading(true)
     api.patch(`/form/${id}`, form).then((response) => {
       toastSuccess('Formulário editado com sucesso', 5000)
       router.push('/formularios')
     })
     .catch((error) => {
       toastError('Erro ao editar formulário', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
 
   async function fetchForms() {
+    setLoading(true)
     api.get('/form').then((response) => {
       setForms(response.data)
     }).catch((error) => {
       toastError('Erro ao buscar formulários', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
   async function searchForms(searchTerm: string) {
+    setLoading(true)
     api.get(`/form?search=${searchTerm}`).then((response) => {
       setForms(response.data)
     }).catch((error) => {
       toastError('Erro ao buscar formulários', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
   async function deleteForm(id: string) {
+  setLoading(true)
     api.delete(`/form/${id}`).then((response) => {
       toastSuccess('Formulário deletado com sucesso', 5000)
       fetchQuestions()
       router.push('/formularios')
     }).catch((error) => {
       toastError('Erro ao deletar formulário', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
   async function getFormById(id: string) {
+    setLoading(true)
     api.get(`/form/${id}`).then((response) => {
       setFormDetails(transformApiResponseToForm(response.data))
     }).catch((error) => {
       console.log(error)
       toastError('Erro ao buscar questão', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
   async function getEvaluationById(id: string) {
+    setLoading(true)
     api.get(`/evaluation/${id}`).then((response) => {
       setEvaluationDetails(response.data)
       setAnswerEvaluation(response.data)
     }).catch((error) => {
       console.log(error)
       toastError('Erro ao buscar questão', false)
+    }).finally(() => {
+      setLoading(false)
     })
   }
 
   async function createEvaluation(data: Evaluation) {
+    setLoading(true)
     api.post('/evaluation', data).then((response) => {
       toastSuccess('Avaliação criada com sucesso', 5000)
       router.push('/avaliacoes')
     })
     .catch((error) => {
       toastError('Erro ao criar avaliação', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
 
   async function fetchEvaluation() {
+    setLoading(true)
     api.get('/evaluation').then((response) => {
       setEvaluations(response.data)
     }).catch((error) => {
       toastError('Erro ao buscar avaliações', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
   async function searchEvaluations(searchTerm: string) {
+    setLoading(true)
     api.get(`/evaluation?search=${searchTerm}`).then((response) => {
       setForms(response.data)
     }).catch((error) => {
       toastError('Erro ao buscar avaliação', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
   async function deleteEvaluation(id: string) {
+    setLoading(true)
     api.delete(`/evaluation/${id}`).then((response) => {
       toastSuccess('Avaliação deletada com sucesso', 5000)
       router.push('/avaliacoes')
     }).catch((error) => {
       toastError('Erro ao deletar avaliacao', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
   async function editEvaluation(evaluation: Evaluation, id: string) {
+    setLoading(true)
     api.patch(`/evaluation/${id}`, evaluation).then((response) => {
       toastSuccess('Avaliação editada com sucesso', 5000)
       router.push('/avaliacoes')
     })
     .catch((error) => {
       toastError('Erro ao editar avaliação', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
   async function answerEvaluationRequest(data: EvaluationAnswer) {
-    api.post('/evaluation-answares', data).then((response) => {
+    setLoading(true)
+    api.post('/evaluation-answare', data, headerConfig).then((response) => {
       toastSuccess('Avaliação respondida com sucesso', 5000)
       setAnswerId(response.data.id)
     })
     .catch((error) => {
       toastError('Erro ao responder avaliação', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
   async function editAnswerEvaluationRequest(data: EvaluationAnswer, id: string) {

@@ -1,7 +1,8 @@
 interface EvaluationAnswer {
   evaluationId: string;
   formAnswares: FormAnswer[];
-  scoreTotal?: number;
+  professionalId: string;
+  elderlyId: string;
 }
 
 interface FormAnswer {
@@ -9,7 +10,6 @@ interface FormAnswer {
   elderlyId: string;
   techProfessionalId: string;
   questionsAnswares: QuestionAnswer[];
-  totalScore?: number;
 }
 
 interface QuestionAnswer {

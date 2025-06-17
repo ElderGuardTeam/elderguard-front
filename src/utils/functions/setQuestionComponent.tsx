@@ -86,6 +86,12 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
       return (
         <div className="space-y-2">
         <Label labelText={questionDetails.title}/>
+          {
+            questionDetails.description && (
+              <div className="my-2 text-sm text-gray-600 bg-gray-50 p-2 rounded" 
+              dangerouslySetInnerHTML={{ __html: questionDetails.description || '' }}/>
+            )
+          }
         {questionDetails.options?.map((option) => (
           <div className="flex items-center gap-2">
             <Checkbox 
@@ -101,9 +107,12 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
       return (
         <div>
           <Label labelText={questionDetails.title}/>
-          <p>
-            {questionDetails.description || ''}
-          </p>
+          {
+              questionDetails.description && (
+                <div className="my-2 text-sm text-gray-600 bg-gray-50 p-2 rounded" 
+                dangerouslySetInnerHTML={{ __html: questionDetails.description || '' }}/>
+              )
+            }
           <div className="flex items-center gap-2">
             <input type="radio" value="true" className="radio radio-primary" {...register(questionDetails.id || '')} />
             <Label labelText="Sim" />
@@ -118,7 +127,12 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
       return (
         <div>
           <Label labelText={questionDetails.title}/>
-          <div dangerouslySetInnerHTML={{ __html: questionDetails.description || '' }}/>
+          {
+              questionDetails.description && (
+                <div className="my-2 text-sm text-gray-600 bg-gray-50 p-2 rounded" 
+                dangerouslySetInnerHTML={{ __html: questionDetails.description || '' }}/>
+              )
+            }
           <FormGroup
           labelText="Pontuação"
           className="w-24 mt-2"
