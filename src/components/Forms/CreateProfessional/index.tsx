@@ -1,4 +1,5 @@
 import Button from "@/components/Button";
+import Checkbox from "@/components/Checkbox";
 import FormGroup from "@/components/FormGroup"
 import Label from "@/components/Label";
 import MaskedInput from "@/components/MaskedInput";
@@ -8,7 +9,7 @@ import { faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from "react-hook-form";
+import { FieldErrors, UseFormHandleSubmit, UseFormRegister, UseFormSetValue } from "react-hook-form";
 
 interface ICreateProfessionalFormProps {
   handleSubmit: UseFormHandleSubmit<Professional>;
@@ -19,6 +20,7 @@ interface ICreateProfessionalFormProps {
   isEditing?: boolean;
   professionalName?: string;
   deleteProfessional?: () => Promise<void>;
+  setValue?:UseFormSetValue<Professional>;
 }
 
 const CreateProfessional: React.FC<ICreateProfessionalFormProps> = ({
@@ -29,10 +31,18 @@ const CreateProfessional: React.FC<ICreateProfessionalFormProps> = ({
   control,
   isEditing,
   professionalName,
-  deleteProfessional
+  deleteProfessional,
+  setValue
 }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleUserTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.checked ? 'ADMIN' : 'TECH_PROFESSIONAL';
+    if (setValue) {
+      setValue('userType', value);
+    }
+  }
   return (
     <form className="bg-white rounded p-4" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="flex gap-2 items-center">
@@ -86,6 +96,20 @@ const CreateProfessional: React.FC<ICreateProfessionalFormProps> = ({
             errors.phone && <span className="text-xs text-red-500">{errors.phone.message}</span>
           }
         </Label>
+        <div>
+          <Label 
+          hasError={errors.userType?.message ? true : false} 
+          labelText="Pesquisador" 
+          className="flex flex-row-reverse gap-2 items-center justify-end font-bold text-sm">
+            <Checkbox
+            toggle
+            onChange={handleUserTypeChange}
+            />
+            {
+              errors.userType && <span className="text-xs text-red-500">{errors.userType.message}</span>
+            }
+          </Label>
+        </div>
       </fieldset>
       <div className="flex item-center justify-between">
         <div>

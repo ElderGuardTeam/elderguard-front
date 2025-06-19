@@ -14,7 +14,10 @@ const CreateProfessionalSchema = z.object({
     required_error: "Email é obrigatório",
   }).email({
     message: "Email inválido",
-  })
+  }),
+  userType: z.string({
+    required_error: "Tipo de usuário é obrigatório",
+  }),
 })
 
 export default CreateProfessionalSchema;

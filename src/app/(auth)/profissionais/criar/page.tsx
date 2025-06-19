@@ -20,6 +20,7 @@ export default function CreateProfissional() {
     handleSubmit,
     formState: { errors },
     control, 
+    setValue
   } = useForm<Professional>({
     resolver: zodResolver(CreateProfessionalSchema)
   })
@@ -42,6 +43,7 @@ export default function CreateProfissional() {
       handleSubmit={handleSubmit}
       onSubmit={handleCreateProfissional}
       register={register}
+      setValue={setValue}
       />
     </div>
   )
