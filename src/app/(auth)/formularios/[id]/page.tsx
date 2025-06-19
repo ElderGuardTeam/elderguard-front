@@ -49,7 +49,7 @@ export default function CreateQuestionPage({params}: {params: {id: string}}) {
       if (!section.id) return section;
       return {
         title,
-        rule: {
+        rule: data.seccions?.[section.id]?.rule ? {
           ...(data.seccions?.[section.id]?.rule || section.rule),
           value1: data.seccions?.[section.id]?.rule?.value1
             ? Number(data.seccions[section.id].rule.value1)
@@ -60,7 +60,7 @@ export default function CreateQuestionPage({params}: {params: {id: string}}) {
           maxScore: data.seccions?.[section.id]?.rule?.maxScore
             ? Number(data.seccions[section.id].rule?.maxScore)
             : null,
-        },
+        } : null,
         questionsIds: section.questionsIds.map((question) => question.id),
       };
     });

@@ -108,8 +108,12 @@ const CreateEvaluation: React.FC<ICreateEvaluationProps> = ({
         {formList.map((form: Form) => (
               <fieldset key={form.id} className="border border-base-300 rounded p-2 gap-4 my-4 text-xs">
                 <p className="text-lg font-bold mb-1">{form?.title}</p>
-                <p className="text-sm text-gray-500">Descrição: {form?.description}</p>
-                <p className="text-sm text-gray-500 mb-2">Tipo: {form?.type}</p>
+                {
+                  form?.description && (
+                    <p className="text-sm text-gray-500">Descrição: {form?.description}</p>
+                  )
+                }
+                
                     <Button
                       type="button"
                       className="btn-error text-white mt-2"
