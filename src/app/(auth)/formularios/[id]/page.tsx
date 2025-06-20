@@ -91,6 +91,7 @@ export default function CreateQuestionPage({params}: {params: {id: string}}) {
       formTitle= {formDetails.title || ''}
       isEditing
       deleteForm={handleDeleteForm}
+      formHasRule
       />
     </div>
   )

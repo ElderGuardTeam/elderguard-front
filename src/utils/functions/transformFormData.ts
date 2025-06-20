@@ -4,7 +4,7 @@ export function transformApiResponseToForm(apiResponse: any): Form {
     title: apiResponse.title,
     description: apiResponse.description,
     type: apiResponse.type,
-    rule: apiResponse.rule?.id,
+    rule: apiResponse.rule,
     questionsIds: [],  
     seccions: apiResponse.seccions.map((seccion: any) => ({
       id: seccion.id, 
