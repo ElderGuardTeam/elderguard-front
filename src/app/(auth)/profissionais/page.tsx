@@ -74,6 +74,22 @@ export default function Professionals() {
           selector: (row: { email: any }) => row.email,
           sortable: true,
         },
+
+        {
+          name: 'Tipo',
+          selector: (row: { user: any }) => row.user.userType,
+          sortable: true,
+          cell: (row: { user: { userType: string } }) => {
+            switch (row.user.userType) {
+              case 'ADMIN':
+                return 'Administrador(a)';
+              case 'TECH_PROFESSIONAL':
+                return 'Profissional Técnico';
+              default:
+                return 'Usuário';
+            }
+          }
+        },
       ]}
       data={professional}
       onRowClicked={(row:Professional) => router.push(`/profissionais/${row.id}`)}

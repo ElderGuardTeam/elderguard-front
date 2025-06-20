@@ -26,6 +26,7 @@ export default function EditProfessional({params}: {params: {id: string}}) {
     setValue("cpf", professionalInfo.cpf);
     setValue("phone", professionalInfo.phone);
     setValue("email", professionalInfo.email);
+    setValue("userType", professionalInfo.user?.userType || 'TECH_PROFESSIONAL');
   }, [professionalInfo])
 
   const {
@@ -33,7 +34,8 @@ export default function EditProfessional({params}: {params: {id: string}}) {
     handleSubmit,
     formState: { errors },
     control, 
-    setValue
+    setValue,
+    watch
   } = useForm<Professional>({
     resolver: zodResolver(CreateProfessionalSchema)
   })
@@ -56,6 +58,8 @@ export default function EditProfessional({params}: {params: {id: string}}) {
       professionalName={professionalInfo.name}
       isEditing
       deleteProfessional={handleDeleteProfessional}
+      setValue={setValue}
+      watch={watch}
       />
     </div>
   )

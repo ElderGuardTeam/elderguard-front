@@ -20,7 +20,8 @@ export default function CreateProfissional() {
     handleSubmit,
     formState: { errors },
     control, 
-    setValue
+    setValue,
+    watch
   } = useForm<Professional>({
     resolver: zodResolver(CreateProfessionalSchema)
   })
@@ -33,7 +34,6 @@ export default function CreateProfissional() {
     await createProfessional(data)
   }
 
-  console.log(errors)
 
   return (
     <div className="p-8 w-full">
@@ -44,6 +44,7 @@ export default function CreateProfissional() {
       onSubmit={handleCreateProfissional}
       register={register}
       setValue={setValue}
+      watch={watch}
       />
     </div>
   )

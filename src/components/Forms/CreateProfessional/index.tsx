@@ -9,7 +9,7 @@ import { faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FieldErrors, UseFormHandleSubmit, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { FieldErrors, UseFormHandleSubmit, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
 
 interface ICreateProfessionalFormProps {
   handleSubmit: UseFormHandleSubmit<Professional>;
@@ -21,6 +21,7 @@ interface ICreateProfessionalFormProps {
   professionalName?: string;
   deleteProfessional?: () => Promise<void>;
   setValue?:UseFormSetValue<Professional>;
+  watch?: UseFormWatch<Professional>;
 }
 
 const CreateProfessional: React.FC<ICreateProfessionalFormProps> = ({
@@ -32,7 +33,8 @@ const CreateProfessional: React.FC<ICreateProfessionalFormProps> = ({
   isEditing,
   professionalName,
   deleteProfessional,
-  setValue
+  setValue,
+  watch
 }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -43,6 +45,7 @@ const CreateProfessional: React.FC<ICreateProfessionalFormProps> = ({
       setValue('userType', value);
     }
   }
+  const userType = watch ? watch('userType') : 'TECH_PROFESSIONAL';
   return (
     <form className="bg-white rounded p-4" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="flex gap-2 items-center">
@@ -104,6 +107,7 @@ const CreateProfessional: React.FC<ICreateProfessionalFormProps> = ({
             <Checkbox
             toggle
             onChange={handleUserTypeChange}
+            checked={userType === 'ADMIN'}
             />
             {
               errors.userType && <span className="text-xs text-red-500">{errors.userType.message}</span>

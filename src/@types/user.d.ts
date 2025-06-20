@@ -75,7 +75,10 @@ interface Professional {
   name: string;
   phone: string;
   email: string;
-  userType: string;
+  user?: {
+    userType: string
+  }
+  userType: string
 }
 
 enum UserType {
