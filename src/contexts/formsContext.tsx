@@ -34,6 +34,8 @@ type FormsContextType = {
   getEvaluationAnswerList: () => Promise<void>
   getEvaluationAnswerById: (id: string) => Promise<void>
   handlePauseEvaluation: (id: string, data: EvaluationAnswer) => Promise<void>
+  getEvaluationAnswerListByUser: (userId: string) => Promise<void>
+  handleCompleteEvaluation: (id: string, data: EvaluationAnswer) => Promise<void>
   evaluationAnswerDetails: EvaluationAnswerList
   evaluationAnswerList: EvaluationAnswerList[]
   questions: QuestionList[]
@@ -370,6 +372,19 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  async function getEvaluationAnswerListByUser(userId: string) {
+    api.get(`/evaluation-answare/my-evaluations` ,{
+      ...headerConfig,
+      params: {
+        elderlyId: userId
+      }
+    }).then((response) => {
+      setEvaluationAnswerList(response.data)
+    }).catch((error) => {
+      toastError('Erro ao buscar respostas da avaliação', false)
+    })
+  }
+
   async function getEvaluationAnswerById(id: string) {
     setLoading(true)
     api.get(`/evaluation-answare/${id}`, headerConfig).then((response) => {
@@ -385,6 +400,17 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   async function handlePauseEvaluation(id: string, data: EvaluationAnswer) {
     setLoading(true)
     api.patch(`/evaluation-answare/${id}/pause`,data, headerConfig).then((response) => {
+      toastSuccess('Avaliação pausada com sucesso', 5000)
+    }).catch((error) => {
+      toastError('Erro ao pausar avaliação', false)
+    }).finally(() => {
+      setLoading(false)
+    })
+  }
+
+  async function handleCompleteEvaluation(id: string, data: EvaluationAnswer) {
+    setLoading(true)
+    api.patch(`/evaluation-answare/${id}/complete`,data, headerConfig).then((response) => {
       toastSuccess('Avaliação pausada com sucesso', 5000)
     }).catch((error) => {
       toastError('Erro ao pausar avaliação', false)
@@ -429,7 +455,9 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       getEvaluationAnswerById,
       evaluationAnswerDetails,
       handlePauseEvaluation,
-      headerConfig
+      headerConfig,
+      getEvaluationAnswerListByUser,
+      handleCompleteEvaluation
       }}
     >
       {children}

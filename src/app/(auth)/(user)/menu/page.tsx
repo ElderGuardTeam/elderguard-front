@@ -30,7 +30,7 @@ export default function HomePage() {
         <p className="text-base-content mb-8">
           Bem-vindo(a) ao ElderGuard.
         </p>
-        <div className="btn btn-primary rounded-lg  py-12 px-12 ">
+        <div className="btn btn-primary rounded-lg  py-12 px-12 " onClick={() => router.push('/minhas-avaliacoes')}>
           <FontAwesomeIcon icon={faFilePen}  className="text-4xl text-secondary/75 mr-4"/>
           <div className="text-start">
             <p className="text-xl font-bold">Minhas Avaliações</p>
