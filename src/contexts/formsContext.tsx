@@ -33,6 +33,7 @@ type FormsContextType = {
   editAnswerEvaluationRequest: (data: EvaluationAnswer, id: string) => Promise<void>
   getEvaluationAnswerList: () => Promise<void>
   getEvaluationAnswerById: (id: string) => Promise<void>
+  handlePauseEvaluation: (id: string, data: EvaluationAnswer) => Promise<void>
   evaluationAnswerDetails: EvaluationAnswerList
   evaluationAnswerList: EvaluationAnswerList[]
   questions: QuestionList[]
@@ -43,6 +44,11 @@ type FormsContextType = {
   evaluationDetails: EvaluationDetails
   answerEvaluation: AnswerEvaluation
   answerId: string | null
+  headerConfig: {
+    headers: {
+      Authorization: string
+    }
+  }
 }
 
 export const FormsContext = createContext({} as FormsContextType)
@@ -343,17 +349,21 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function editAnswerEvaluationRequest(data: EvaluationAnswer, id: string) {
-    api.patch(`/evaluation-answares/${id}`, data).then((response) => {
-      toastSuccess('Avaliação respondida com sucesso', 5000)
+    setLoading(true)
+    api.patch(`/evaluation-answare/${id}/add-form`, data, headerConfig).then((response) => {
+      toastSuccess('Formulário respondida com sucesso', 5000)
       setAnswerId(response.data.id)
     })
     .catch((error) => {
       toastError('Erro ao responder avaliação', false)
-    })
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
   }
 
   async function getEvaluationAnswerList() {
-    api.get(`/evaluation-answares`).then((response) => {
+    api.get(`/evaluation-answare` , headerConfig).then((response) => {
       setEvaluationAnswerList(response.data)
     }).catch((error) => {
       toastError('Erro ao buscar respostas da avaliação', false)
@@ -361,10 +371,25 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function getEvaluationAnswerById(id: string) {
-    api.get(`/evaluation-answares/${id}`).then((response) => {
+    setLoading(true)
+    api.get(`/evaluation-answare/${id}`, headerConfig).then((response) => {
       setEvaluationAnswerDetails(response.data)
     }).catch((error) => {
       toastError('Erro ao buscar resposta da avaliação', false)
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
+  }
+
+  async function handlePauseEvaluation(id: string, data: EvaluationAnswer) {
+    setLoading(true)
+    api.patch(`/evaluation-answare/${id}/pause`,data, headerConfig).then((response) => {
+      toastSuccess('Avaliação pausada com sucesso', 5000)
+    }).catch((error) => {
+      toastError('Erro ao pausar avaliação', false)
+    }).finally(() => {
+      setLoading(false)
     })
   }
 
@@ -402,7 +427,9 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       getEvaluationAnswerList,
       evaluationAnswerList,
       getEvaluationAnswerById,
-      evaluationAnswerDetails
+      evaluationAnswerDetails,
+      handlePauseEvaluation,
+      headerConfig
       }}
     >
       {children}

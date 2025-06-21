@@ -44,13 +44,12 @@ interface EvaluationAnswerList {
     title:string
     id: string
   }
+  elderly: {
+    id: string
+    cpf: string
+    name: string
+  }
   formAnswares: Array<{
-    form: {
-      id: string
-    }
-    idoso: {
-      cpf: string
-      id: string
-    }
+    formId: string
   }>
 }

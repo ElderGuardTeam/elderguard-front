@@ -4,9 +4,13 @@ import Alert from "@/components/Alert"
 import Button from "@/components/Button"
 import { useAuth } from "@/contexts/authContext"
 import { useForms } from "@/contexts/formsContext"
+import { useLoader } from "@/contexts/loaderContext"
 import { useUsers } from "@/contexts/usersContext"
 import { normalizeAnswers } from "@/utils/functions/setFormAnwerObject"
 import { setQuestionComponent } from "@/utils/functions/setQuestionComponent"
+import { api } from "@/utils/lib/axios"
+import toastError from "@/utils/toast/toastError"
+import toastSuccess from "@/utils/toast/toastSuccess"
 import { faBan, faCheck, faCheckCircle } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useSearchParams } from "next/navigation"
@@ -20,18 +24,23 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
     getFormById,
     formDetails,
     answerEvaluationRequest,
-    answerId,
-    editAnswerEvaluationRequest,
     getEvaluationAnswerById,
-    evaluationAnswerDetails
+    evaluationAnswerDetails,
+    handlePauseEvaluation,
+    headerConfig
   } = useForms()
 
   const {
     elderlyId
   } = useUsers()
 
+  const {
+    setLoading,
+  } = useLoader()
+
   const [formId, setFormId] = useState<string | null>(null)
   const [endedForms, setEndedForms] = useState<string[]>([])
+  const [answerId, setAnswerId] = useState<string | null>(null)
 
   const searchParams = useSearchParams()
   const elderlyIdFromUrl = searchParams.get('elderlyId')
@@ -90,12 +99,11 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
 
   useEffect(() => {
     if (!evaluationAnswerDetails) return;
-    setEndedForms(evaluationAnswerDetails?.formAnswares?.map((formAnswer) => formAnswer.form.id) || []);
-
+    setEndedForms(evaluationAnswerDetails?.formAnswares?.map((formAnswer) => formAnswer?.formId) || []);
     const lastAnsweredForm = evaluationAnswerDetails?.formAnswares?.[evaluationAnswerDetails?.formAnswares?.length - 1];
 
     const currentIndex = answerEvaluation?.formsRel?.findIndex(
-      (formsRel) => formsRel.form?.id === lastAnsweredForm?.form.id
+      (formsRel) => formsRel.form?.id === lastAnsweredForm?.formId
     );
 
     if (currentIndex !== -1 && currentIndex + 1 < answerEvaluation?.formsRel?.length) {
@@ -108,6 +116,24 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
     }
 
   }, [evaluationAnswerDetails])
+
+  const handleNextForm = () => {
+    if (!answerEvaluation?.formsRel || !formId) return;
+
+      const currentIndex = answerEvaluation.formsRel.findIndex(
+        (formsRel) => formsRel.form?.id === formId
+      );
+    
+      if (currentIndex !== -1 && currentIndex + 1 < answerEvaluation.formsRel.length) {
+        const nextFormId = answerEvaluation.formsRel[currentIndex + 1].form?.id;
+        if (nextFormId) {
+          setFormId(nextFormId);
+          setEndedForms((prev) => [...prev, formId]); 
+        }
+      } else {
+        console.log("Último formulário respondido ou nenhum próximo formulário encontrado.");
+      }
+  }
 
   const handleEndForm = async (data: any) => {
     const answers = normalizeAnswers(data, formDetails)
@@ -126,29 +152,52 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
     }
 
     if(answerId || answerIdFromUrl) {
-      editAnswerEvaluationRequest(evaluationAnswer, answerId || answerIdFromUrl || '')
+      setLoading(true)
+        api.patch(`/evaluation-answare/${answerId || answerIdFromUrl}/add-form`, evaluationAnswer, headerConfig).then((response) => {
+          toastSuccess('Formulário respondida com sucesso', 5000)
+          setAnswerId(response.data.id)
+          handleNextForm()
+        })
+        .catch((error) => {
+          toastError('Erro ao responder avaliação', false)
+        }).finally(() => {
+          setLoading(false)
+        }
+    )
     } 
     else {
-      await answerEvaluationRequest(evaluationAnswer)
-    }
-
-      if (!answerEvaluation?.formsRel || !formId) return;
-
-      const currentIndex = answerEvaluation.formsRel.findIndex(
-        (formsRel) => formsRel.form?.id === formId
-      );
-    
-      if (currentIndex !== -1 && currentIndex + 1 < answerEvaluation.formsRel.length) {
-        const nextFormId = answerEvaluation.formsRel[currentIndex + 1].form?.id;
-        if (nextFormId) {
-          setFormId(nextFormId);
-          setEndedForms((prev) => [...prev, formId]); 
-        }
-      } else {
-        console.log("Último formulário respondido ou nenhum próximo formulário encontrado.");
+      setLoading(true)
+      api.post('/evaluation-answare', evaluationAnswer, headerConfig).then((response) => {
+        toastSuccess('Avaliação respondida com sucesso', 5000)
+        setAnswerId(response.data.id)
+        handleNextForm()  
+      })
+      .catch((error) => {
+        toastError('Erro ao responder avaliação', false)
+      }).finally(() => {
+        setLoading(false)
       }
+      )
+    }
     
   };
+  const handlePause = async (data: any) => { 
+    const answers = normalizeAnswers(data, formDetails)
+    const evaluationAnswer: EvaluationAnswer = {
+      evaluationId: answerEvaluation.id,
+      professionalId: 'd55db403-c4b8-4153-94e0-551cf5852fe5',
+      elderlyId: elderlyId || elderlyIdFromUrl || '',
+      formAnswares: [
+        {
+          formId: formDetails.id || '',
+          elderlyId: elderlyId || elderlyIdFromUrl || '',
+          questionsAnswares: answers,
+          techProfessionalId: 'd55db403-c4b8-4153-94e0-551cf5852fe5',
+        }
+      ]
+    }
+    await handlePauseEvaluation (answerId || answerIdFromUrl || '', evaluationAnswer)
+  }
   return(
     <div className="flex py-8 justify-center min-h-screen w-full">
       <div className="card bg-white shadow-2xl w-2/3">
@@ -204,7 +253,7 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
                     }
                     {
                       (formId === formsRel.form?.id) && (
-                        <form onSubmit={handleSubmit(handleEndForm)}>
+                        <form>
                         {formDetails?.seccions?.map((section, sectionIndex) => (
                           <fieldset key={section.id} className=" border border-gray-300 p-4 rounded mb-4">
                             <legend className="text-sm font-bold">{section.title}</legend>
@@ -220,10 +269,10 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
                           </fieldset>
                         ))}
                           <div className="flex items-center justify-between">
-                            <Button className="btn btn-success text-white" type="submit">
+                            <Button className="btn btn-success text-white" onClick={handleSubmit(handleEndForm)} >
                               Continuar
                             </Button>
-                            <Button className="btn bg-salmon text-white">
+                            <Button className="btn bg-salmon text-white" onClick={handleSubmit(handlePause)}>
                               Pausar
                             </Button>
                           </div>

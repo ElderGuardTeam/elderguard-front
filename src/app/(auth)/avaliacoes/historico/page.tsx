@@ -74,9 +74,9 @@ export default function EvaluationsHistory() {
         },
         {
           name: 'Paciente',
-          selector: (row: { formAnswares: any }) => row.formAnswares[0]?.idoso?.cpf || 'N/A',
+          selector: (row: { elderly: any }) => row.elderly?.cpf || 'N/A',
           sortable: true,
-          cell: (row: { formAnswares: any }) => formatCPF(row.formAnswares[0]?.idoso?.cpf),
+          cell: (row: { elderly: any }) => formatCPF(row.elderly?.cpf || 'N/A'),
         },
         {
           name: 'Status',
@@ -92,7 +92,7 @@ export default function EvaluationsHistory() {
         },
       ]}
       data={evaluationAnswerList}
-      onRowClicked={(row:EvaluationAnswerList) => handleContinueEvaluation(row.evaluation.id, row.formAnswares[0]?.idoso?.id, row.id)}
+      onRowClicked={(row:EvaluationAnswerList) => handleContinueEvaluation(row.evaluation.id, row.elderly?.id, row.id)}
       />
     </div>
   );
