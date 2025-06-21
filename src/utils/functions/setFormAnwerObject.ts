@@ -54,9 +54,13 @@ export function normalizeAnswers(data: Record<string, any>, formDetails: any): A
         break
 
       case 'BOOLEAN':
+        console.log('Boolean answer:', rawAnswer, typeof rawAnswer)
+        if (rawAnswer === null || rawAnswer === undefined) {
+          break
+        }
         result.push({
           questionId,
-          answerBoolean: Boolean(rawAnswer),
+          answerBoolean: rawAnswer === 'true' ? true : false,
         })
         break
 

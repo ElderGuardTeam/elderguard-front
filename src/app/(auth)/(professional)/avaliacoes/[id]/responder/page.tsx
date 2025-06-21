@@ -71,6 +71,7 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
   const {
     register,
     handleSubmit,
+    setValue
   } = useForm()
 
   const {
@@ -99,23 +100,55 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
 
   useEffect(() => {
     if (!evaluationAnswerDetails) return;
-    setEndedForms(evaluationAnswerDetails?.formAnswares?.map((formAnswer) => formAnswer?.formId) || []);
-    const lastAnsweredForm = evaluationAnswerDetails?.formAnswares?.[evaluationAnswerDetails?.formAnswares?.length - 1];
-
+  
+    const isPaused = evaluationAnswerDetails.status === "PAUSED";
+    const allFormAnswers = evaluationAnswerDetails.formAnswares || [];
+  
+    const relevantFormAnswers = isPaused
+      ? allFormAnswers.slice(0, -1)
+      : allFormAnswers;
+  
+    const endedFormIds = relevantFormAnswers.map((formAnswer) => formAnswer?.formId);
+    setEndedForms(endedFormIds);
+  
+    const lastAnsweredForm = relevantFormAnswers[relevantFormAnswers.length - 1];
+  
     const currentIndex = answerEvaluation?.formsRel?.findIndex(
       (formsRel) => formsRel.form?.id === lastAnsweredForm?.formId
     );
+  
+    if (isPaused) {
+      const lastPausedForm = allFormAnswers[allFormAnswers.length - 1];
+      const { formId, questionsAnswares } = lastPausedForm;
 
-    if (currentIndex !== -1 && currentIndex + 1 < answerEvaluation?.formsRel?.length) {
+    
+      if (formId) {
+        setFormId(formId);
+    
+        for (const answer of questionsAnswares) {
+          console.log("Restaurando resposta para a pergunta:", answer.answerBoolean);
+          if ("score" in answer) setValue(answer.questionId, answer.score);
+          if ("answerText" in answer) setValue(answer.questionId, answer.answerText);
+          if ("answerNumber" in answer) setValue(answer.questionId, answer.answerNumber);
+          if ("answerImage" in answer) setValue(answer.questionId, answer.answerImage);
+          if ("answerBoolean" in answer) setValue(answer.questionId, answer.answerBoolean);
+          if ("selectedOptionId" in answer) setValue(answer.questionId, answer.selectedOptionId);
+        }
+      }
+    } else if (currentIndex !== -1 && currentIndex + 1 < answerEvaluation?.formsRel?.length) {
       const nextFormId = answerEvaluation.formsRel[currentIndex + 1].form?.id;
+      console.log("Próximo formulário encontrado:", nextFormId);
       if (nextFormId) {
         setFormId(nextFormId);
       }
     } else {
       console.log("Último formulário respondido ou nenhum próximo formulário encontrado.");
     }
-
-  }, [evaluationAnswerDetails])
+    
+  }, [evaluationAnswerDetails, answerEvaluation, setValue]);
+  
+  
+  
 
   const handleNextForm = () => {
     if (!answerEvaluation?.formsRel || !formId) return;

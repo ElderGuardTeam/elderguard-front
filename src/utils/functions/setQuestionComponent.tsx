@@ -114,11 +114,21 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
               )
             }
           <div className="flex items-center gap-2">
-            <input type="radio" value="true" className="radio radio-primary" {...register(questionDetails.id || '')} />
+            <input 
+            type="radio" 
+            value="true" 
+            className="radio radio-primary"  
+            {...register(questionDetails.id || '')}
+            />
             <Label labelText="Sim" />
           </div>  
           <div className="flex items-center gap-2">
-            <input type="radio" value="false"  className="radio radio-primary" {...register(questionDetails.id || '')} />
+            <input 
+            type="radio" 
+            value="false"  
+            className="radio radio-primary"  
+            {...register(questionDetails.id || '')} 
+            />
             <Label labelText="Não"/>
           </div>  
         </div>

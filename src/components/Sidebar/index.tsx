@@ -79,9 +79,9 @@ const Sidebar: React.FC = () => {
           parentName='Avaliações'
           >
             <LiMenu>
-              <Link href="/avaliacoes" >
+              <a href="/avaliacoes" >
                 <p>Avaliações</p>
-              </Link>
+              </a>
             </LiMenu>
             <LiMenu>
               <Link href="/avaliacoes/historico">
