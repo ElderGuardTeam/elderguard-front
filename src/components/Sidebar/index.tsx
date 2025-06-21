@@ -26,6 +26,8 @@ const Sidebar: React.FC = () => {
     user,
   } = useAuth()
 
+  console.log('user', user)
+
   return (
     <Aside 
       className={`z-50 h-screen bg-accent sticky top-0 w-full min-w-[200px] max-w-[200px] overflow-y-scroll overflow-x-hidden flex flex-col justify-between`}
