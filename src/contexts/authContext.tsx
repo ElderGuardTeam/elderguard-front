@@ -68,7 +68,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         destroyCookie({}, 'elderguard.token')
         destroyCookie({}, 'elderguard.userId')
       }
-      const decodedToken = jwt.decode(res.data.access_token)
+      const decodedToken = jwt.decode(res.data.access_token) as User
       setUser(decodedToken as User)
       setCookie(undefined, 'elderguard.token', res.data.access_token, {
         maxAge: 60 * 60 * 8, // 8 hours
@@ -80,7 +80,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         httpOnly: false,
         path: '/',
       })
-      router.push('/avaliacoes')
+      if (decodedToken?.userType === 'USER') {
+        router.push('/menu')
+        return
+      } else if (decodedToken?.userType === 'ADMIN') {
+        router.push('/formularios')
+        return
+      } else if (decodedToken?.userType === 'TECH_PROFESSIONAL') {
+        router.push('/avaliacoes')
+        return
+      }
   }).catch((error) => {
     toastError(error.response.data.message, false)
   }).finally(() => {

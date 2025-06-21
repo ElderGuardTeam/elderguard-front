@@ -12,7 +12,6 @@ type AnswerOutput = {
 export function normalizeAnswers(data: Record<string, any>, formDetails: any): AnswerOutput[] {
   const result: AnswerOutput[] = []
 
-  // Flatten all questions from all sections
   const questionsMap = formDetails.seccions
     .flatMap((sec: any) => sec.questionsIds)
     .reduce((acc: Record<string, any>, question: any) => {
@@ -22,8 +21,15 @@ export function normalizeAnswers(data: Record<string, any>, formDetails: any): A
 
   for (const [questionId, rawAnswer] of Object.entries(data)) {
     const type = questionsMap[questionId]
+    if (!type) continue
 
-    if (!type) continue // skip unknown questionId
+    // Evita respostas em branco para tipos de texto/imagem/select
+    if (
+      (type === 'TEXT' || type === 'IMAGE' || type === 'SELECT') &&
+      (rawAnswer === null || rawAnswer === undefined || String(rawAnswer).trim() === '')
+    ) {
+      continue
+    }
 
     switch (type) {
       case 'SCORE':
@@ -69,7 +75,6 @@ export function normalizeAnswers(data: Record<string, any>, formDetails: any): A
         break
 
       default:
-        // skip unknown type
         break
     }
   }

@@ -26,7 +26,8 @@ const Sidebar: React.FC = () => {
     user,
   } = useAuth()
 
-  console.log('user', user)
+
+  if (user?.userType === 'USER') return
 
   return (
     <Aside 
@@ -37,7 +38,7 @@ const Sidebar: React.FC = () => {
             <div className=''> 
               <Image
               src="/images/logo-no-background.png"
-              alt="logo Houden"
+              alt="logo ElderGuard"
               width={50}
               height={50}/>
             </div>
