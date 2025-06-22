@@ -10,6 +10,7 @@ export default function ProfessionalLayout({ children }: Readonly<{ children: Re
     user,
   } = useAuth()
 
+
   if (!user || user.userType === 'USER') {
     return (
       <div className="h-screen p-8 w-full">

@@ -373,12 +373,7 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function getEvaluationAnswerListByUser(userId: string) {
-    api.get(`/evaluation-answare/my-evaluations` ,{
-      ...headerConfig,
-      params: {
-        elderlyId: userId
-      }
-    }).then((response) => {
+    api.get(`/evaluation-answare/my-evaluations/${userId}` , headerConfig).then((response) => {
       setEvaluationAnswerList(response.data)
     }).catch((error) => {
       toastError('Erro ao buscar respostas da avaliação', false)
