@@ -14,6 +14,7 @@ import toastSuccess from "@/utils/toast/toastSuccess"
 import { faBan, faCheck, faCheckCircle } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useSearchParams } from "next/navigation"
+import { parseCookies } from "nookies"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
@@ -41,10 +42,14 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
   const [formId, setFormId] = useState<string | null>(null)
   const [endedForms, setEndedForms] = useState<string[]>([])
   const [answerId, setAnswerId] = useState<string | null>(null)
+  const [isCompleted, setIsCompleted] = useState<boolean>(false)
+  const [currentForm, setCurrentForm] = useState<FormAnswerDetails | null>(null)
 
   const searchParams = useSearchParams()
   const elderlyIdFromUrl = searchParams.get('elderlyId')
   const answerIdFromUrl = searchParams.get('answerId')
+
+  const { 'elderguard.userId': professionalId } = parseCookies()
 
 
   if(!elderlyId && !elderlyIdFromUrl) {
@@ -98,6 +103,40 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
     }
   }, [formId])
 
+  const setFormValues = (formId: string) => {
+    const formAnswer = evaluationAnswerDetails?.formAnswares?.find((fa) => fa.formId === formId);
+    if (!formAnswer) return;
+    setCurrentForm(formAnswer);
+    formAnswer.questionsAnswares.forEach((answer) => {
+      if (answer.answerText !== undefined && answer.answerText !== null) {
+        setValue(answer.questionId, answer.answerText);
+        return;
+      }
+      if (answer.answerNumber !== undefined && answer.answerNumber !== null) {
+        setValue(answer.questionId, answer.answerNumber);
+        return;
+      }
+      if (answer.answerImage !== undefined && answer.answerImage !== null) {
+        setValue(answer.questionId, answer.answerImage);
+        return;
+      }
+      if (answer.answerBoolean !== undefined && answer.answerBoolean !== null) {
+        setValue(answer.questionId, answer.answerBoolean ? "true" : "false");
+        return;
+      }
+      if (answer.selectedOptionId !== undefined && answer.selectedOptionId !== null) {
+        setValue(answer.questionId, answer.selectedOptionId);
+        return;
+      }
+      if (answer.score !== undefined && answer.score !== null) {
+        setValue(answer.questionId, answer.score);
+        return;
+      }
+    });
+  };
+  
+  
+
   useEffect(() => {
     if (!evaluationAnswerDetails) return;
   
@@ -124,25 +163,24 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
     
       if (formId) {
         setFormId(formId);
-    
-        for (const answer of questionsAnswares) {
-          console.log("Restaurando resposta para a pergunta:", answer.answerBoolean);
-          if ("score" in answer) setValue(answer.questionId, answer.score);
-          if ("answerText" in answer) setValue(answer.questionId, answer.answerText);
-          if ("answerNumber" in answer) setValue(answer.questionId, answer.answerNumber);
-          if ("answerImage" in answer) setValue(answer.questionId, answer.answerImage);
-          if ("answerBoolean" in answer) setValue(answer.questionId, answer.answerBoolean);
-          if ("selectedOptionId" in answer) setValue(answer.questionId, answer.selectedOptionId);
-        }
+        setFormValues(formId);
       }
     } else if (currentIndex !== -1 && currentIndex + 1 < answerEvaluation?.formsRel?.length) {
       const nextFormId = answerEvaluation.formsRel[currentIndex + 1].form?.id;
-      console.log("Próximo formulário encontrado:", nextFormId);
       if (nextFormId) {
         setFormId(nextFormId);
       }
     } else {
       console.log("Último formulário respondido ou nenhum próximo formulário encontrado.");
+      if (evaluationAnswerDetails?.status === "COMPLETED") {
+        setIsCompleted(true);
+        setFormId(allFormAnswers?.[0]?.formId || null);
+        const firstForm = allFormAnswers[0];
+        if (firstForm) {
+          setFormValues(firstForm.formId);
+        }
+      }
+      
     }
     
   }, [evaluationAnswerDetails, answerEvaluation, setValue]);
@@ -165,6 +203,9 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
         }
       } else {
         console.log("Último formulário respondido ou nenhum próximo formulário encontrado.");
+        if (evaluationAnswerDetails?.status === "COMPLETED") {
+          setIsCompleted(true);
+        }
       }
   }
 
@@ -172,19 +213,35 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
     const answers = normalizeAnswers(data, formDetails)
     const evaluationAnswer: EvaluationAnswer = {
       evaluationId: answerEvaluation.id,
-      professionalId: 'd55db403-c4b8-4153-94e0-551cf5852fe5',
+      professionalId: professionalId,
       elderlyId: elderlyId || elderlyIdFromUrl || '',
       formAnswares: [
         {
           formId: formDetails.id || '',
           elderlyId: elderlyId || elderlyIdFromUrl || '',
           questionsAnswares: answers,
-          techProfessionalId: 'd55db403-c4b8-4153-94e0-551cf5852fe5',
+          techProfessionalId: professionalId,
         }
       ]
     }
 
+    const isLastForm = answerEvaluation.formsRel?.length === (endedForms.length + 1);
     if(answerId || answerIdFromUrl) {
+      if (isLastForm) {
+      setLoading(true)
+        api.patch(`/evaluation-answare/${answerId || answerIdFromUrl}/complete`, evaluationAnswer, headerConfig).then((response) => {
+          toastSuccess('Avaliação respondida com sucesso', 5000)
+          setAnswerId(response.data.id)
+          getEvaluationAnswerById(answerId || answerIdFromUrl || '')
+          setIsCompleted(true)
+        })
+        .catch((error) => {
+          toastError('Erro ao responder avaliação', false)
+        }).finally(() => {
+          setLoading(false)
+        }
+        )
+      } else {
       setLoading(true)
         api.patch(`/evaluation-answare/${answerId || answerIdFromUrl}/add-form`, evaluationAnswer, headerConfig).then((response) => {
           toastSuccess('Formulário respondida com sucesso', 5000)
@@ -196,7 +253,8 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
         }).finally(() => {
           setLoading(false)
         }
-    )
+        )
+      }
     } 
     else {
       setLoading(true)
@@ -246,21 +304,37 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
 
           <div>
           <ul className="steps">
-            {
-              answerEvaluation.formsRel?.map((formsRel) => (
-                <li 
-                className={`${(formId === formsRel.form?.id || endedForms.includes(formsRel.form?.id)) && 'step-primary'} step`}
-                
-                >
-                  {(endedForms.includes(formsRel.form?.id)) && (
-                    <span className="step-icon"><FontAwesomeIcon icon={faCheck}/></span>
-                  )}
-                  {formsRel.form.title}
-                </li>
-                
-              ))
-            }
-          </ul>
+              {
+                answerEvaluation.formsRel?.map((formsRel) => {
+                  const currentFormId = formsRel.form?.id;
+                  const isCurrent = formId === currentFormId;
+                  const isEnded = endedForms.includes(currentFormId);
+                  const isClickable = isCompleted;
+
+                  return (
+                    <li
+                      key={currentFormId}
+                      className={`step ${isCurrent || isEnded ? 'step-primary' : ''} ${isClickable ? 'cursor-pointer' : ''}`}
+                      onClick={() => {
+                        if (isClickable && currentFormId) {
+                          setFormId(currentFormId);
+                          getFormById(currentFormId);
+                          setFormValues(currentFormId);
+                        }
+                      }}
+                    >
+                      {isEnded && (
+                        <span className="step-icon">
+                          <FontAwesomeIcon icon={faCheck}/>
+                        </span>
+                      )}
+                      {formsRel.form.title}
+                    </li>
+                  )
+                })
+              }
+            </ul>
+
           {
             answerEvaluation.formsRel?.map((formsRel) => (
               <>
@@ -292,23 +366,46 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
                             <legend className="text-sm font-bold">{section.title}</legend>
                             {section.questionsIds.length > 0 ? (
                               section.questionsIds.map((rel, questionIndex) => (
+                                <>
                                 <div key={questionIndex} className="mb-4">
-                                  {setQuestionComponent(rel, register)}
+                                  {setQuestionComponent(rel, register, isCompleted)}
                                 </div>
+                                {
+                                  isCompleted && (
+                                    <div className="flex justify-end items-center gap-4">
+                                      <span>Pontuação:</span>
+                                      <span className="text-sm font-semibold">
+                                        {currentForm?.questionsAnswares.find((q) => q.questionId === rel.id)?.score || 0}
+                                      </span>
+                                    </div>
+                                  )
+                                }
+                                </>
                               ))
                             ) : (
                               <p className="text-sm italic text-gray-400">Nenhuma questão nesta sessão.</p>
                             )}
                           </fieldset>
                         ))}
-                          <div className="flex items-center justify-between">
-                            <Button className="btn btn-success text-white" onClick={handleSubmit(handleEndForm)} >
-                              Continuar
-                            </Button>
-                            <Button className="btn bg-salmon text-white" onClick={handleSubmit(handlePause)}>
-                              Pausar
-                            </Button>
-                          </div>
+                        {
+                          !isCompleted ? (
+                            <div className="flex items-center justify-between">
+                              <Button className="btn bg-salmon text-white" onClick={handleSubmit(handlePause)}>
+                                Pausar
+                              </Button>
+                              <Button className="btn btn-success text-white" onClick={handleSubmit(handleEndForm)} >
+                                Continuar
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className="flex justify-between text-base">
+                              <p>Pontuação total:</p>
+                              <span>
+                                {currentForm?.totalScore} pontos
+                              </span>
+                            </div>
+                          )
+                        }
                         </form>
                       )
                     }

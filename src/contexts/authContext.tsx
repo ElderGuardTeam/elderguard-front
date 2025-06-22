@@ -75,11 +75,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         httpOnly: false,
         path: '/',
       })
-      setCookie(undefined, 'elderguard.userId', res.data.userId, {
+      setCookie(undefined, 'elderguard.userId', res.data.professionalId || res.data.elderlyId, {
         maxAge: 60 * 60 * 8, // 8 hours
         httpOnly: false,
         path: '/',
       })
+  
       if (decodedToken?.userType === 'USER') {
         router.push('/menu')
         return

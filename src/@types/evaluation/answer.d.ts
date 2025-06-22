@@ -49,20 +49,23 @@ interface EvaluationAnswerList {
     cpf: string
     name: string
   }
-  formAnswares: Array<{
-    formId: string
-    questionsAnswares: Array<{
-      id: string
-      questionId: string
-      formAnswareId: string
-      answerText: string
-      answerNumber: string
-      answerImage?: string
-      answerBoolean: boolean
-      selectedOptionId: string
-      score: number
-      created: string
-      updated: string
-    }>
+  formAnswares: FormAnswerDetails[]
+}
+
+interface FormAnswerDetails {
+  formId: string
+  totalScore: number
+  questionsAnswares: Array<{
+    id: string
+    questionId: string
+    formAnswareId: string
+    answerText: string
+    answerNumber: string
+    answerImage?: string
+    answerBoolean: boolean
+    selectedOptionId: string
+    score: number
+    created: string
+    updated: string
   }>
 }

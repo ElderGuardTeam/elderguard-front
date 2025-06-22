@@ -84,9 +84,9 @@ const Sidebar: React.FC = () => {
               </a>
             </LiMenu>
             <LiMenu>
-              <Link href="/avaliacoes/historico">
+              <a href="/avaliacoes/historico">
                 <p>Histórico</p>
-              </Link>
+              </a>
             </LiMenu>
           </LiMenu>      
         </UlMenu>

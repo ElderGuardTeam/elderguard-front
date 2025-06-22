@@ -1,6 +1,7 @@
 'use client'
 
 import { useForms } from "@/contexts/formsContext"
+import { parseCookies } from "nookies"
 import { useEffect } from "react"
 
 export default function MinhasAvaliacoesPage() {
@@ -8,8 +9,10 @@ export default function MinhasAvaliacoesPage() {
     getEvaluationAnswerListByUser
   } = useForms()
 
+  const { 'elderguard.userId': userId } = parseCookies()
+
   useEffect(() => {
-    getEvaluationAnswerListByUser()
+    getEvaluationAnswerListByUser(userId)
   }, [])
   
   return (

@@ -7,7 +7,7 @@ import { Question } from "../schema/createQuestionSchema"
 import Input from "@/components/Input"
 import Select from "@/components/Select"
 
-export const setQuestionComponent = (questionDetails: QuestionDetails | Question, register: UseFormRegister<any>) => {
+export const setQuestionComponent = (questionDetails: QuestionDetails | Question, register: UseFormRegister<any>, isDisabled?: boolean) => {
 
   switch (questionDetails.type) {
     case 'TEXT':
@@ -22,6 +22,7 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
             }
             <Input
             register={register(questionDetails.id || '')}
+            disabled={isDisabled}
             />
           </Label>
         </div>
@@ -39,6 +40,7 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
             <Input 
             type="number"
             register={register(questionDetails.id || '')}
+            disabled={isDisabled}
             />
           </Label>
         </div>
@@ -78,6 +80,7 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
             })) || []}
             placeholder="Selecione"
             register={register(questionDetails.id || '')}
+            disabled={isDisabled}
             />
           </Label>
         </div>
@@ -97,6 +100,7 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
             <Checkbox 
             value={option.questionId || ''}
             register={register(questionDetails.id || '')}
+            disabled={isDisabled}
             />
             <Label labelText={option.description}/>
           </div>
@@ -119,6 +123,7 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
             value="true" 
             className="radio radio-primary"  
             {...register(questionDetails.id || '')}
+            disabled={isDisabled}
             />
             <Label labelText="Sim" />
           </div>  
@@ -128,6 +133,7 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
             value="false"  
             className="radio radio-primary"  
             {...register(questionDetails.id || '')} 
+            disabled={isDisabled}
             />
             <Label labelText="Não"/>
           </div>  
@@ -147,6 +153,7 @@ export const setQuestionComponent = (questionDetails: QuestionDetails | Question
           labelText="Pontuação"
           className="w-24 mt-2"
           register={register(questionDetails.id || '')}
+          isDisabled={isDisabled}
           />
         </div>
       )
