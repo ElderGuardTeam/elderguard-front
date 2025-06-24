@@ -2,6 +2,7 @@
 
 import Alert from "@/components/Alert"
 import Button from "@/components/Button"
+import ResultModal from "@/components/ResultModal"
 import { useAuth } from "@/contexts/authContext"
 import { useForms } from "@/contexts/formsContext"
 import { useLoader } from "@/contexts/loaderContext"
@@ -28,8 +29,14 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
     getEvaluationAnswerById,
     evaluationAnswerDetails,
     handlePauseEvaluation,
-    headerConfig
+    headerConfig,
+    handleHistoryEvaluation,
   } = useForms()
+
+  const {
+    user,
+  } = useAuth()
+
 
   const {
     elderlyId
@@ -289,6 +296,8 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
     }
     await handlePauseEvaluation (answerId || answerIdFromUrl || '', evaluationAnswer)
   }
+
+
   return(
     <div className="flex py-8 justify-center min-h-screen w-full">
       <div className="card bg-white shadow-2xl w-2/3">
@@ -398,12 +407,22 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
                               </Button>
                             </div>
                           ) : (
+                            <>
                             <div className="flex justify-between text-base">
                               <p>Pontuação total:</p>
                               <span>
                                 {currentForm?.totalScore} pontos
                               </span>
                             </div>
+                            {
+                              user?.userType === 'USER' && (
+                                <ResultModal
+                                elderlyId={elderlyId || elderlyIdFromUrl || ''}
+                                formId={formId}
+                                />
+                              )
+                            }
+                            </>
                           )
                         }
                         </form>

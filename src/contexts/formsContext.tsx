@@ -36,6 +36,8 @@ type FormsContextType = {
   handlePauseEvaluation: (id: string, data: EvaluationAnswer) => Promise<void>
   getEvaluationAnswerListByUser: (userId: string) => Promise<void>
   handleCompleteEvaluation: (id: string, data: EvaluationAnswer) => Promise<void>
+  handleHistoryEvaluation: (elderlyId: string, formId:string) => Promise<void>
+  formAnswerData: FormAnswerData
   evaluationAnswerDetails: EvaluationAnswerList
   evaluationAnswerList: EvaluationAnswerList[]
   questions: QuestionList[]
@@ -67,6 +69,7 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
   const [answerId, setAnswerId] = useState<string | null>(null)
   const [evaluationAnswerList, setEvaluationAnswerList] = useState<EvaluationAnswerList[]>([])
   const [evaluationAnswerDetails, setEvaluationAnswerDetails] = useState<EvaluationAnswerList>({} as EvaluationAnswerList)
+  const [formAnswerData, setFormAnswerData] = useState<FormAnswerData>({} as FormAnswerData)
 
   const {
     setLoading
@@ -414,6 +417,18 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  async function handleHistoryEvaluation(elderlyId: string, formId:string) {
+    setLoading(true)
+    api.get(`/evaluation-answare/history-by-form-type/${elderlyId}/${formId}`, headerConfig).then((response) => {
+      setFormAnswerData(response.data[0])
+    }).catch((error) => {
+      toastError('Erro ao buscar histórico da avaliação', false)
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
+  }
+
   return (
     <FormsContext.Provider
       value={{
@@ -452,7 +467,9 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
       handlePauseEvaluation,
       headerConfig,
       getEvaluationAnswerListByUser,
-      handleCompleteEvaluation
+      handleCompleteEvaluation,
+      handleHistoryEvaluation,
+      formAnswerData
       }}
     >
       {children}

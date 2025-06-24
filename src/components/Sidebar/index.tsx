@@ -27,7 +27,7 @@ const Sidebar: React.FC = () => {
   } = useAuth()
 
 
-  if (user?.userType === 'USER') return
+  if (!user ||user?.userType === 'USER') return
 
   return (
     <Aside 

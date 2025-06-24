@@ -69,3 +69,18 @@ interface FormAnswerDetails {
     updated: string
   }>
 }
+
+
+interface FormAnswerData {
+  formId: string
+  formTitle: string
+  formType: string
+  scores: Score[]
+}
+
+interface Score {
+  evaluationAnswareId: string
+  date: string
+  totalScore: number
+  status: string
+}

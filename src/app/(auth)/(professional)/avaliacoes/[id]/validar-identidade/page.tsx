@@ -6,6 +6,7 @@ import Label from "@/components/Label"
 import MaskedInput from "@/components/MaskedInput"
 import SelectFormGroup from "@/components/SelectFormGroup"
 import { useUsers } from "@/contexts/usersContext"
+import toastError from "@/utils/toast/toastError"
 import { useForm } from "react-hook-form"
 import { ToastContainer } from "react-toastify"
 
@@ -23,6 +24,10 @@ export default function InitiateEvaluation({params}: {params: {id: string}}) {
 
 
   const handleValidateID = async (data: ValidatePatient) => {
+    if (!data.cpf) {
+      toastError('CPF é obrigatório', 3000)
+      return
+    }
     validadeIdentity({
       elderlyData: data,
       evaluationId: params.id
@@ -72,7 +77,7 @@ export default function InitiateEvaluation({params}: {params: {id: string}}) {
                   {id: 'O', name: 'Outro'}
                 ]}
                 placeholder="Selecione"
-                register={register('sex')}
+                register={register('sex', {required: 'Campo obrigatório'})}
                 error={errors.sex?.message?.toString()}
                 /> 
               <div className="flex gap-2 mt-2">

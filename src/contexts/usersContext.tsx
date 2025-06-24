@@ -78,7 +78,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 			toastSuccess("Idoso cadastrado com sucesso", 5000);
 			router.push("/pacientes");
 		}).catch((error) => {
-			toastError("Ocorreu um erro ao cadastrar o idoso", 5000);
+			toastError(error.response.data.message || "Ocorreu um erro ao cadastrar o idoso", 5000);
 		}).finally(() => {
 			setLoading(false);
 		})
@@ -113,7 +113,7 @@ export const UsersProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 			toastSuccess("Profissional cadastrado com sucesso", 5000);
 			router.push("/profissionais");
 		}).catch((error) => {
-			toastError("Ocorreu um erro ao cadastrar o Profissional", 5000);
+			toastError(error.response.data.message || "Ocorreu um erro ao cadastrar o idoso", 5000);
 		}).finally(() => {
 			setLoading(false);
 		})
