@@ -210,7 +210,7 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
   }
 
   const handleEndForm = async (data: any) => {
-    const answers = normalizeAnswers(data, formDetails)
+    const answers = await normalizeAnswers(data, formDetails)
     const evaluationAnswer: EvaluationAnswer = {
       evaluationId: answerEvaluation.id,
       professionalId: professionalId,
@@ -224,6 +224,8 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
         }
       ]
     }
+
+    console.log('evaluationAnswer', evaluationAnswer)
 
     const isLastForm = answerEvaluation.formsRel?.length === (endedForms.length + 1);
     if(answerId || answerIdFromUrl) {
@@ -273,7 +275,7 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
     
   };
   const handlePause = async (data: any) => { 
-    const answers = normalizeAnswers(data, formDetails)
+    const answers = await normalizeAnswers(data, formDetails)
     const evaluationAnswer: EvaluationAnswer = {
       evaluationId: answerEvaluation.id,
       professionalId: 'd55db403-c4b8-4153-94e0-551cf5852fe5',
@@ -367,9 +369,19 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
                             {section.questionsIds.length > 0 ? (
                               section.questionsIds.map((rel, questionIndex) => (
                                 <>
-                                <div key={questionIndex} className="mb-4">
-                                  {setQuestionComponent(rel, register, isCompleted)}
-                                </div>
+                                {
+                                  (isCompleted && rel.type=== "IMAGE") ? (
+                                    <div key={questionIndex} className="mb-4">
+                                      <img 
+                                        src={`${process.env.NEXT_PUBLIC_API_URL}${currentForm?.questionsAnswares.find((q) => q.questionId === rel.id)?.answerImage}`|| ''}
+                                        alt={rel.title}
+                                        className="w-full h-auto rounded"
+                                      />
+                                    </div>
+                                  ) : (
+                                    setQuestionComponent(rel, register, isCompleted)
+                                  )
+                                }
                                 {
                                   isCompleted && (
                                     <div className="flex justify-end items-center gap-4">

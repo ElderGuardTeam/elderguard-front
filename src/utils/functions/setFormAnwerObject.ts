@@ -9,7 +9,19 @@ type AnswerOutput = {
   | { selectedOptionId: string }
 )
 
-export function normalizeAnswers(data: Record<string, any>, formDetails: any): AnswerOutput[] {
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onloadend = () => resolve(reader.result as string)
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
+export async function normalizeAnswers(
+  data: Record<string, any>,
+  formDetails: any
+): Promise<AnswerOutput[]> {
   const result: AnswerOutput[] = []
 
   const questionsMap = formDetails.seccions
@@ -23,7 +35,6 @@ export function normalizeAnswers(data: Record<string, any>, formDetails: any): A
     const type = questionsMap[questionId]
     if (!type) continue
 
-    // Evita respostas em branco para tipos de texto/imagem/select
     if (
       (type === 'TEXT' || type === 'IMAGE' || type === 'SELECT') &&
       (rawAnswer === null || rawAnswer === undefined || String(rawAnswer).trim() === '')
@@ -54,22 +65,23 @@ export function normalizeAnswers(data: Record<string, any>, formDetails: any): A
         break
 
       case 'BOOLEAN':
-        console.log('Boolean answer:', rawAnswer, typeof rawAnswer)
-        if (rawAnswer === null || rawAnswer === undefined) {
-          break
-        }
+        if (rawAnswer === null || rawAnswer === undefined) break
         result.push({
           questionId,
           answerBoolean: rawAnswer === 'true' ? true : false,
         })
         break
 
-      case 'IMAGE':
-        result.push({
-          questionId,
-          answerImage: String(rawAnswer),
-        })
-        break
+        case 'IMAGE':
+          let base64Image = ''
+        
+          base64Image = await fileToBase64(rawAnswer[0]) 
+        
+          result.push({
+            questionId,
+            answerImage: base64Image,
+          })
+          break
 
       case 'SELECT':
         result.push({
