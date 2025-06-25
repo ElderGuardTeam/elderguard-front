@@ -92,7 +92,8 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
         ...data.rule,
         maxScore: data.rule?.maxScore ? Number(data.rule?.maxScore) : null,
         value1: data.rule?.value1? Number(data.rule?.value1) : null,
-        value2: data.rule?.value2 ? Number(data.rule?.value2) : null
+        value2: data.rule?.value2 ? Number(data.rule?.value2) : null,
+        totalItems: data.rule?.totalItems ? Number(data.rule?.totalItems) : null,
       } : null,
       options: data.options?.map((option) => ({
         description: option.description,
@@ -154,7 +155,8 @@ export function FormsProvider({ children }: { children: React.ReactNode }) {
         ...question.rule, 
         maxScore: question.rule?.maxScore ? Number(question.rule?.maxScore) : null,
         value1: question.rule?.value1? Number(question.rule?.value1) : null,
-        value2: question.rule?.value2 ? Number(question.rule?.value2) : null
+        value2: question.rule?.value2 ? Number(question.rule?.value2) : null,
+        totalItems: question.rule?.totalItems ? Number(question.rule?.totalItems) : null,
       } : null,
       options: question.options?.map((option) => ({
         description: option.description,

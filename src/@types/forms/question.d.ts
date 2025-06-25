@@ -39,4 +39,5 @@ interface Rule {
   value2?: number | null| undefined
   valueIf?: number | null| undefined
   valueThen?: number | null| undefined
+  totalItems?: number | null | undefined
 }

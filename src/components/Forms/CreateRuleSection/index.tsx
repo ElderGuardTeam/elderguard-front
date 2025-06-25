@@ -40,11 +40,23 @@ const CreateRuleSection: React.FC<ICreateRuleSectionFormProps> = ({
         {value: 'CONDITIONAL', name: 'Condicional'},
         {value: 'ARITHMETIC', name: 'Operação matemática'},
         {value: 'SUM', name: 'Pontuação máxima'},
+        {value: 'PRORATE', name: 'Média ponderada'},
       ]}
       register={register(`seccions.${index}.rule.type`)}
       placeholder="Selecione"
       className="col-span-2"
       />
+      {
+        watchRuleType === 'PRORATE' && (
+          <FormGroup
+          labelText="Peso"
+          isRequired
+          register={register(`seccions.${index}.rule.totalItems`)}
+          error={errors.totalItems?.message}
+          className="col-span-2"
+          />
+        )
+      }
       {
         watchRuleType === 'SUM' && (
           <FormGroup

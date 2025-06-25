@@ -41,8 +41,11 @@ export default function CreateQuestionPage() {
             ? Number(data.seccions[index + 1].rule?.value2)
             : null,
           maxScore: data.seccions?.[index + 1]?.rule?.maxScore
-          ? Number(data.seccions[index + 1].rule?.maxScore)
-          : null,
+            ? Number(data.seccions[index + 1].rule?.maxScore)
+            : null,
+          totalItems: data.seccions?.[index + 1]?.rule?.totalItems
+            ? Number(data.seccions[index + 1].rule?.totalItems)
+            : null,
         } : null,
         questionsIds: section.questionsIds?.map((question) => question?.id),
       };
@@ -55,7 +58,8 @@ export default function CreateQuestionPage() {
         ...data.rule,
         maxScore: data.rule?.maxScore ? Number(data.rule?.maxScore) : null,
         value1: data.rule?.value1? Number(data.rule?.value1) : null,
-        value2: data.rule?.value2 ? Number(data.rule?.value2) : null
+        value2: data.rule?.value2 ? Number(data.rule?.value2) : null,
+        totalItems: data.rule?.totalItems ? Number(data.rule?.totalItems) : null,
       } : null,
     });
   };

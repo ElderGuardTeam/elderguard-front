@@ -14,4 +14,5 @@ export const ruleSchema = z.object({
   value2: z.union([z.string(), z.number()]).nullable().optional(),
   valueIf: z.union([z.string(), z.number()]).nullable().optional(),
   valueThen: z.union([z.string(), z.number()]).nullable().optional(),
+  totalItems: z.union([z.string(), z.number()]).nullable().optional(),
 });

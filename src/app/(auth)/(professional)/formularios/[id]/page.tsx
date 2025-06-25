@@ -60,6 +60,9 @@ export default function CreateQuestionPage({params}: {params: {id: string}}) {
           maxScore: data.seccions?.[section.id]?.rule?.maxScore
             ? Number(data.seccions[section.id].rule?.maxScore)
             : null,
+          totalItems: data.seccions?.[section.id]?.rule?.totalItems
+            ? Number(data.seccions[section.id].rule?.totalItems)
+            : null,
         } : null,
         questionsIds: section.questionsIds.map((question) => question.id),
       };
