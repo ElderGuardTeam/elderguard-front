@@ -53,6 +53,7 @@ export default function InitiateEvaluation({params}: {params: {id: string}}) {
               labelText="Nome"
               inputClass="input input-bordered "
               className="col-span-2"
+              isRequired
               register={register('name', {required: 'Campo obrigatório'})}
               error={errors.name?.message?.toString()}
               />

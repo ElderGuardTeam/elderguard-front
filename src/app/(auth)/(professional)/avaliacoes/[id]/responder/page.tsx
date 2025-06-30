@@ -188,7 +188,7 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
   
   
 
-  const handleNextForm = () => {
+  const handleNextForm = (id?: string) => {
     if (!answerEvaluation?.formsRel || !formId) return;
 
       const currentIndex = answerEvaluation.formsRel.findIndex(
@@ -203,6 +203,10 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
         }
       } else {
         console.log("Último formulário respondido ou nenhum próximo formulário encontrado.");
+        if (id) {
+          getEvaluationAnswerById(id)
+        }
+        setIsCompleted(true);
         if (evaluationAnswerDetails?.status === "COMPLETED") {
           setIsCompleted(true);
         }
@@ -224,8 +228,6 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
         }
       ]
     }
-
-    console.log('evaluationAnswer', evaluationAnswer)
 
     const isLastForm = answerEvaluation.formsRel?.length === (endedForms.length + 1);
     if(answerId || answerIdFromUrl) {
@@ -263,7 +265,7 @@ export default function AnswerEvaluation({params}: {params: {id: string}}) {
       api.post('/evaluation-answare', evaluationAnswer, headerConfig).then((response) => {
         toastSuccess('Avaliação respondida com sucesso', 5000)
         setAnswerId(response.data.id)
-        handleNextForm()  
+        handleNextForm(response.data.id)  
       })
       .catch((error) => {
         toastError('Erro ao responder avaliação', false)
